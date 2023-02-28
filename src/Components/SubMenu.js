@@ -21,9 +21,8 @@ const SidebarLink = styled(Link)`
  
 const SidebarLabel = styled.span`
   margin-left: 20px;
-  
 `;
- 
+
 const DropdownLink = styled(Link)`
   background: #252831;
   height: 55px;
