@@ -57,13 +57,9 @@ const Sidebar = () => {
             <BsIcons.BsList onClick={showSidebar} />
             <img src ={logo} alt="logo" width="120" height="120"  />
           </NavIcon>
-          <h1
-            style={{ textAlign: "center",
-                     marginLeft: "200px",
-                     color: "#10a698" }}
-          >
-         
-          </h1>
+         {/* <div >
+            <img src ={logo} alt="logo" width="120" height="120"  />
+         </div> */}
         </Nav>
         <SidebarNav sidebar={sidebar}>
           <SidebarWrap>
