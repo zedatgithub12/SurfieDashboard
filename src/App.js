@@ -5,10 +5,9 @@ import { Customers } from "./pages/Customers";
 import { Notifications } from "./pages/Notifications";
 import { Users } from "./pages/Users";
 import Support from "./pages/Support";
-import Terminated from "./pages/Terminated";
-import Active from "./pages/Active";
-import Pending from "./pages/Pending";
-import Expired from "./pages/Expired";
+import Emaills from "./pages/Emaills";
+
+
 
 function App() {
   return (
@@ -20,10 +19,8 @@ function App() {
         <Route path="/users" element={<Users />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/support" element={<Support />} />
-        <Route path="/active" element={<Active />} />
-        <Route path="/pending" element={<Pending />} />
-        <Route path="/expired" element={<Expired />} />
-        <Route path="/terminal" element={<Terminated />} />
+        <Route path="/emails" element={<Emaills />} />
+
       </Routes>
     </Router>
   );
