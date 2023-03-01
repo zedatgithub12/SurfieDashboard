@@ -52,7 +52,7 @@ const Sidebar = () => {
   return (
     <>
       <IconContext.Provider value={{ color: "#fff" }}>
-        <Nav>
+        <Nav className="sticky-top">
           <NavIcon to="#">
             <BsIcons.BsList onClick={showSidebar} />
             <img src ={logo} alt="logo" width="120" height="120"  />

@@ -1,6 +1,6 @@
 import "./App.css";
-import Sidebar from "./Components/Sidebar";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Sidebar from "./components/Sidebar";
+import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import { Customers } from "./pages/Customers";
 import { Notifications } from "./pages/Notifications";
 import { Users } from "./pages/Users";
@@ -14,15 +14,16 @@ function App() {
   return (
     <Router>
       <Sidebar />
-      <Routes>
+      <Routes exact path="/customers">
+      
         <Route path="/customers" element={<Customers />} />
         <Route path="/users" element={<Users />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/support" element={<Support />} />
-        <Route path="/active" element={<Active/>}/>
-        <Route path="/pending" element={<Pending/>}/>
-        <Route path="/expired" element={<Expired/>}/>
-        <Route path="/terminal" element={<Terminated/>}/>
+        <Route path="/active" element={<Active />} />
+        <Route path="/pending" element={<Pending />} />
+        <Route path="/expired" element={<Expired />} />
+        <Route path="/terminal" element={<Terminated />} />
       </Routes>
     </Router>
   );
