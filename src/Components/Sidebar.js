@@ -28,7 +28,7 @@ const NavIcon = styled(Link)`
  
 const SidebarNav = styled.nav`
   background: #15171c;
-  width: 220px;
+  width: 200px;
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -57,9 +57,7 @@ const Sidebar = () => {
             <BsIcons.BsList onClick={showSidebar} />
             <img src ={logo} alt="logo" width="120" height="120"  />
           </NavIcon>
-         {/* <div >
-            <img src ={logo} alt="logo" width="120" height="120"  />
-         </div> */}
+       
         </Nav>
         <SidebarNav sidebar={sidebar}>
           <SidebarWrap>

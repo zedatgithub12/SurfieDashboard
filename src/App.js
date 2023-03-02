@@ -7,6 +7,7 @@ import { Users } from "./pages/Users";
 import Support from "./pages/Support";
 import Emaills from "./pages/Emaills";
 import CustomerDetail from "./pages/CustomerDetail";
+import CreateAccount from "./pages/CreateAccount";
 
 
 
@@ -22,6 +23,7 @@ function App() {
         <Route path="/support" element={<Support />} />
         <Route path="/emails" element={<Emaills />} />
         <Route path="/customerdetail" element={<CustomerDetail/>}/>
+        <Route path="/createaccount" element={<CreateAccount/>}/>
 
       </Routes>
     </Router>

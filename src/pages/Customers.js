@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
-import { useNavigate  } from 'react-router-dom'
+import { Link, useNavigate  } from 'react-router-dom'
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
@@ -12,6 +12,9 @@ import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Dropdown from "react-bootstrap/Dropdown";
+
+
+
 
 export const Customers = () => {
   const [activeTab, setActiveTab] = useState("Active");
@@ -112,8 +115,8 @@ export const Customers = () => {
           className="card justify-content-md-center   shadow-sm border-0  pt-2 p-2 "
         >
           <div>
-            <h5 className="text-center fw-bold">36</h5>
-            <p className="text-center text-success responsive-font-example">
+            <h5 className="text-center font-link fw-bold">36</h5>
+            <p className="text-center font-link text-success responsive-font-example">
               Active Customers
             </p>
           </div>
@@ -124,8 +127,8 @@ export const Customers = () => {
           className="card justify-content-md-center  shadow-sm border-0 m-2 mt-0 mb-0  pt-2"
         >
           <div>
-            <h5 className="text-center fw-bold">26</h5>
-            <p className="text-center text-secondary">Monthly Subscribers</p>
+            <h5 className="text-center font-link fw-bold">26</h5>
+            <p className="text-center font-link text-secondary">Monthly Subscribers</p>
           </div>
         </Col>
         <Col
@@ -133,8 +136,8 @@ export const Customers = () => {
           className="card justify-content-md-center shadow-sm border-0 m-2 mt-0 mb-0  pt-2"
         >
           <div>
-            <h5 className="text-center fw-bold">12</h5>
-            <p className="text-center text-secondary">Annual Subcribers</p>
+            <h5 className="text-center font-link fw-bold">12</h5>
+            <p className="text-center font-link text-secondary ">Annual Subcribers</p>
           </div>
         </Col>
       </Row>
@@ -144,11 +147,11 @@ export const Customers = () => {
         <Col sm={9} className="border">
           <Row className="m-auto justify-content-md-center pt-4 pb-2 ">
             <Col>
-              <h4>Customers</h4>
+              <h5 className="font-link">Customers</h5>
             </Col>
-            <Col sm={8}></Col>
-            <Col>
-              <Button variant="primary">Create Account</Button>
+            <Col sm={7}></Col>
+            <Col className="d-flex justify-content-end">
+              <Link to="/createaccount" variant="primary" className="font-link text-decoration-none fw-semibold">Create Account</Link>
             </Col>
           </Row>
           <Row className="bg-white p-2 rounded">
@@ -156,13 +159,13 @@ export const Customers = () => {
               <Col>
                 <ul className="nav nav-tabs">
                   {Status.map((item, index) => (
-                    <li className="nav-item" key={index}>
+                    <li className="nav-item font-link" key={index}>
                       <Button
                         variant="light"
                         className={
                           activeTab === item.title
-                            ? "bg-success text-white"
-                            : "bg-white"
+                            ? "bg-success text-white font-link border-0"
+                            : "bg-white font-link text-secondary border-0"
                         }
                         aria-current="page"
                         onClick={() => Tabs(item.title)}
@@ -188,7 +191,7 @@ export const Customers = () => {
                         aria-describedby="basic-addon2"
                       />
                       <div className="input-group-append">
-                        <span className="input-group-text" id="basic-addon2">
+                        <span className="input-group-text font-link" id="basic-addon2">
                           Search
                         </span>
                       </div>
