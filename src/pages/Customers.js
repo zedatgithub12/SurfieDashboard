@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
+import { useNavigate  } from 'react-router-dom'
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
@@ -8,7 +9,6 @@ import Status from "../assets/Status";
 import CustomerTable from "../components/CustomerTable";
 import Users from "../assets/Customers";
 import Table from "react-bootstrap/Table";
-// import Button from 'react-bootstrap/Button';
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -17,6 +17,8 @@ export const Customers = () => {
   const [activeTab, setActiveTab] = useState("Active");
   const [loading, setLoading] = useState(true);
   const [operate, setOperate] = useState(true);
+  const [confirm, setConfirm] = useState(false);
+  const navigate = useNavigate();
 
 
   //modal dynamic attributes
@@ -25,23 +27,14 @@ export const Customers = () => {
     currentPlan: "",
     updatedInfo: "",
     operation: "",
+    cofirmationtxt: "",
   });
-
-
 
   const OpenDialog = (item, operation) => {
     var info = operation === "add" ? "Upgrade to" : "Downgrade to";
-    if (operation === "remove") {
-      setInitialValue({
-        ...initialValue,
-        title: "Remove Subscription",
-        currentPlan: item.license,
-        updatedInfo: info,
-        operation: operation,
-      });
-      setLicense(item.license);
-      handleShow();
-    } else {
+
+    if (operation === "add") {
+      setConfirm(false);
       setInitialValue({
         ...initialValue,
         title: "Add Subscription",
@@ -51,13 +44,46 @@ export const Customers = () => {
       });
       setLicense(item.license);
       handleShow();
+    } else if (operation === "remove") {
+      setConfirm(false);
+      setInitialValue({
+        ...initialValue,
+        title: "Remove Subscription",
+        currentPlan: item.license,
+        updatedInfo: info,
+        operation: operation,
+      });
+      setLicense(item.license);
+      handleShow();
+    }
+    //when the user clicked deactivate account button from dropdown
+    else if (operation === "deactivate") {
+      setConfirm(true);
+      setInitialValue({
+        ...initialValue,
+        title: "Deactivate Account!",
+        cofirmationtxt:
+          "Are you sure do you want to deactivate this user account!",
+        operation: operation,
+      });
+      setLicense(item.license);
+      handleShow();
+    } else {
+      setConfirm(true);
+      setInitialValue({
+        ...initialValue,
+        title: "Detach Credentials",
+        cofirmationtxt:
+          "Are you sure do you want to Detach this user credentials!",
+        operation: operation,
+      });
+      setLicense(item.license);
+      handleShow();
     }
   };
 
-//modal dropdown license listing states
+  //modal dropdown license listing states
   const [license, setLicense] = useState();
-
-
 
   const Tabs = (name) => {
     setActiveTab(name);
@@ -133,7 +159,6 @@ export const Customers = () => {
                     <li className="nav-item" key={index}>
                       <Button
                         variant="light"
-                        className="nav-link"
                         className={
                           activeTab === item.title
                             ? "bg-success text-white"
@@ -193,7 +218,10 @@ export const Customers = () => {
                             date={item.date}
                             add={() => OpenDialog(item, "add")}
                             remove={() => OpenDialog(item, "remove")}
+                            deactivate={() => OpenDialog(item, "deactivate")}
+                            detach={() => OpenDialog(item, "detach")}
                             detail="/customerdetail?id=item.id"
+                            rowPressed={()=> navigate('/customerdetail')}
                           />
                         ))}
                       </tbody>
@@ -250,69 +278,79 @@ export const Customers = () => {
           <Modal.Title>{initialValue.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form>
-            <Row>
-              <Col sm={3} className="align-items-center">
-                <p>Current Plan:</p>
-              </Col>
-              <Col sm={6} className="align-items-center">
-                <p className="text-primary fw-bold align-items-center">
-                  {initialValue.currentPlan} Device License
-                </p>
-              </Col>
-            </Row>
+          {confirm ? (
+            <p>{initialValue.cofirmationtxt}</p>
+          ) : (
+            <Form>
+              <Row>
+                <Col sm={3} className="align-items-center">
+                  <p>Current Plan:</p>
+                </Col>
+                <Col sm={6} className="align-items-center">
+                  <p className="text-primary fw-bold align-items-center">
+                    {initialValue.currentPlan} Device License
+                  </p>
+                </Col>
+              </Row>
 
-            <Row>
-              <Col sm={3}>
-                <p >{initialValue.updatedInfo}:</p>
-              </Col>
-              <Col sm={8} className="justify-content-start">
-                <Dropdown>
-                  <Dropdown.Toggle
-                    variant="light"
-                    title="1 License"
-                    id="dropdown-basic"
-                  >
-                    {license} License
-                  </Dropdown.Toggle>
+              <Row>
+                <Col sm={3}>
+                  <p>{initialValue.updatedInfo}:</p>
+                </Col>
+                <Col sm={8} className="justify-content-start">
+                  <Dropdown>
+                    <Dropdown.Toggle
+                      variant="light"
+                      title="1 License"
+                      id="dropdown-basic"
+                    >
+                      {license} License
+                    </Dropdown.Toggle>
 
-                  <Dropdown.Menu variant="light">
-                    <Dropdown.Item onClick={() => setLicense(1)}>
-                      1 License
-                    </Dropdown.Item>
-                    <Dropdown.Item onClick={() => setLicense(3)}>
-                      3 License
-                    </Dropdown.Item>
-                    <Dropdown.Item onClick={() => setLicense(5)}>
-                      5 License
-                    </Dropdown.Item>
-                    <Dropdown.Item onClick={() => setLicense(10)}>
-                      10 License
-                    </Dropdown.Item>
-                    <Dropdown.Item onClick={() => setLicense(20)}>
-                      20 License
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </Col>
-            </Row>
-          </Form>
+                    <Dropdown.Menu variant="light">
+                      <Dropdown.Item onClick={() => setLicense(1)}>
+                        1 License
+                      </Dropdown.Item>
+                      <Dropdown.Item onClick={() => setLicense(3)}>
+                        3 License
+                      </Dropdown.Item>
+                      <Dropdown.Item onClick={() => setLicense(5)}>
+                        5 License
+                      </Dropdown.Item>
+                      <Dropdown.Item onClick={() => setLicense(10)}>
+                        10 License
+                      </Dropdown.Item>
+                      <Dropdown.Item onClick={() => setLicense(20)}>
+                        20 License
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </Col>
+              </Row>
+            </Form>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="light" onClick={handleClose}>
             Back
           </Button>
-          {initialValue.operation == "add" ?(
- <Button variant="primary" onClick={()=>alert("add")}>
- Confirm
-</Button>
-          ): initialValue.operation == "remove" ?(
-<Button variant="primary" onClick={()=>alert("remove")}>
- Confirm
-</Button>
-          ): null
-          }
-         
+          {initialValue.operation === "add" ? (
+            <Button variant="primary" onClick={() => alert("add")}>
+              Confirm
+            </Button>
+          ) : initialValue.operation === "remove" ? (
+            <Button variant="primary" onClick={() => alert("remove")}>
+              Confirm
+            </Button>
+          ) : initialValue.operation === "deactivate" ? (
+            <Button variant="danger" onClick={() => alert("deactivate")}>
+              Deactivate
+            </Button>
+          ) : initialValue.operation === "detach" ? (
+            <Button variant="danger" onClick={() => alert("Detach")}>
+              Detach
+            </Button>
+          ) : null}
         </Modal.Footer>
       </Modal>
     </Container>
