@@ -6,6 +6,7 @@ import { Notifications } from "./pages/Notifications";
 import { Users } from "./pages/Users";
 import Support from "./pages/Support";
 import Emaills from "./pages/Emaills";
+import CustomerDetail from "./pages/CustomerDetail";
 
 
 
@@ -20,6 +21,7 @@ function App() {
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/support" element={<Support />} />
         <Route path="/emails" element={<Emaills />} />
+        <Route path="/customerdetail" element={<CustomerDetail/>}/>
 
       </Routes>
     </Router>

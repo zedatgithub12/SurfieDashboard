@@ -193,6 +193,7 @@ export const Customers = () => {
                             date={item.date}
                             add={() => OpenDialog(item, "add")}
                             remove={() => OpenDialog(item, "remove")}
+                            detail="/customerdetail?id=item.id"
                           />
                         ))}
                       </tbody>

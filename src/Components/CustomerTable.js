@@ -1,14 +1,18 @@
 import Row from "react-bootstrap/Row";
 import Dropdown from "react-bootstrap/Dropdown";
+import { Link } from "react-router-dom";
 
-function CustomerTable({id, name, license, subscription, date, add, remove }) {
+function CustomerTable({id, name, license, subscription, date, add, remove, detail }) {
   return (
    
-        <tr>
+        <tr >
           <td>{id}</td>
           <td>
+          <Link to={detail}>
             <Row className="fs-6 fw-semibold text-start">{name}</Row>
+            </Link>
             <Row className="text-secondary fs-6 text-start">{license} Device License</Row>
+
              </td>
 
           <td>{subscription}</td>
@@ -25,12 +29,12 @@ function CustomerTable({id, name, license, subscription, date, add, remove }) {
                 <Dropdown.Item onClick={remove}>Remove Subscription</Dropdown.Item>
                 <Dropdown.Item href="#/action-3">Deactivate Account</Dropdown.Item>
                 <Dropdown.Item href="#/action-3">Detach Account</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">Send Email</Dropdown.Item>
+                <Dropdown.Item href="/emails">Send Email</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </td>
         </tr>
-    
+      
   );
 }
 
