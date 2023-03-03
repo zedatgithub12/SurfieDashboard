@@ -23,7 +23,7 @@ import { BsCheckCircle } from "react-icons/bs";
 function CreateAccount() {
   const [created, setCreated] = useState(false);
   const [index, setIndex] = useState(1);
-  const [license, setLicense] = useState("Select Package");
+  const [license, setLicense] = useState("Select License");
   const [Period, setPeriod] = useState("Monthly");
   const [showpass, setShowPass] = useState(false);
   const [selected, setSelected] = useState({
@@ -41,6 +41,8 @@ function CreateAccount() {
     username: "",
     password: "",
     confirmpassword: "",
+
+    errormessage: "",
   });
 
   //update first name
@@ -57,7 +59,6 @@ function CreateAccount() {
       ...input,
       middlename: event.target.value,
     });
-    console.log(input.middlename);
   };
 
   //update first name
@@ -66,7 +67,6 @@ function CreateAccount() {
       ...input,
       lastname: event.target.value,
     });
-    console.log(input.lastname);
   };
 
   //update email address
@@ -75,7 +75,6 @@ function CreateAccount() {
       ...input,
       emailaddress: event.target.value,
     });
-    console.log(input.emailaddress);
   };
 
   //update phone name
@@ -84,7 +83,6 @@ function CreateAccount() {
       ...input,
       phone: event.target.value,
     });
-    console.log(input.phone);
   };
 
   //update address
@@ -93,7 +91,6 @@ function CreateAccount() {
       ...input,
       address: event.target.value,
     });
-    console.log(input.address);
   };
 
   //update username
@@ -102,7 +99,6 @@ function CreateAccount() {
       ...input,
       username: event.target.value,
     });
-    console.log(input.username);
   };
 
   //update  password
@@ -111,7 +107,6 @@ function CreateAccount() {
       ...input,
       password: event.target.value,
     });
-    console.log(input.password);
   };
 
   //update phone name
@@ -130,6 +125,59 @@ function CreateAccount() {
     });
   };
 
+  //validate user input when user pressed submit button
+
+  const ValidateInput = () => {
+    if (
+      input.firstname === "" ||
+      input.middlename === "" ||
+      input.lastname === "" ||
+      input.emailaddress === "" ||
+      input.phone === "" ||
+      input.username === "" ||
+      input.password === "" ||
+      input.confirmpassword === ""
+    ) {
+      setInput({
+        ...input,
+        errormessage: "Please fill all form",
+      });
+      return false;
+    } else if (input.password != input.confirmpassword) {
+      setInput({
+        ...input,
+        errormessage: "Password you entered doesn't match",
+      });
+      var Focus = document.getElementById("form8").focus();
+      return false;
+    } else if (license === "Select License") {
+      setInput({
+        ...input,
+        errormessage: "Please Select License",
+      });
+
+      document.getElementById("licenses").focus();
+
+      return false;
+    } else if (selected.active === "") {
+      setInput({
+        ...input,
+        errormessage: "Please select payment option!",
+      });
+      
+      return false;
+    } else {
+      setInput({
+        ...input,
+        errormessage: "good to go",
+      });
+
+      alert("good to go!");
+      return true;
+    }
+   
+  };
+
   if (created) {
     return (
       <Container>
@@ -141,19 +189,31 @@ function CreateAccount() {
             <BsCheckCircle size={66} className="text-success m-3" />
             <p className="fs-5 ">Successfully Created</p>
 
-            <Row className="d-flex justify-self-center align-self-center m-auto w-25">
-              <Link
-                to="/customers"
-                className="text-decoration-none text-primary fw-semibold "
-              >
-                Home
-              </Link>
-              <Link
-                to="/createaccount"
-                className="text-decoration-none text-dark btn btn-success bg-gradient "
-              >
-                Create Account
-              </Link>
+            <Row className="d-flex justify-content-evenly align-items-center m-auto mt-5 w-50">
+              <Col>
+                <Link
+                  onClick={() => setCreated(!created)}
+                  to="/createaccount"
+                  variant="light"
+                  className="
+                d-flex justify-content-center align-items-center
+                btn btn-light
+                text-decoration-none text-success fw-semibold "
+                >
+                  Back
+                </Link>
+              </Col>
+
+              <Col>
+                <Link
+                  to="/customers"
+                  className="
+                d-flex justify-content-evenly align-self-center
+                text-decoration-none text-dark btn btn-success text-white bg-gradient "
+                >
+                  Home
+                </Link>
+              </Col>
             </Row>
           </Col>
         </Row>
@@ -175,7 +235,11 @@ function CreateAccount() {
             >
               <MDBCol>
                 <MDBCard className="my-4 ">
-                  <form class="needs-validation" novalidate>
+                  <form
+                    class="needs-validation"
+                    novalidate
+                    
+                  >
                     <MDBRow className="g-0">
                       <MDBCol sd="6">
                         <MDBCardBody className="text-black d-flex flex-column justify-content-center ">
@@ -282,7 +346,7 @@ function CreateAccount() {
                                 wrapperClass="mb-2"
                                 label="Password"
                                 size="md"
-                                id="form1"
+                                id="form7"
                                 type={showpass ? "text" : "password"}
                                 required
                                 defaultValue={input.password}
@@ -292,10 +356,10 @@ function CreateAccount() {
 
                             <MDBCol sm="6" className="d-flex position-relative">
                               <MDBInput
-                                wrapperClass="mb-4"
+                                wrapperClass={input.passmatch + "mb-4"}
                                 label="Confirm Password"
                                 size="md"
-                                id="form2"
+                                id="form8"
                                 type={showpass ? "text" : "password"}
                                 required
                                 defaultValue={input.confirmpassword}
@@ -327,14 +391,16 @@ function CreateAccount() {
                               <Dropdown size="md">
                                 <Dropdown.Toggle
                                   variant="light"
-                                  title="1 License"
-                                  id="dropdown-basic"
+                                  title="Licenses"
+                                  
                                   className="text-dark border m-0 me-5 fw-semibold font-link"
                                 >
-                                  {license} License
+                                  {license === "Select License"
+                                    ? "Select License"
+                                    : license + " " + "License"}
                                 </Dropdown.Toggle>
 
-                                <Dropdown.Menu variant="light">
+                                <Dropdown.Menu variant="light"   id="licenses">
                                   <Dropdown.Item onClick={() => setLicense(0)}>
                                     Select Package
                                   </Dropdown.Item>
@@ -448,7 +514,12 @@ function CreateAccount() {
                         </MDBRow>
                       </MDBCol>
                     </MDBRow>
-                    <div className="d-flex justify-content-end pt-3 p-3">
+                    <div className="d-flex justify-content-end align-items-center pt-3 p-3">
+                      <div className="d-flex justify-content-center align-items-center pt-3 p-3 mt-1">
+                        <caption className="text-danger">
+                          {input.errormessage}
+                        </caption>
+                      </div>
                       <Button variant="light" size="md">
                         <Link
                           to="/customers"
@@ -460,10 +531,11 @@ function CreateAccount() {
                       </Button>
 
                       <Button
-                        type="submit"
+                        
                         variant="warning"
                         size="md"
                         className="ms-3"
+                        onClick={()=>ValidateInput()}
                       >
                         Create Account
                       </Button>
