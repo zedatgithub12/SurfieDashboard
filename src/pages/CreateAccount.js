@@ -5,7 +5,6 @@ import Col from "react-bootstrap/Col";
 import Formone from "../components/Formone";
 import Formtwo from "../components/Formtwo";
 import Formthree from "../components/Formthree";
-import { Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
 
 function CreateAccount() {
@@ -17,7 +16,10 @@ function CreateAccount() {
         <Col sm={9} className="bg-white m-auto p-4 mt-4 rounded shadow-sm">
           <Row>
             <Col sm={3}>
-              <h5 className="text-secondary font-link"> Create Account</h5>
+              <h5 className="text-secondary font-link fs-2vw">
+                {" "}
+                Create Account
+              </h5>
             </Col>
             <Col
               sm={6}
@@ -36,19 +38,13 @@ function CreateAccount() {
                 </span>
               </Row>
             </Col>
-
-            <Col className="d-flex justify-content-end align-items-end  ">
-              <Link to="/" className="font-link text-decoration-none fw-semibold">
-                Sign in
-              </Link>
-            </Col>
           </Row>
 
           <Row className="mt-4">
-            <Col>
-              {index == 1 ? (
+            <Col className="h-75">
+              {index === 1 ? (
                 <Formone />
-              ) : index == 2 ? (
+              ) : index === 2 ? (
                 <Formtwo />
               ) : (
                 <Formthree />
@@ -59,12 +55,19 @@ function CreateAccount() {
           <Row className="d-flex justify-content-end">
             {index > 1 ? (
               <Col sm={2} className="d-flex justify-content-end m-2 mt-0">
-                <Button className="btn btn-md btn-light font-link" onClick={() => setIndex(index - 1)}>Back</Button>
+                <Button
+                  className="btn btn-md btn-light font-link"
+                  onClick={() => setIndex(index - 1)}
+                >
+                  Back
+                </Button>
               </Col>
             ) : null}
 
-
-            <Col sm={1} className="d-flex m-2 mt-0 justify-content-end font-link">
+            <Col
+              sm={1}
+              className="d-flex m-2 mt-0 justify-content-end font-link"
+            >
               <Button onClick={() => setIndex(index + 1)}>Next</Button>
             </Col>
           </Row>

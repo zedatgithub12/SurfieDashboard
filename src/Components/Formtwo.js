@@ -1,4 +1,4 @@
-import React, { Component, useState} from 'react';
+import React, { useState} from 'react';
 import Form from 'react-bootstrap/Form';
 import InputGroup from "react-bootstrap/InputGroup";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -9,14 +9,14 @@ const Formtwo =()=>  {
         return (
             <div>
             <InputGroup className="mb-3 mt-5">
-            <InputGroup.Text className="d-flex text-white fw-bold bg-success font-link border-success align-self-center">@</InputGroup.Text>
-            <Form.Control className="me-2  font-link border-success" placeholder="Username" aria-label="Username" />
+            <InputGroup.Text className="d-flex text-secondary fw-bold bg-light font-link align-self-center">@</InputGroup.Text>
+            <Form.Control className="me-2  font-link " placeholder="Username" aria-label="Username" />
                  </InputGroup>
     
             <InputGroup className="mb-3 mt-3">
-            <InputGroup.Text className="d-flex text-white fw-bold bg-success font-link border-success align-self-center">***</InputGroup.Text>
-            <Form.Control type='password' className="me-2  font-link border-success" placeholder="Password" aria-label="Password" />
-              <Form.Control type='password' className="me-2  font-link border-success" placeholder="Confirm Password" aria-label="Confirm Password" />
+            <InputGroup.Text className="d-flex text-secondary fw-bold bg-light font-link  align-self-center justify-content-center">***</InputGroup.Text>
+            <Form.Control type='password' className="me-2  font-link " placeholder="Password" aria-label="Password" />
+              <Form.Control type='password' className="me-2  font-link " placeholder="Confirm Password" aria-label="Confirm Password" />
              
             </InputGroup>
 
@@ -27,7 +27,7 @@ const Formtwo =()=>  {
                       variant="light"
                       title="1 License"
                       id="dropdown-basic"
-                      className='text-success border m-0 me-5 fw-semibold font-link' 
+                      className='text-dark border m-0 me-5 fw-semibold font-link' 
                     >
                       {license} License
                     </Dropdown.Toggle>
@@ -56,7 +56,7 @@ const Formtwo =()=>  {
                       variant="light"
                       title="1 License"
                       id="dropdown-basic"
-                      className='bg-success text-white fw-semibold font-link' 
+                      className='bg-success bg-gradient border-0 text-white fw-medium font-link' 
                     >
                       {license} License
                     </Dropdown.Toggle>
