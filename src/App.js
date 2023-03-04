@@ -8,6 +8,7 @@ import Support from "./pages/Support";
 import Emaills from "./pages/Emaills";
 import CustomerDetail from "./pages/CustomerDetail";
 import CreateAccount from "./pages/CreateAccount";
+import ChangePassword from "./pages/ChangePassword";
 
 (function () {
  
@@ -41,7 +42,7 @@ function App() {
         <Route path="/emails" element={<Emaills />} />
         <Route path="/customerdetail" element={<CustomerDetail/>}/>
         <Route path="/createaccount" element={<CreateAccount/>}/>
-
+        <Route path="/changepassword" element={<ChangePassword/>} />
       </Routes>
     </Router>
   );
