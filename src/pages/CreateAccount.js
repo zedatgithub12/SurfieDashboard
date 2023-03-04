@@ -16,7 +16,7 @@ import {
 
 import Dropdown from "react-bootstrap/Dropdown";
 import Gateways from "../data/PaymentGateways";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { BsCheckCircle } from "react-icons/bs";
 
@@ -30,6 +30,8 @@ function CreateAccount() {
     checked: false,
     active: "",
   });
+
+  const navigate = useNavigate();
 
   const [input, setInput] = useState({
     firstname: "",
@@ -164,7 +166,7 @@ function CreateAccount() {
         ...input,
         errormessage: "Please select payment option!",
       });
-      
+
       return false;
     } else {
       setInput({
@@ -175,7 +177,6 @@ function CreateAccount() {
       alert("good to go!");
       return true;
     }
-   
   };
 
   if (created) {
@@ -235,11 +236,7 @@ function CreateAccount() {
             >
               <MDBCol>
                 <MDBCard className="my-4 ">
-                  <form
-                    class="needs-validation"
-                    novalidate
-                    
-                  >
+                  <form class="needs-validation" novalidate>
                     <MDBRow className="g-0">
                       <MDBCol sd="6">
                         <MDBCardBody className="text-black d-flex flex-column justify-content-center ">
@@ -392,7 +389,6 @@ function CreateAccount() {
                                 <Dropdown.Toggle
                                   variant="light"
                                   title="Licenses"
-                                  
                                   className="text-dark border m-0 me-5 fw-semibold font-link"
                                 >
                                   {license === "Select License"
@@ -400,7 +396,7 @@ function CreateAccount() {
                                     : license + " " + "License"}
                                 </Dropdown.Toggle>
 
-                                <Dropdown.Menu variant="light"   id="licenses">
+                                <Dropdown.Menu variant="light" id="licenses">
                                   <Dropdown.Item onClick={() => setLicense(0)}>
                                     Select Package
                                   </Dropdown.Item>
@@ -520,7 +516,11 @@ function CreateAccount() {
                           {input.errormessage}
                         </caption>
                       </div>
-                      <Button variant="light" size="md">
+                      <Button
+                        variant="light"
+                        size="md"
+                        onClick={() => navigate("/customers")}
+                      >
                         <Link
                           to="/customers"
                           variant="success"
@@ -531,11 +531,10 @@ function CreateAccount() {
                       </Button>
 
                       <Button
-                        
                         variant="warning"
                         size="md"
                         className="ms-3"
-                        onClick={()=>ValidateInput()}
+                        onClick={() => ValidateInput()}
                       >
                         Create Account
                       </Button>

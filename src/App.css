@@ -2,6 +2,14 @@
   font-family: "inter","Merriweather" sans-serif;
 }
 
+
+.primary-bg{
+  background-color: #10a698;
+}
+
+.primary-text{
+  color: #10a698;
+}
 .App {
   text-align: center;
 }

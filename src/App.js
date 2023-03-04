@@ -33,8 +33,7 @@ function App() {
   return (
     <Router>
       <Sidebar />
-      <Routes exact path="/customers">
-      
+      <Routes exact path="/">
         <Route path="/customers" element={<Customers />} />
         <Route path="/users" element={<Users />} />
         <Route path="/notifications" element={<Notifications />} />

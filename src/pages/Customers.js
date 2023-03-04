@@ -109,7 +109,7 @@ export const Customers = () => {
 
   return (
     <Container>
-      <Row className="mt-4 mb-3">
+      <Row className="mt-5 mb-3">
         <Col
           sm={2}
           className="card justify-content-md-center   shadow-sm border-0  pt-2 p-2 "
@@ -153,6 +153,7 @@ export const Customers = () => {
             <Col className="d-flex justify-content-end">
               <Link to="/createaccount" variant="primary" className="font-link text-decoration-none fw-semibold">Create Account</Link>
             </Col>
+            
           </Row>
           <Row className="bg-white p-2 rounded">
             <Row>
@@ -200,18 +201,19 @@ export const Customers = () => {
                 </Row>
                 <Row>
                   <Col className="bg-white">
-                    <Table hover responsive>
+                    <Table hover responsive striped >
                       <thead>
                         <tr>
                           <th>ID</th>
                           <th>Customer</th>
+                          <th>License</th>
                           <th>Subscription</th>
                           <th>Due Date</th>
                           <th className="text-end">Action</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {Users.map((item, index) => (
+                        {Users.filter((items)=>(items.status === activeTab)).map((item, index) => (
                           <CustomerTable
                             key={item.id}
                             id={item.id}
@@ -224,7 +226,7 @@ export const Customers = () => {
                             deactivate={() => OpenDialog(item, "deactivate")}
                             detach={() => OpenDialog(item, "detach")}
                             detail="/customerdetail?id=item.id"
-                            rowPressed={()=> navigate('/customerdetail')}
+                            rowPressed={()=> navigate('/customerdetail',{ state: {...item}} )}
                           />
                         ))}
                       </tbody>
