@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
-import { Link, useNavigate  } from 'react-router-dom'
+import { Link, useNavigate } from "react-router-dom";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
@@ -12,16 +12,26 @@ import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Dropdown from "react-bootstrap/Dropdown";
-
-
-
+import { AiOutlineSearch } from "react-icons/ai";
+import Connection from "../constants/Connections";
+import Empty from "../assets/Empty.png";
+import ReactPaginate from "react-paginate";
 
 export const Customers = () => {
+
+  const navigate = useNavigate();
+
   const [activeTab, setActiveTab] = useState("Active");
   const [loading, setLoading] = useState(true);
-  const [operate, setOperate] = useState(true);
+  const [show, setShow] = useState(false);
   const [confirm, setConfirm] = useState(false);
-  const navigate = useNavigate();
+  const [customers, setCustomers] = useState(Users);
+  const [search, setSearch] = useState();
+  const [license, setLicense] = useState(); //modal dropdown license listing states
+  const [notFound, setNotFound] = useState("There is not customer data here!");
+  const [pageCount, setPageCount] = useState(0);
+
+
 
 
   //modal dynamic attributes
@@ -85,25 +95,74 @@ export const Customers = () => {
     }
   };
 
-  //modal dropdown license listing states
-  const [license, setLicense] = useState();
-
   const Tabs = (name) => {
     setActiveTab(name);
   };
 
-  const [show, setShow] = useState(false);
+ 
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  // featch data from database
-
-  const Customer = (status) => {
-    var status = activeTab;
+  // onchange in the search input field
+  const SearchText = (event) => {
+    setSearch(event.target.value);
   };
 
+  const FindCustomer = () => {
+    var Api = Connection.url;
+    fetch(Api, {
+      status: activeTab,
+      Query: search,
+    })
+      .then(function (response) {
+        // the response will be interpreated here!
+
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  //fetch customer while use clicked the next button every time
+
+  const fetchCustomer = async (currentPage) => {
+    var Api = Connection.url;  // update this line of code to the something like 'http://localhost:3000/customers?_page=${currentPage}&_limit=${limit}
+    const res = await fetch(Api);
+    const data = await res.json();
+    // return data;
+    return customers;
+  };
+
+  //bottom paginatiing function
+  const handlePageClick = async (data) => {
+    let currentPage = data.selected + 1;
+    console.log(currentPage);
+
+    const customerFromServer = await fetchCustomer(currentPage);
+    // the line of code below will be uncommmented and the next will be cleaned
+    //setCustomers(customerFromServer);
+    setCustomers(customers);
+  };
+
+
+  let limit= 15;
+
   useEffect(() => {
+    const getCustomers = async () => {
+
+
+      var Api = Connection.url; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
+      const res = await fetch(Api);
+      const data = await res.json();
+      const total = res.headers.get('x-total-count');
+      setPageCount(Math.ceil(total/15));
+      console.log(total/12);
+      setCustomers(customers);
+    };
+    getCustomers();
+
     return () => {};
   }, [activeTab]);
 
@@ -128,7 +187,9 @@ export const Customers = () => {
         >
           <div>
             <h5 className="text-center font-link fw-bold">26</h5>
-            <p className="text-center font-link text-secondary">Monthly Subscribers</p>
+            <p className="text-center font-link text-secondary">
+              Monthly Subscribers
+            </p>
           </div>
         </Col>
         <Col
@@ -137,7 +198,9 @@ export const Customers = () => {
         >
           <div>
             <h5 className="text-center font-link fw-bold">12</h5>
-            <p className="text-center font-link text-secondary ">Annual Subcribers</p>
+            <p className="text-center font-link text-secondary ">
+              Annual Subcribers
+            </p>
           </div>
         </Col>
       </Row>
@@ -151,9 +214,14 @@ export const Customers = () => {
             </Col>
             <Col sm={7}></Col>
             <Col className="d-flex justify-content-end">
-              <Link to="/createaccount" variant="primary" className="font-link text-decoration-none fw-semibold">Create Account</Link>
+              <Link
+                to="/createaccount"
+                variant="primary"
+                className="font-link text-decoration-none fw-semibold"
+              >
+                Create Account
+              </Link>
             </Col>
-            
           </Row>
           <Row className="bg-white p-2 rounded">
             <Row>
@@ -162,11 +230,11 @@ export const Customers = () => {
                   {Status.map((item, index) => (
                     <li className="nav-item font-link" key={index}>
                       <Button
-                        variant="light"
+                        variant="success"
                         className={
                           activeTab === item.title
-                            ? "bg-success text-white font-link border-0"
-                            : "bg-white font-link text-secondary border-0"
+                            ? "primary-bg text-white font-link border-0 rounded mb-1 p-4 pb-0 pt-0"
+                            : "bg-white font-link text-secondary border-0  rounded-pill p-4 pb-0 pt-0"
                         }
                         aria-current="page"
                         onClick={() => Tabs(item.title)}
@@ -181,58 +249,107 @@ export const Customers = () => {
 
             {loading ? (
               <>
-                <Row className="justify-content-start">
-                  <Col sm={6}>
-                    <div className="input-group mb-3 mt-4 ">
+                <Row className="d-flex justify-content-start align-items-center">
+                  <Col sm={8} className="pt-2 pb-2">
+                    <div className="input-group mb-4 mt-4">
                       <input
                         type="text"
-                        className="form-control"
+                        className="form-control small ps-3 "
                         placeholder="Search..."
                         aria-label="Search"
                         aria-describedby="basic-addon2"
+                        defaultValue={search}
+                        onChange={SearchText}
                       />
                       <div className="input-group-append">
-                        <span className="input-group-text font-link" id="basic-addon2">
-                          Search
-                        </span>
+                        <Button
+                          onClick={() => FindCustomer()}
+                          variant="light"
+                          className=" border rounded-0 rounded-end bg-light text-center pb-2 "
+                        >
+                          <AiOutlineSearch size={20} color="#10a698" />
+                        </Button>
                       </div>
                     </div>
                   </Col>
                 </Row>
                 <Row>
                   <Col className="bg-white">
-                    <Table hover responsive striped >
-                      <thead>
-                        <tr>
-                          <th>ID</th>
-                          <th>Customer</th>
-                          <th>License</th>
-                          <th>Subscription</th>
-                          <th>Due Date</th>
-                          <th className="text-end">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {Users.filter((items)=>(items.status === activeTab)).map((item, index) => (
-                          <CustomerTable
-                            key={item.id}
-                            id={item.id}
-                            name={item.name}
-                            license={item.license}
-                            subscription={item.subscription}
-                            date={item.date}
-                            add={() => OpenDialog(item, "add")}
-                            remove={() => OpenDialog(item, "remove")}
-                            deactivate={() => OpenDialog(item, "deactivate")}
-                            detach={() => OpenDialog(item, "detach")}
-                            detail="/customerdetail?id=item.id"
-                            rowPressed={()=> navigate('/customerdetail',{ state: {...item}} )}
+                    {customers.length ? (
+                      <Table hover responsive striped className="align-middle">
+                        <thead>
+                          <tr>
+                            <th>ID</th>
+                            <th>Customer</th>
+                            <th>License</th>
+                            <th>Subscription</th>
+                            <th>Due Date</th>
+                            <th className="text-end">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {" "}
+                          {customers
+                            .filter((items) => items.status === activeTab)
+                            .map((item, index) => (
+                              <CustomerTable
+                                key={index}
+                                id={item.id}
+                                name={item.name}
+                                license={item.license}
+                                subscription={item.subscription}
+                                date={item.date}
+                                add={() => OpenDialog(item, "add")}
+                                remove={() => OpenDialog(item, "remove")}
+                                deactivate={() =>
+                                  OpenDialog(item, "deactivate")
+                                }
+                                detach={() => OpenDialog(item, "detach")}
+                                detail="/customerdetail?id=item.id"
+                                rowPressed={() =>
+                                  navigate("/customerdetail", {
+                                    state: { ...item },
+                                  })
+                                }
+                              />
+                            ))}{" "}
+                        </tbody>
+                      </Table>
+                    ) : (
+                      <div className="d-flex align-items-center justify-content-center m-auto m-4 p-4">
+                        <div className="d-flex align-items-center justify-content-center m-auto m-4 p-4">
+                          <img
+                            src={Empty}
+                            alt="No Customers"
+                            className="w-25 h-25 "
                           />
-                        ))}
-                      </tbody>
-                    </Table>
+                          <h5>{notFound}</h5>
+                        </div>
+                      </div>
+                    )}
+
                     {/* Bottom Pagination */}
-                    <nav aria-label="Page navigation example">
+
+                    <ReactPaginate
+                      previousLabel={"previous"}
+                      nextLabel={"next"}
+                      breakLabel={"..."}
+                      pageCount={pageCount}
+                      marginPagesDisplayed={3}
+                      pageRangeDisplayed={3}
+                      onPageChange={handlePageClick}
+                      containerClassName={"pagination justify-content-end"}
+                      pageClassName={"page-item"}
+                      pageLinkClassName={"page-link"}
+                      previousClassName={"page-item"}
+                      previousLinkClassName={"page-link"}
+                      nextClassName={"page-item"}
+                      nextLinkClassName={"page-link"}
+                      breakClassName={"page-item"}
+                      breakLinkClassName={"page-link"}
+                      activeClassName={"active"}
+                    />
+                    {/* <nav aria-label="Page navigation example">
                       <ul className="pagination">
                         <li className="page-item">
                           <a className="page-link" href="#">
@@ -260,7 +377,7 @@ export const Customers = () => {
                           </a>
                         </li>
                       </ul>
-                    </nav>
+                    </nav> */}
                   </Col>
                 </Row>
               </>

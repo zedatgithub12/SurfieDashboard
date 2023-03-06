@@ -21,7 +21,7 @@ function CustomerTable({
       <td onClick={rowPressed}>
         <Row className="fs-6 fw-semibold text-start">{name}</Row>
       </td>
-      <td onClick={rowPressed}>{license} Device License</td>
+      <td onClick={rowPressed} > {license} Device </td>
       <td onClick={rowPressed}>{subscription}</td>
 
       <td onClick={rowPressed}>{date}</td>

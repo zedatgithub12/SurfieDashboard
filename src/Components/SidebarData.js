@@ -9,37 +9,37 @@ export const SidebarData = [
   {
     title: "Customers",
     path: "/customers",
-    icon: <FiIcons.FiUsers/>,
+    icon: <FiIcons.FiUsers size={20}/>,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
      subNav: [
       {
         title: "Emails",
         path: "/emails",
-        icon: <HiOutlineMail/>,
+        icon: <HiOutlineMail size={18}/>,
         cName: "sub-nav",
       },
     ],
   },
-  {
-    title: "Manage Users",
-    path: "/users",
-    icon: <FiIcons.FiUser/>,
+  // {
+  //   title: "Manage Users",
+  //   path: "/users",
+  //   icon: <FiIcons.FiUser/>,
  
-    iconClosed: <RiIcons.RiArrowDownSFill />,
-    iconOpened: <RiIcons.RiArrowUpSFill />,
-  },
-  {
-    title: "Notifications",
-    path: "/notifications",
-    icon: <IoIcons.IoMdNotificationsOutline />,
-    iconClosed: <RiIcons.RiArrowDownSFill />,
-    iconOpened: <RiIcons.RiArrowUpSFill />,
+  //   iconClosed: <RiIcons.RiArrowDownSFill />,
+  //   iconOpened: <RiIcons.RiArrowUpSFill />,
+  // },
+  // {
+  //   title: "Notifications",
+  //   path: "/notifications",
+  //   icon: <IoIcons.IoMdNotificationsOutline />,
+  //   iconClosed: <RiIcons.RiArrowDownSFill />,
+  //   iconOpened: <RiIcons.RiArrowUpSFill />,
 
-  },
+  // },
   {
     title: "Supports",
     path: "/support",
-    icon: <BiIcons.BiSupport />,
+    icon: <BiIcons.BiSupport size={20} />,
   },
 ];

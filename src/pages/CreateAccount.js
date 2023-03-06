@@ -117,7 +117,7 @@ function CreateAccount() {
       ...input,
       confirmpassword: event.target.value,
     });
-    console.log(input.confirmpassword);
+   
   };
 
   const Select = (id) => {

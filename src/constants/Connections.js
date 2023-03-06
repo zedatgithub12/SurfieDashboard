@@ -1,5 +1,5 @@
 const Connection = {
-    url = "http://localhost:300",
+    url: "http://localhost:300",
 
 };
 

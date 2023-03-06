@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import * as BsIcons from "react-icons/bs";
 import { SidebarData } from "./SidebarData";
 import SubMenu from "./SubMenu";
 import { IconContext } from "react-icons/lib";
- import logo from '../assets/LogoMedium.png';
+import logo from "../assets/LogoMedium.png";
+import Dropdown from "react-bootstrap/Dropdown";
+import { FaUserCircle } from "react-icons/fa";
+import { Row } from "react-bootstrap";
+
+
 
 const Nav = styled.div`
   background: #10a698;
@@ -14,9 +19,8 @@ const Nav = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
- 
 `;
- 
+
 const NavIcon = styled(Link)`
   margin-left: 0.7rem;
   font-size: 2rem;
@@ -25,7 +29,7 @@ const NavIcon = styled(Link)`
   justify-content: flex-start;
   align-items: center;
 `;
- 
+
 const SidebarNav = styled.nav`
   background: #15171c;
   width: 200px;
@@ -39,32 +43,55 @@ const SidebarNav = styled.nav`
   transition: 350ms;
   z-index: 10;
 `;
- 
+
 const SidebarWrap = styled.div`
   width: 96%;
 `;
- 
+
 const Sidebar = () => {
   const [sidebar, setSidebar] = useState(true);
- 
+
   const showSidebar = () => setSidebar(!sidebar);
- 
+
+
+const navigate=useNavigate();
+
   return (
     <>
       <IconContext.Provider value={{ color: "#fff" }}>
         <Nav className="sticky-top">
           <NavIcon to="#">
             <BsIcons.BsList onClick={showSidebar} />
-            <img src ={logo} alt="logo" width="120" height="120"  />
+            <img src={logo} alt="logo" width="120" height="120" />
           </NavIcon>
-       
+
+          <div className="position-absolute end-0 me-4">
+            <Dropdown className="text-center">
+              <Dropdown.Toggle
+                variant="white"
+                title="Profile"
+                id="dropdown-basic"
+                className="border-0 primary-bg  text-white fw-medium font-link rounded-circle text-center"
+              >
+                <FaUserCircle size={26} color="#fff" />
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu variant="light">
+                <Row className="p-3 pt-0 pb-0">
+                  <span className="fw-semibold fs-5">Zerihun Tegenu</span>
+
+                  <span className="fw-light fs-6 m-0">Super Admin</span>
+                  <span>zerihuntegenu5@gmail.com</span>
+                </Row>
+                <hr />
+                <Dropdown.Item onClick={()=> navigate('/changepassword')} >Change Password </Dropdown.Item>
+                <Dropdown.Item className="text-primary">Sign Out</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
         </Nav>
         <SidebarNav sidebar={sidebar}>
           <SidebarWrap>
-            {/* <NavIcon to="#">
-               <BsIcons.BsList onClick={showSidebar} />
-              <img src ={logo} alt="logo" width="120" height="120"  />
-            </NavIcon> */}
             {SidebarData.map((item, index) => {
               return <SubMenu item={item} key={index} />;
             })}
@@ -74,5 +101,5 @@ const Sidebar = () => {
     </>
   );
 };
- 
+
 export default Sidebar;
