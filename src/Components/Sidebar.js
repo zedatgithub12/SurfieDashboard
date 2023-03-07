@@ -85,7 +85,7 @@ const navigate=useNavigate();
                 </Row>
                 <hr />
                 <Dropdown.Item onClick={()=> navigate('/changepassword')} >Change Password </Dropdown.Item>
-                <Dropdown.Item className="text-primary">Sign Out</Dropdown.Item>
+                <Dropdown.Item onClick={()=> navigate('/home')} className="text-primary">Sign Out</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </div>

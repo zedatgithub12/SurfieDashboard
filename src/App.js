@@ -9,6 +9,7 @@ import Emaills from "./pages/Emaills";
 import CustomerDetail from "./pages/CustomerDetail";
 import CreateAccount from "./pages/CreateAccount";
 import ChangePassword from "./pages/ChangePassword";
+import Signin from "./pages/Signin";
 
 (function () {
  
@@ -34,7 +35,8 @@ function App() {
   return (
     <Router>
       <Sidebar />
-      <Routes exact path="/">
+      <Routes exact path="/home">
+      <Route path="/home" element={<Signin />} />
         <Route path="/customers" element={<Customers />} />
         <Route path="/users" element={<Users />} />
         <Route path="/notifications" element={<Notifications />} />
