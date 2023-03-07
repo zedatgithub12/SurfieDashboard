@@ -1,3 +1,5 @@
+import React, {useState} from 'react';
+
 import "./App.css";
 import Sidebar from "./components/Sidebar";
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
@@ -11,32 +13,36 @@ import CreateAccount from "./pages/CreateAccount";
 import ChangePassword from "./pages/ChangePassword";
 import Signin from "./pages/Signin";
 
-(function () {
+// (function () {
  
 
-  // Fetch all the forms we want to apply custom Bootstrap validation styles to
-  var forms = document.querySelectorAll('.needs-validation')
+//   // Fetch all the forms we want to apply custom Bootstrap validation styles to
+//   var forms = document.querySelectorAll('.needs-validation')
 
-  // Loop over them and prevent submission
-  Array.prototype.slice.call(forms)
-    .forEach(function (form) {
-      form.addEventListener('submit', function (event) {
-        if (!form.checkValidity()) {
-          event.preventDefault()
-          event.stopPropagation()
-        }
+//   // Loop over them and prevent submission
+//   Array.prototype.slice.call(forms)
+//     .forEach(function (form) {
+//       form.addEventListener('submit', function (event) {
+//         if (!form.checkValidity()) {
+//           event.preventDefault()
+//           event.stopPropagation()
+//         }
 
-        form.classList.add('was-validated')
-      }, false)
-    })
-})()
+//         form.classList.add('was-validated')
+//       }, false)
+//     })
+// })()
 
 function App() {
+
+  const [signed, setSigned] = useState(false);
   return (
     <Router>
-      <Sidebar />
-      <Routes exact path="/home">
-      <Route path="/home" element={<Signin />} />
+      {signed ? (<Sidebar />):<Signin/>}
+      
+
+      <Routes exact path="/">
+      <Route path="/login" element={<Signin />} />
         <Route path="/customers" element={<Customers />} />
         <Route path="/users" element={<Users />} />
         <Route path="/notifications" element={<Notifications />} />
