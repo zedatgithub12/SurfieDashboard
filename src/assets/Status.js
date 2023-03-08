@@ -1,18 +1,19 @@
 const Status = [
     {
-        id: "01",
+        id: "1",
+
         title: "Active",
     },
     {
-        id: "02",
+        id: "2",
         title: "Pending",
     },
     {
-        id: "03",
+        id: "3",
         title: "Expired",
     },
     {
-        id: "04",
+        id: "4",
         title: "Terminated",
     },
 ];

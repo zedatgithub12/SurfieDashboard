@@ -19,6 +19,7 @@ import Gateways from "../data/PaymentGateways";
 import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { BsCheckCircle } from "react-icons/bs";
+import Connection from "../constants/Connections";
 
 function CreateAccount() {
   const [created, setCreated] = useState(false);
@@ -117,7 +118,6 @@ function CreateAccount() {
       ...input,
       confirmpassword: event.target.value,
     });
-   
   };
 
   const Select = (id) => {
@@ -169,14 +169,49 @@ function CreateAccount() {
 
       return false;
     } else {
-      setInput({
-        ...input,
-        errormessage: "good to go",
-      });
-
-      alert("good to go!");
-      return true;
+      var Api = Connection.api + Connection.customers; // update this line of code to the something like 'http://localhost:3000/customers?_page=${currentPage}&_limit=${limit}
+      var headers = {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      };
+      const data = {
+        firstname: input.firstname,
+        middlename: input.middlename,
+        lastname: input.lastname,
+        emailaddress: input.emailaddress,
+        phone: input.phone,
+        address: input.address,
+        username: input.username,
+        password: input.password,
+        subscription: Period,
+        license: license,
+        payment: selected.active,
+        status: 1,
+      };
+      console.log(data);
+      fetch(Api, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(data),
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          if (response.Status === "200") {
+            setInput({
+              ...input,
+              errormessage: "Successfully Created!",
+            });
+            console.log("reposnse" + response);
+          } else {
+            setInput({
+              ...input,
+              errormessage: "We have issue creating account",
+            });
+            console.log("else" + response);
+          }
+        });
     }
+    return true;
   };
 
   if (created) {
@@ -229,14 +264,14 @@ function CreateAccount() {
           sm={10}
           className="bg-white m-auto p-4 pb-0 mt-4 mb-3 rounded shadow-sm"
         >
-          <MDBContainer fluid className="bg-white">
+          <MDBContainer className="bg-white">
             <MDBRow
               sm={10}
               className="d-flex justify-content-center align-items-center h-100 "
             >
               <MDBCol>
                 <MDBCard className="my-4 ">
-                  <form class="needs-validation" novalidate>
+                  <form className="needs-validation">
                     <MDBRow className="g-0">
                       <MDBCol sd="6">
                         <MDBCardBody className="text-black d-flex flex-column justify-content-center ">
@@ -456,7 +491,7 @@ function CreateAccount() {
                         <MDBRow className="mt-5 pt-5">
                           <MDBCardImage
                             src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp"
-                            fluid
+                            className="img-fluid"
                           />
                         </MDBRow>
 
@@ -531,6 +566,7 @@ function CreateAccount() {
                       </Button>
 
                       <Button
+                        type="button"
                         variant="warning"
                         size="md"
                         className="ms-3"

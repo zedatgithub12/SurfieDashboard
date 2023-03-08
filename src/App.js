@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, { useEffect, useState } from "react";
 
 import "./App.css";
 import Sidebar from "./components/Sidebar";
-import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Customers } from "./pages/Customers";
 import { Notifications } from "./pages/Notifications";
 import { Users } from "./pages/Users";
@@ -14,7 +14,6 @@ import ChangePassword from "./pages/ChangePassword";
 import Signin from "./pages/Signin";
 
 // (function () {
- 
 
 //   // Fetch all the forms we want to apply custom Bootstrap validation styles to
 //   var forms = document.querySelectorAll('.needs-validation')
@@ -34,24 +33,35 @@ import Signin from "./pages/Signin";
 // })()
 
 function App() {
+  
+  const getToken = sessionStorage.getItem("token");
+  //  if(!getToken){
+  //    return <Signin />
+  //  }
+useEffect(()=>{
 
-  const [signed, setSigned] = useState(false);
+},[getToken])
+
   return (
     <Router>
-      {signed ? (<Sidebar />):<Signin/>}
-      
-
+      {getToken ? 
+      <div>
+        <Sidebar />
       <Routes exact path="/">
-      <Route path="/login" element={<Signin />} />
+        {/* <Sidebar /> */}
+
+        <Route path="/home" element={<Sidebar />} />
         <Route path="/customers" element={<Customers />} />
         <Route path="/users" element={<Users />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/support" element={<Support />} />
         <Route path="/emails" element={<Emaills />} />
-        <Route path="/customerdetail" element={<CustomerDetail/>}/>
-        <Route path="/createaccount" element={<CreateAccount/>}/>
-        <Route path="/changepassword" element={<ChangePassword/>} />
+        <Route path="/customerdetail" element={<CustomerDetail />} />
+        <Route path="/createaccount" element={<CreateAccount />} />
+        <Route path="/changepassword" element={<ChangePassword />} />
       </Routes>
+      </div>
+      : <Signin />}
     </Router>
   );
 }

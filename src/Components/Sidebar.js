@@ -10,6 +10,8 @@ import logo from "../assets/LogoMedium.png";
 import Dropdown from "react-bootstrap/Dropdown";
 import { FaUserCircle } from "react-icons/fa";
 import { Row } from "react-bootstrap";
+import AuthUser from "./AuthUser";
+import Signin from "../pages/Signin";
 
 
 
@@ -49,15 +51,20 @@ const SidebarWrap = styled.div`
 `;
 
 const Sidebar = () => {
+  const {token,logout, user} = AuthUser();
   const [sidebar, setSidebar] = useState(true);
-
   const showSidebar = () => setSidebar(!sidebar);
+  const navigate=useNavigate();
 
-
-const navigate=useNavigate();
-
+ const Logout =()=>{
+  if(token != undefined){
+    logout();
+  }
+  }
+ 
   return (
     <>
+
       <IconContext.Provider value={{ color: "#fff" }}>
         <Nav className="sticky-top">
           <NavIcon to="#">
@@ -78,14 +85,14 @@ const navigate=useNavigate();
 
               <Dropdown.Menu variant="light">
                 <Row className="p-3 pt-0 pb-0">
-                  <span className="fw-semibold fs-5">Zerihun Tegenu</span>
+                  <span className="fw-semibold fs-5">{user.name}</span>
 
                   <span className="fw-light fs-6 m-0">Super Admin</span>
-                  <span>zerihuntegenu5@gmail.com</span>
+                  <span>{user.email}</span>
                 </Row>
                 <hr />
                 <Dropdown.Item onClick={()=> navigate('/changepassword')} >Change Password </Dropdown.Item>
-                <Dropdown.Item onClick={()=> navigate('/home')} className="text-primary">Sign Out</Dropdown.Item>
+                <Dropdown.Item onClick={()=> Logout()} className="text-primary">Sign Out</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </div>

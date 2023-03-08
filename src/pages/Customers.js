@@ -18,21 +18,17 @@ import Empty from "../assets/Empty.png";
 import ReactPaginate from "react-paginate";
 
 export const Customers = () => {
-
   const navigate = useNavigate();
 
-  const [activeTab, setActiveTab] = useState("Active");
+  const [activeTab, setActiveTab] = useState("1");
   const [loading, setLoading] = useState(true);
   const [show, setShow] = useState(false);
   const [confirm, setConfirm] = useState(false);
-  const [customers, setCustomers] = useState(Users);
+  const [customers, setCustomers] = useState([]);
   const [search, setSearch] = useState();
   const [license, setLicense] = useState(); //modal dropdown license listing states
   const [notFound, setNotFound] = useState("There is not customer data here!");
   const [pageCount, setPageCount] = useState(0);
-
-
-
 
   //modal dynamic attributes
   const [initialValue, setInitialValue] = useState({
@@ -99,8 +95,6 @@ export const Customers = () => {
     setActiveTab(name);
   };
 
- 
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -128,41 +122,84 @@ export const Customers = () => {
   //fetch customer while use clicked the next button every time
 
   const fetchCustomer = async (currentPage) => {
-    var Api = Connection.url;  // update this line of code to the something like 'http://localhost:3000/customers?_page=${currentPage}&_limit=${limit}
-    const res = await fetch(Api);
-    const data = await res.json();
-    // return data;
-    return customers;
+    var data;
+    var Api = Connection.api + Connection.customers; // update this line of code to the something like 'http://localhost:3000/customers?_page=${currentPage}&_limit=${limit}
+     var headers = {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      };
+
+      fetch(Api, {
+        method: "GET",
+        headers: headers,
+      })
+        .then((response) => response.json())
+        .then((response) => {
+        data = response.Customers;
+          if (response.status == 200) {
+            setCustomers(response[0]);
+
+            console.log("reposnse" + response);
+          } else {
+            setCustomers(response);
+            console.log("else" + response[0].email);
+            console.log(customers);
+          }
+        });
+  
   };
 
+
+  // const getCustomers = async () => {
+  //   var Api = Connection.api + Connection.customers; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
+  //   var headers = {
+  //     accept: "application/json",
+  //     "Content-Type": "application/json",
+  //   };
+
+  //   fetch(Api, {
+  //     method: "GET",
+  //     headers: headers,
+  //   })
+  //     .then((response) => response.json())
+  //     .then((response) => {
+
+  //       var data = response.data;
+  //       if (response.status === "200") {
+  //         setCustomers(response.data);
+
+  //         console.log("reposnse" + response);
+  //       } else {
+  //         console.log("else" + data);
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       console.log(e);
+  //     });
+  // };
+  // getCustomers();
   //bottom paginatiing function
+  
+  
+  
   const handlePageClick = async (data) => {
     let currentPage = data.selected + 1;
     console.log(currentPage);
 
     const customerFromServer = await fetchCustomer(currentPage);
     // the line of code below will be uncommmented and the next will be cleaned
-    //setCustomers(customerFromServer);
-    setCustomers(customers);
+    setCustomers(customerFromServer);
+    // setCustomers(customers);
   };
 
-
-  let limit= 15;
+  let limit = 15;
 
   useEffect(() => {
-    const getCustomers = async () => {
+    fetchCustomer();
 
 
-      var Api = Connection.url; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
-      const res = await fetch(Api);
-      const data = await res.json();
-      const total = res.headers.get('x-total-count');
-      setPageCount(Math.ceil(total/15));
-      console.log(total/12);
-      setCustomers(customers);
-    };
-    getCustomers();
-
+    console.log(customers);
+    console.log(activeTab);
     return () => {};
   }, [activeTab]);
 
@@ -232,12 +269,12 @@ export const Customers = () => {
                       <Button
                         variant="success"
                         className={
-                          activeTab === item.title
+                          activeTab === item.id
                             ? "primary-bg text-white font-link border-0 rounded mb-1 p-4 pb-0 pt-0"
                             : "bg-white font-link text-secondary border-0  rounded-pill p-4 pb-0 pt-0"
                         }
                         aria-current="page"
-                        onClick={() => Tabs(item.title)}
+                        onClick={() => Tabs(item.id)}
                       >
                         {item.title}
                       </Button>
@@ -288,7 +325,7 @@ export const Customers = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {" "}
+                         
                           {customers
                             .filter((items) => items.status === activeTab)
                             .map((item, index) => (
@@ -312,7 +349,7 @@ export const Customers = () => {
                                   })
                                 }
                               />
-                            ))}{" "}
+                            ))}
                         </tbody>
                       </Table>
                     ) : (

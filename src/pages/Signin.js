@@ -3,7 +3,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import AuthUser from "../components/AuthUser";
 
 const Signin = () => {
-  const { http } = AuthUser(); // the axios methos imported from AuthUser Function inside the component folder
+  const { setToken } = AuthUser(); // the axios methos imported from AuthUser Function inside the component folder
   const [credentials, setCredentials] = useState({
     email: "",
     emailvalid: "",
@@ -37,13 +37,14 @@ const Signin = () => {
     });
   };
 
-  const Validate = () => {
-    // http.post('/login',
-    // {email: credentials.email,
+  const Validate = (e) => {
+    e.preventDefault();
+    // http.post('/login',{email: credentials.email,
     //   password: credentials.password,
     // }).then((res)=>{
     //   console.log(res.data);
-    // }) .catch(function (error) {
+    //   setToken(res.data.user, res.data.access_token);
+    // }).catch(function (error) {
     //   console.log(error);
     // });
 
@@ -65,16 +66,19 @@ const Signin = () => {
       .then((response) => response.json())
       .then((response) => {
         if (response.status === "200") {
+          setToken(response.user, response.access_token);
+
           console.log("reposnse" + response.status);
         } else {
-          console.log(response.status);
+          console.log("else" + response.user.name);
+          setToken(response.user, response.access_token);
         }
       })
       .catch((e) => {
         console.log(e);
       });
 
-    console.log(credentials.email + " " + " " + credentials.password);
+    console.log(credentials.email + credentials.password);
   };
 
   return (
