@@ -1,6 +1,6 @@
+import React, { useState } from "react";
 import Row from "react-bootstrap/Row";
 import Dropdown from "react-bootstrap/Dropdown";
-
 
 function CustomerTable({
   id,
@@ -15,14 +15,26 @@ function CustomerTable({
   deactivate,
   detach,
 }) {
+  const [period, setPeriod] = useState("monthly");
   return (
     <tr className=" align-items-center pt-2">
       <td onClick={rowPressed}>{id}</td>
       <td onClick={rowPressed}>
-        <Row className="fs-6 fw-semibold text-start">{name}</Row>
+        <Row className="fs-6 fw-semibold text-start text-capitalize">
+          {name}
+        </Row>
       </td>
-      <td onClick={rowPressed} > {license} Device </td>
-      <td onClick={rowPressed}>{subscription}</td>
+      <td onClick={rowPressed}> {license} Device </td>
+
+      {subscription === "1" ? (
+        <td onClick={rowPressed} className="text-primary">
+         Monthly
+        </td>
+      ) : (
+        <td onClick={rowPressed} className="text-success">
+         Annual
+        </td>
+      )}
 
       <td onClick={rowPressed}>{date}</td>
       <td className="text-end">

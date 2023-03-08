@@ -327,15 +327,15 @@ export const Customers = () => {
                         <tbody>
                          
                           {customers
-                            .filter((items) => items.status === activeTab)
+                            .filter((items) => items.status == activeTab)
                             .map((item, index) => (
                               <CustomerTable
                                 key={index}
                                 id={item.id}
-                                name={item.name}
+                                name={item.first_name + " " +item.middle_name}
                                 license={item.license}
                                 subscription={item.subscription}
-                                date={item.date}
+                                date={item.updated_at}
                                 add={() => OpenDialog(item, "add")}
                                 remove={() => OpenDialog(item, "remove")}
                                 deactivate={() =>

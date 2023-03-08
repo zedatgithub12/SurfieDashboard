@@ -160,7 +160,7 @@ const CustomerDetail = () => {
                 </Col>
 
                 <Col className="alighn-items-start">
-                  <span className="text-dark fw-semibold">{state.address}</span>
+                  <span className="text-dark fw-semibold">{state.living_address}</span>
                 </Col>
               </Row>
 
@@ -173,9 +173,15 @@ const CustomerDetail = () => {
                 </Col>
 
                 <Col className="alighn-items-start">
-                  <span className="text-dark fw-semibold">
-                    {state.subscription}
-                  </span>
+                  {state.subscription === "1" ? (
+          <span className="text-dark fw-semibold">
+          Monthly
+        </span>
+      ) : (
+        <span className="text-dark fw-semibold">
+        Annual
+      </span>
+      )}
                 </Col>
               </Row>
 
