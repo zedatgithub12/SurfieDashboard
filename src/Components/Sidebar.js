@@ -16,7 +16,7 @@ import Signin from "../pages/Signin";
 
 
 const Nav = styled.div`
-  background: #10a698;
+  background: #00c6d4;
   height: 70px;
   display: flex;
   justify-content: flex-start;

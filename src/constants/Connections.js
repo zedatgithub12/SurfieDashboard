@@ -4,7 +4,7 @@ const Connection = {
     remote: "https://pstest.puresight.com",
     login: "/login",
     customers: "/customers",
-    search: "/search",
+    search: "/search/",
 };
 
 export default Connection;

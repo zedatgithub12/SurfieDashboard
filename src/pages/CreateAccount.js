@@ -261,14 +261,14 @@ function CreateAccount() {
                 errormessage: "Successfully Created!",
               });
               setCreated(true);
-              console.log("reposnse" + response);
+              
             } else {
               setInput({
                 ...input,
                 errormessage: "We have issue creating account",
               });
               setCreated(false);
-              console.log("else" + response);
+              
             }
           });
       }

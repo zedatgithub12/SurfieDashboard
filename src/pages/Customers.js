@@ -105,30 +105,27 @@ export const Customers = () => {
   };
 
   const FindCustomer = () => {
-    var Api = Connection.api + Connection.search;
+    var Api = Connection.api + Connection.search+ search;
     var headers = {
       accept: "application/json",
       "Content-Type": "application/json",
   
     };
 
-    var data = {
-      status: activeTab,
-      Query: search,
-    };
+    // var data = {
+    //   status: activeTab,
+    //   Query: search,
+    // };
 
     fetch(Api, {
-      method: "POST",
+      method: "GET",
       headers: headers,
-      body: JSON.stringify(data),
+   
     }).then((response) => response.json())
     .then((response)=>{
-
-      if(response.status==="succeed"){
-
-      }else{
-
-      }
+   
+  setCustomers(response);
+    
 
       
     }).catch((e)=>{
