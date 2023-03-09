@@ -20,6 +20,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { BsCheckCircle } from "react-icons/bs";
 import Connection from "../constants/Connections";
+import Sidebar from "../components/Sidebar";
 
 function CreateAccount() {
   const [created, setCreated] = useState(false);
@@ -258,6 +259,8 @@ function CreateAccount() {
   }
 
   return (
+    <>
+    <Sidebar/> 
     <Container>
       <Row>
         <Col
@@ -583,6 +586,7 @@ function CreateAccount() {
         </Col>
       </Row>
     </Container>
+    </>
   );
 }
 

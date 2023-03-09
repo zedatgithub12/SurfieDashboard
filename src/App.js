@@ -33,35 +33,35 @@ import Signin from "./pages/Signin";
 // })()
 
 function App() {
-  
   const getToken = sessionStorage.getItem("token");
-  //  if(!getToken){
-  //    return <Signin />
-  //  }
-useEffect(()=>{
 
-},[getToken])
+  useEffect(() => {
+    if (!getToken) {
+      return <Signin />;
+    }
+  }, [getToken]);
 
   return (
     <Router>
-      {getToken ? 
-      <div>
-        <Sidebar />
-      <Routes exact path="/">
-        {/* <Sidebar /> */}
-
-        <Route path="/home" element={<Sidebar />} />
-        <Route path="/customers" element={<Customers />} />
-        <Route path="/users" element={<Users />} />
-        <Route path="/notifications" element={<Notifications />} />
-        <Route path="/support" element={<Support />} />
-        <Route path="/emails" element={<Emaills />} />
-        <Route path="/customerdetail" element={<CustomerDetail />} />
-        <Route path="/createaccount" element={<CreateAccount />} />
-        <Route path="/changepassword" element={<ChangePassword />} />
-      </Routes>
-      </div>
-      : <Signin />}
+      {getToken ? (
+        <div>
+        
+          <Routes exact path="/">
+            <Route path="/" element={<Customers />} />
+            <Route path="/login" element={<Signin />} />
+            <Route path="/customers" element={<Customers />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/support" element={<Support />} />
+            <Route path="/emails" element={<Emaills />} />
+            <Route path="/customerdetail" element={<CustomerDetail />} />
+            <Route path="/createaccount" element={<CreateAccount />} />
+            <Route path="/changepassword" element={<ChangePassword />} />
+          </Routes>
+        </div>
+      ) : (
+        <Signin />
+      )}
     </Router>
   );
 }

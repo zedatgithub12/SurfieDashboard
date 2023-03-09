@@ -16,6 +16,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import Connection from "../constants/Connections";
 import Empty from "../assets/Empty.png";
 import ReactPaginate from "react-paginate";
+import Sidebar from "../components/Sidebar";
 
 export const Customers = () => {
   const navigate = useNavigate();
@@ -204,6 +205,8 @@ export const Customers = () => {
   }, [activeTab]);
 
   return (
+    <>
+    <Sidebar/> 
     <Container>
       <Row className="mt-5 mb-3">
         <Col
@@ -513,5 +516,6 @@ export const Customers = () => {
         </Modal.Footer>
       </Modal>
     </Container>
+    </>
   );
 };

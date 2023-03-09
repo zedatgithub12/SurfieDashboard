@@ -16,6 +16,12 @@ function CustomerTable({
   detach,
 }) {
   const [period, setPeriod] = useState("monthly");
+  const DateSlice=(date)=>{
+    var year = date.slice(0,4);
+    var month = date.slice(6,7);
+    var day = date.slice(9,10);
+    return day +"/"+ month +"/"+ year;
+    }
   return (
     <tr className=" align-items-center pt-2">
       <td onClick={rowPressed}>{id}</td>
@@ -36,7 +42,7 @@ function CustomerTable({
         </td>
       )}
 
-      <td onClick={rowPressed}>{date}</td>
+      <td onClick={rowPressed}>{DateSlice(date)}</td>
       <td className="text-end">
         <Dropdown>
           <Dropdown.Toggle

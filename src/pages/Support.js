@@ -3,6 +3,7 @@ import { Button, Col, Container, Row } from "react-bootstrap";
 import Data from "../data/support";
 
 import text from "../assets/text.png";
+import Sidebar from "../components/Sidebar";
 
 const Support = () => {
   const [modalContent, setModalContent] = React.useState({
@@ -17,6 +18,9 @@ const Support = () => {
     });
   };
   return (
+    <>
+    <Sidebar/>
+  
     <Container>
       <Row className="p-4 pb-0 ps-3">
         <h4 className="fw-semibold">Customer Support</h4>
@@ -130,6 +134,7 @@ const Support = () => {
         </Col>
       </Row>
     </Container>
+    </>
   );
 };
 

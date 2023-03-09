@@ -5,6 +5,7 @@ import Col from "react-bootstrap/Col";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { Button } from "react-bootstrap";
+import Sidebar from "../components/Sidebar";
 
 const ChangePassword = () => {
   const navigate = useNavigate();
@@ -120,7 +121,10 @@ const ChangePassword = () => {
 
   const [showpass, setShowPass] = useState(false);
   return (
+    <>
+     <Sidebar />
     <Container className="m-auto mt-4 ">
+      
       <Row className="m-auto ">
         <Col
           sm={5}
@@ -240,6 +244,7 @@ const ChangePassword = () => {
         </Col>
       </Row>
     </Container>
+    </>
   );
 };
 

@@ -12,6 +12,7 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import "draft-js/dist/Draft.css";
 import { useNavigate } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
 
 const Emaills = () => {
 const navigate=useNavigate();
@@ -20,6 +21,9 @@ const goBack = () => {
 }
 
   return (
+    <>
+    <Sidebar/>
+    
     <Container className="m-auto mt-4 m-lg  rounded bg-light">
       <Row className="m-4 mb-0 p-4 pb-0 bg-wa">
         <Col sm={3} className="justify-content-end">
@@ -146,6 +150,7 @@ const goBack = () => {
         </Col>
       </Row>
     </Container>
+    </>
   );
 };
 

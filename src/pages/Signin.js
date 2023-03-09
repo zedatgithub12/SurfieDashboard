@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row, Spinner } from "react-bootstrap";
 import AuthUser from "../components/AuthUser";
+import Logo from "../assets/logo.png";
+import Connection from "../constants/Connections";
 
 const Signin = () => {
   const { setToken } = AuthUser(); // the axios methos imported from AuthUser Function inside the component folder
@@ -21,7 +23,15 @@ const Signin = () => {
     showresponse: false,
   });
 
-  const [remember, setRemember] = useState(false);
+  const [loading, setLoading] = useState(false);
+  //server reponse states
+  const [serverresponse, setServerResponse] = useState({
+    visible: false,
+    errorMsg: false,
+    successMsg: false,
+    message: "",
+  });
+  const [remember, setRemember] = useState(false); //user session managing state
 
   const EmailAddress = (event) => {
     setCredentials({
@@ -39,16 +49,8 @@ const Signin = () => {
 
   const Validate = (e) => {
     e.preventDefault();
-    // http.post('/login',{email: credentials.email,
-    //   password: credentials.password,
-    // }).then((res)=>{
-    //   console.log(res.data);
-    //   setToken(res.data.user, res.data.access_token);
-    // }).catch(function (error) {
-    //   console.log(error);
-    // });
-
-    var Api = "http://127.0.0.1:8000/api/login";
+    setLoading(true);
+    var Api = Connection.api + Connection.login;
     var headers = {
       accept: "application/json",
       "Content-Type": "application/json",
@@ -65,27 +67,65 @@ const Signin = () => {
     })
       .then((response) => response.json())
       .then((response) => {
-        if (response.status === "200") {
+        if (response.status === "succeed") {
           setToken(response.user, response.access_token);
-
-          console.log("reposnse" + response.status);
-        } else {
-          console.log("else" + response.user.name);
-          setToken(response.user, response.access_token);
+          setServerResponse({
+            ...serverresponse,
+            visible: true,
+            successMsg: true,
+            errorMsg: false,
+            message: "Successfully signed in!",
+          });
+          setLoading(false);
+        } else if (response.error === "Unauthorized") {
+          // setToken(response.user, response.access_token);
+          setServerResponse({
+            ...serverresponse,
+            visible: true,
+            successMsg: false,
+            errorMsg: true,
+            message: "Incorrect username or password!",
+          });
+          setLoading(false);
         }
       })
       .catch((e) => {
-        console.log(e);
+        setServerResponse({
+          ...serverresponse,
+          visible: true,
+          successMsg: false,
+          errorMsg: true,
+          message: "Error signing, retry later!",
+        });
+        setLoading(false);
       });
-
-    console.log(credentials.email + credentials.password);
   };
 
   return (
-    <Container className="m-4">
-      <Row className="justify-content-center pt-5">
-        <Col sm={4} className="m-auto bg-white shadow-sm p-4 mt-4 rounded">
+    <Container className="m-auto p-5 mt-4 ">
+      <Row className="m-auto justify-content-center align-items-center">
+        <Col sm={4} className="bg-white shadow-sm p-4 mt-4 rounded">
+          <div className="d-flex justify-content-center align-items-center p-4 pt-0">
+            <img src={Logo} className="img-fluid w-50 h-50" alt="logo" />
+          </div>
+          {serverresponse.visible ? (
+            <div>
+              {serverresponse.successMsg ? (
+                <p className="fs-6 fw-normal text-success text-center  p-2 pb-2 pt-2 rounded bg-success bg-opacity-10">
+                  {serverresponse.message}
+                </p>
+              ) : serverresponse.errorMsg ? (
+                <p className="fs-6 fw-normal text-danger text-center  p-2 pb-1 pt-1 rounded bg-danger bg-opacity-10">
+                  {serverresponse.message}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
+
           <div className="form-outline mb-4">
+            <label className="form-label" for="form1Example1">
+              Email address
+            </label>
             <input
               type="email"
               id="form1Example1"
@@ -93,12 +133,12 @@ const Signin = () => {
               defaultValue={credentials.email}
               onChange={EmailAddress}
             />
-            {/* <label className="form-label" for="form1Example1">
-                Email address
-              </label> */}
           </div>
 
           <div className="form-outline mb-4">
+            <label className="form-label" for="form1Example2">
+              Password
+            </label>
             <input
               type="password"
               id="form1Example2"
@@ -106,13 +146,27 @@ const Signin = () => {
               defaultValue={credentials.password}
               onChange={Password}
             />
-            {/* <label className="form-label" for="form1Example2">
-                Password
-              </label> */}
           </div>
+          {loading ? (
+            <div className="d-flex justify-content-center align-items-center">
+            <div className="spinner-grow spinner-grow-sm primary-bg " role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+            </div>
+          ) : (
+            <button
+              type="submit"
+              variant="primary"
+              onClick={Validate}
+              className="btn btn-md btn-light primary-bg w-100 fw-semibold"
+            >
+           
+              Sign in
+            </button>
+          )}
 
-          <div className="row mb-4">
-            <div className="col d-flex justify-content-center">
+          <div className="row mt-3">
+            {/* <div className="col d-flex justify-content-center">
               <div className="form-check">
                 <input
                   className="form-check-input"
@@ -122,25 +176,16 @@ const Signin = () => {
                   checked={remember}
                   onChange={() => setRemember(!remember)}
                 />
-                {/* <label className="form-check-label" for="form1Example3">
-                    {" "}
-                    Remember me{" "}
-                  </label> */}
+                <label className="form-check-label" for="form1Example3">
+                  Remember me
+                </label>
               </div>
-            </div>
+            </div> */}
 
             <div className="col">
               <a href="#!">Forgot password?</a>
             </div>
           </div>
-
-          <button
-            type="button"
-            onClick={Validate}
-            className="btn btn-primary btn-block"
-          >
-            Sign in
-          </button>
         </Col>
       </Row>
     </Container>
