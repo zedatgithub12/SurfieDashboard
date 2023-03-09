@@ -1,7 +1,21 @@
 const Theme = {
+    background: "bg-success",
+    
 
-    background: "bg-success"
+
+    
 
 };
 
-export default Theme;
+
+const Credentials = {
+    user: "PSTEST-7620f683",
+    password: "pste5682bb"
+
+
+    
+
+};
+
+
+export default (Theme, Credentials);

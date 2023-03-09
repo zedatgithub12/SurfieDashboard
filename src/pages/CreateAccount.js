@@ -21,6 +21,11 @@ import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { BsCheckCircle } from "react-icons/bs";
 import Connection from "../constants/Connections";
 import Sidebar from "../components/Sidebar";
+import Constants from "../constants/Constants";
+
+
+
+
 
 function CreateAccount() {
   const [created, setCreated] = useState(false);
@@ -128,9 +133,33 @@ function CreateAccount() {
     });
   };
 
-  //validate user input when user pressed submit button
 
+  // the phone number to be sent to puresight 
+  //which a character at the start of phone number shouldn't contain any special character
+
+  const MakeitPhone = (phone)=>{
+    
+    var FirstChar = phone.charAt(0);
+    var Phoneno = phone;
+    var ccode = "251";
+
+  if(FirstChar === "+"){
+    Phoneno = phone.slice(1, phone.length-1)
+  }
+  else if(FirstChar == 0){
+    Phoneno = parseInt(ccode)+phone.slice(1, phone.length-1)
+  }
+
+  return Phoneno;
+  }
+
+  //validate user input when user pressed submit button
   const ValidateInput = () => {
+
+    var packages = `AFROMINA_${license}`; //packages id to be sent to puresight
+    // console.log(MakeitPhone(input.phone))
+
+
     if (
       input.firstname === "" ||
       input.middlename === "" ||
@@ -151,7 +180,7 @@ function CreateAccount() {
         ...input,
         errormessage: "Password you entered doesn't match",
       });
-      var Focus = document.getElementById("form8").focus();
+    document.getElementById("form8").focus();
       return false;
     } else if (license === "Select License") {
       setInput({
@@ -170,48 +199,115 @@ function CreateAccount() {
 
       return false;
     } else {
-      var Api = Connection.api + Connection.customers; // update this line of code to the something like 'http://localhost:3000/customers?_page=${currentPage}&_limit=${limit}
-      var headers = {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      };
-      const data = {
-        firstname: input.firstname,
-        middlename: input.middlename,
-        lastname: input.lastname,
-        emailaddress: input.emailaddress,
-        phone: input.phone,
-        address: input.address,
-        username: input.username,
-        password: input.password,
-        subscription: Period,
-        license: license,
-        payment: selected.active,
-        status: 1,
-      };
-      console.log(data);
-      fetch(Api, {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(data),
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          if (response.Status === "200") {
-            setInput({
-              ...input,
-              errormessage: "Successfully Created!",
-            });
-            console.log("reposnse" + response);
-          } else {
-            setInput({
-              ...input,
-              errormessage: "We have issue creating account",
-            });
-            console.log("else" + response);
-          }
-        });
+
+    var RemoteApi = Connection.remote;
+    var headers = {
+ 
+      "Content-Type": "application/json",
+      'Access-Control-Allow-Origin': '*',
+   
+    };
+
+
+    var Datas = {
+      adminUser: Constants.user,
+      adminPassword : Constants.password,
+      email: input.emailaddress,
+      emailSecondary: MakeitPhone(input.phone),
+      packageId: packages,
+      subscriptionId: 1,
+      externalRef: "AfroMiNA",
+    };
+
+    fetch(RemoteApi,{
+      method: "POST", 
+      headers: headers,
+      body: JSON.stringify(Datas),
+    }).then((res) => res.json())
+    .then((res)=>{
+
+      if(res.Status.id == 0){
+        var Api = Connection.api + Connection.customers; // update this line of code to the something like 'http://localhost:3000/customers?_page=${currentPage}&_limit=${limit}
+        var headers = {
+          accept: "application/json",
+          "Content-Type": "application/json",
+          
+        };
+        const data = {
+          firstname: input.firstname,
+          middlename: input.middlename,
+          lastname: input.lastname,
+          emailaddress: input.emailaddress,
+          phone: input.phone,
+          address: input.address,
+          username: input.username,
+          password: input.password,
+          subscription: Period,
+          license: license,
+          payment: selected.active,
+          status: 1,
+        };
+        console.log(data);
+        fetch(Api, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.json())
+          .then((response) => {
+            if (response.Status === "200") {
+              setInput({
+                ...input,
+                errormessage: "Successfully Created!",
+              });
+              setCreated(true);
+              console.log("reposnse" + response);
+            } else {
+              setInput({
+                ...input,
+                errormessage: "We have issue creating account",
+              });
+              setCreated(false);
+              console.log("else" + response);
+            }
+          });
+      }
+
+      else if(res.Status.id == 1001){
+  console.log(res.Status.desc);
+      }
+      else if(res.Status.id == 1002){
+        console.log(res.Status.desc);
+            }
+            else if(res.Status.id == 1003){
+              console.log(res.Status.desc);
+                  }
+                  else if(res.Status.id == 1004){
+                    console.log(res.Status.desc);
+                        }
+                        else if(res.Status.id == 1005){
+                          console.log(res.Status.desc);
+                              }
+                              else if(res.Status.id == 1006){
+                                console.log(res.Status.desc);
+                                    }
+                                    else if(res.Status.id == 1007){
+                                      console.log(res.Status.desc);
+                                          }
+                                          else if(res.Status.id == 1008){
+                                            console.log(res.Status.desc);
+                                                }
+                                                else if(res.Status.id == 1009){
+                                                  console.log(res.Status.desc);
+                                                      }
+                                                      else {
+                                                        console.log("couldn't trace error")
+                                                      }
+    });
+
+      
     }
+
     return true;
   };
 
@@ -438,21 +534,16 @@ function CreateAccount() {
                                   <Dropdown.Item onClick={() => setLicense(0)}>
                                     Select Package
                                   </Dropdown.Item>
-                                  <Dropdown.Item onClick={() => setLicense(1)}>
-                                    1 License
-                                  </Dropdown.Item>
-                                  <Dropdown.Item onClick={() => setLicense(3)}>
-                                    3 License
-                                  </Dropdown.Item>
                                   <Dropdown.Item onClick={() => setLicense(5)}>
                                     5 License
                                   </Dropdown.Item>
                                   <Dropdown.Item onClick={() => setLicense(10)}>
-                                    10 License
+                                      10 License
                                   </Dropdown.Item>
-                                  <Dropdown.Item onClick={() => setLicense(20)}>
-                                    20 License
+                                  <Dropdown.Item onClick={() => setLicense(15)}>
+                                    15 License
                                   </Dropdown.Item>
+                                 
                                 </Dropdown.Menu>
                               </Dropdown>
                             </MDBCol>

@@ -1,6 +1,8 @@
 {
   "name": "surfiedashboard",
   "version": "0.1.0",
+  "proxy": "http://pstest.puresight.com",
+  "homepage": "http://localhost:3000",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
@@ -10,6 +12,7 @@
     "babel-polyfill": "^6.26.0",
     "bootstrap": "^5.2.3",
     "draft-js": "^0.11.7",
+    "http-proxy-middleware": "^2.0.6",
     "mdb-react-ui-kit": "^5.1.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.2",
@@ -21,7 +24,6 @@
     "styled-components": "^5.3.6",
     "web-vitals": "^2.1.4"
   },
-
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -49,5 +51,4 @@
   "devDependencies": {
     "react-router-dom": "^6.8.0"
   }
-  
 }

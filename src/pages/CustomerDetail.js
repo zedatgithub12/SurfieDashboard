@@ -150,7 +150,7 @@ const Payment=(mode)=>{
                 <Row className="">
                   <Col className="ms-4 ps-2  align-items.center justify-content-center">
                     <Row>
-                      <span className="primary-text fw-semibold fs-5 mt-1 ">
+                      <span className="primary-text fw-semibold fs-5 mt-1 text-capitalize">
                         {state.first_name+ " " + state.middle_name + " "+ state.last_name} 
                       </span>
                     </Row>
@@ -225,7 +225,7 @@ const Payment=(mode)=>{
 
                   <Col className="alighn-items-start">
                     <span className="text-dark fw-semibold">
-                      {DateSlice(state.created_at)} GC
+                      {DateSlice(state.created_at)} 
                     </span>
                   </Col>
                 </Row>
@@ -253,7 +253,7 @@ const Payment=(mode)=>{
 
                   <Col className="alighn-items-start">
                     <span className="text-dark fw-semibold">
-                      {ExpireDate(state.created_at, state.subscription)} GC
+                      {ExpireDate(state.created_at, state.subscription)} 
                     </span>
                   </Col>
                 </Row>
@@ -312,12 +312,13 @@ const Payment=(mode)=>{
                   Send Email
                 </Link>
               </Col>
-              <Row className=" d-flex justify-content-end align-items-end  m-3">
-                <Col sm={2} className=" align-items-end  m-3">
+              <Row className=" d-flex justify-content-start align-items-start ms-0 m-3 mb-2">
+                <Col sm={2} className=" align-items-end  ms-1 m-3 mb-2">
                   <Button
                     onClick={goBack}
+                    
                     variant="light"
-                    className="d-flex btn btn-md-light text-dark fw-semibold text-center justify-content-center "
+                    className="d-flex btn btn-md btn-light w-100 text-dark fw-semibold text-center justify-content-center mt-2 "
                   >
                     Back
                   </Button>
