@@ -29,7 +29,7 @@ const Support = () => {
       <Row className="m-auto">
         <Col sm={7} className="mt-3">
           <table className="table align-middle mb-0 bg-white table-striped">
-            <thead class="bg-white">
+            <thead className="bg-white">
               <tr>
                 <th className="ps-4">Name</th>
                 <th>Date</th>
@@ -126,7 +126,7 @@ const Support = () => {
                   src={text}
                   alt="textnode"
                   className="h-50 w-50 m-auto"
-                  fluid
+                  
                 />
               </div>
             </div>

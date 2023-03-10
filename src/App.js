@@ -36,9 +36,7 @@ function App() {
   const getToken = sessionStorage.getItem("token");
 
   useEffect(() => {
-    if (!getToken) {
-      return <Signin />;
-    }
+  
   }, [getToken]);
 
   return (
@@ -47,7 +45,7 @@ function App() {
         <div>
         
           <Routes exact path="/">
-            <Route path="/" element={<Customers />} />
+          
             <Route path="/login" element={<Signin />} />
             <Route path="/customers" element={<Customers />} />
             <Route path="/users" element={<Users />} />

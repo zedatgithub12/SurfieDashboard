@@ -38,16 +38,16 @@ const CustomerDetail = () => {
 
   const DateSlice = (date) => {
     var year = date.slice(0, 4);
-    var month = date.slice(6, 7);
-    var day = date.slice(9, 10);
+    var month = date.slice(5, 7);
+    var day = date.slice(8, 10);
     return day + "/" + month + "/" + year;
   };
 
   //calculate and return the license expire date
   const ExpireDate = (date, plan) => {
     var year = date.slice(0, 4);
-    var month = date.slice(6, 7);
-    var day = date.slice(9, 10);
+    var month = date.slice(5, 7);
+    var day = date.slice(8, 10);
 
     if (plan == 1) {
       month = parseInt(month) +1;
@@ -237,7 +237,7 @@ const Payment=(mode)=>{
                   </Col>
 
                   <Col className="alighn-items-start">
-                    {state.subscription === "1" ? (
+                    {state.subscription === "monthly" ? (
                       <span className="text-dark fw-semibold">Monthly</span>
                     ) : (
                       <span className="text-dark fw-semibold">Annual</span>

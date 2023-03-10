@@ -18,8 +18,8 @@ function CustomerTable({
   const [period, setPeriod] = useState("monthly");
   const DateSlice=(date)=>{
     var year = date.slice(0,4);
-    var month = date.slice(6,7);
-    var day = date.slice(9,10);
+    var month = date.slice(5,7);
+    var day = date.slice(8,10);
     return day +"/"+ month +"/"+ year;
     }
   return (
@@ -32,7 +32,7 @@ function CustomerTable({
       </td>
       <td onClick={rowPressed}> {license} Device </td>
 
-      {subscription === "1" ? (
+      {subscription === "monthly" ? (
         <td onClick={rowPressed} className="text-primary">
          Monthly
         </td>

@@ -5,15 +5,16 @@ const Status = [
         title: "Active",
     },
     {
-        id: "2",
+        id: "0",
         title: "Pending",
+      
     },
     {
-        id: "3",
+        id: "2",
         title: "Expired",
     },
     {
-        id: "4",
+        id: "3",
         title: "Terminated",
     },
 ];
