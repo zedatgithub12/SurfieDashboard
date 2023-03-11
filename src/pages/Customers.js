@@ -21,7 +21,7 @@ import { BsCheckCircle } from "react-icons/bs";
 
 export const Customers = () => {
   const navigate = useNavigate();
-  
+
   const [activeTab, setActiveTab] = useState("1");
   const [loading, setLoading] = useState(true);
   const [show, setShow] = useState(false);
@@ -29,13 +29,22 @@ export const Customers = () => {
   const [customers, setCustomers] = useState([]);
   const [search, setSearch] = useState();
   const [license, setLicense] = useState(); //modal dropdown license listing states
-  const [notFound, setNotFound] = useState("There is no customer data here!");
+  const [notFound, setNotFound] = useState("No customer with this status!");
   const [paging, setPaging] = useState({
     initialPage: "",
     totalCount: "",
   });
   const [count, setCount] = useState({
-    pendings:"0",
+    pendings: "0",
+    active: "0",
+    monthly: "0",
+    annual: "0",
+    mfive: "0",
+    mten: "0",
+    mfifty: "0",
+    afive: "0",
+    aten: "0",
+    afifty: "0",
   });
   //modal dynamic attributes
   const [initialValue, setInitialValue] = useState({
@@ -431,10 +440,7 @@ export const Customers = () => {
   };
 
   const PendingCount = () => {
-
     var Api = Connection.api + Connection.pending; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
- 
-  
     var headers = {
       accept: "application/json",
       "Content-Type": "application/json",
@@ -447,13 +453,22 @@ export const Customers = () => {
     })
       .then((response) => response.json())
       .then((response) => {
-      
         setCount({
           ...count,
-          pendings: response});
-      console.log(response);
+          pendings: response.pendings,
+          active: response.actives,
+          monthly:response.monthly,
+          annual: response.annual,
+          mfive: response.mfive,
+          mten: response.mten,
+          mfifty: response.mfifty,
+          afive: response.afive,
+          aten: response.aten,
+          afifty: response.afifty,
+        });
+
+        
       });
-  
   };
 
   const getCustomers = async (currentPage) => {
@@ -483,7 +498,6 @@ export const Customers = () => {
           initialPage: response.from,
           totalCount: response.last_page,
         });
-      
       })
       .catch((e) => {
         console.log(e);
@@ -508,7 +522,7 @@ export const Customers = () => {
             className="card justify-content-md-center   shadow-sm border-0  pt-2 p-2 "
           >
             <div>
-              <h5 className="text-center font-link fw-bold">36</h5>
+              <h5 className="text-center font-link fw-bold">{count.active}</h5>
               <p className="text-center font-link text-success responsive-font-example">
                 Active Customers
               </p>
@@ -520,7 +534,7 @@ export const Customers = () => {
             className="card justify-content-md-center  shadow-sm border-0 m-2 mt-0 mb-0  pt-2"
           >
             <div>
-              <h5 className="text-center font-link fw-bold">26</h5>
+              <h5 className="text-center font-link fw-bold">{count.monthly}</h5>
               <p className="text-center font-link text-secondary">
                 Monthly Subscribers
               </p>
@@ -531,7 +545,7 @@ export const Customers = () => {
             className="card justify-content-md-center shadow-sm border-0 m-2 mt-0 mb-0  pt-2"
           >
             <div>
-              <h5 className="text-center font-link fw-bold">12</h5>
+              <h5 className="text-center font-link fw-bold">{count.annual}</h5>
               <p className="text-center font-link text-secondary ">
                 Annual Subcribers
               </p>
@@ -640,6 +654,7 @@ export const Customers = () => {
                                 license={item.license}
                                 subscription={item.subscription}
                                 date={item.updated_at}
+                                status={item.status}
                                 add={() => OpenDialog(item, "add")}
                                 remove={() => OpenDialog(item, "remove")}
                                 deactivate={() =>
@@ -706,7 +721,14 @@ export const Customers = () => {
           </Col>
 
           <Col sm={3}>
-            <HightlightAccordion />
+            <HightlightAccordion
+              mfive={count.mfive}
+              mten={count.mten}
+              mfifty={count.mfifty}
+              afive={count.afive}
+              aten={count.aten}
+              afifty={count.afifty}
+            />
           </Col>
         </Row>
 

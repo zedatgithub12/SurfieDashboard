@@ -25,7 +25,6 @@ import Constants from "../constants/Constants";
 
 function CreateAccount() {
   const [created, setCreated] = useState(false);
-  const [index, setIndex] = useState(1);
   const [license, setLicense] = useState("Select License");
   const [Period, setPeriod] = useState("monthly");
   const [showpass, setShowPass] = useState(false);

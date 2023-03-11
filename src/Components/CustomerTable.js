@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Row from "react-bootstrap/Row";
 import Dropdown from "react-bootstrap/Dropdown";
+import { Button } from "react-bootstrap";
 
 function CustomerTable({
   id,
@@ -8,6 +9,7 @@ function CustomerTable({
   license,
   subscription,
   date,
+  status,
   rowPressed,
   add,
   remove,
@@ -44,7 +46,10 @@ function CustomerTable({
 
       <td onClick={rowPressed}>{DateSlice(date)}</td>
       <td className="text-end">
-        <Dropdown>
+        {status == "0"?(
+            <Button variant="white" className="btn btn-sm btn-outline-success border-0 my-1 text-end" >Activate</Button>
+        ):(
+               <Dropdown>
           <Dropdown.Toggle
             variant="light"
             id="dropdown-basic"
@@ -60,6 +65,8 @@ function CustomerTable({
             <Dropdown.Item href="/emails">Send Email</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
+        )}
+        
       </td>
     </tr>
   );
