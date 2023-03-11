@@ -16,6 +16,7 @@ function CustomerTable({
   detail,
   deactivate,
   detach,
+  approve
 }) {
   const [period, setPeriod] = useState("monthly");
   const DateSlice=(date)=>{
@@ -47,7 +48,7 @@ function CustomerTable({
       <td onClick={rowPressed}>{DateSlice(date)}</td>
       <td className="text-end">
         {status == "0"?(
-            <Button variant="white" className="btn btn-sm btn-outline-success border-0 my-1 text-end" >Activate</Button>
+            <Button  onClick={approve} variant="white" className="btn btn-sm btn-outline-success border-0 my-1 text-end" >Activate</Button>
         ):(
                <Dropdown>
           <Dropdown.Toggle

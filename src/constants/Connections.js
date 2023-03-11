@@ -10,6 +10,7 @@ const Connection = {
     deactivate: "/deactivate/",
     detach: "/detach/",
     pending: "/pending",
+    activate: "/activate/",
 };
 
 export default Connection;

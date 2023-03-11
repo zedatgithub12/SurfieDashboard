@@ -38,13 +38,13 @@ function HightlightAccordion({mfive, mten, mfifty, afive,aten,afifty}) {
           <hr />
           <Row className="mb-0">
             <Col>
-              <p className="font-link">{mfive*200}</p>
+              <p className="font-link">{mfive >= '5' ?(<span>{mfive*200} K</span>) : (<span> {mfive*200} birr </span>) }</p>
             </Col>
             <Col>
-              <p className="font-link">{mten*300}</p>
+              <p className="font-link">{mten >= '4' ?(<span>{mten*300} K</span>) : (<span> {mten*300} birr </span>) }</p>
             </Col>
             <Col>
-              <p className="font-link">{mfifty*500}</p>
+              <p className="font-link">{mfifty >= '2' ?(<span>{mfifty*500} K</span>) : (<span> {mfifty*500} birr </span>) }</p>
             </Col>
           </Row>
         </Accordion.Body>
@@ -81,13 +81,13 @@ function HightlightAccordion({mfive, mten, mfifty, afive,aten,afifty}) {
           <hr />
           <Row className="mb-0">
             <Col>
-              <p className="font-link">{afive*2200}</p>
+              <p className="font-link">{afive >= '1' ?(<span>{afive*2200} K</span>) : (<span> {afive*2200} birr </span>) }</p>
             </Col>
             <Col>
-              <p className="font-link">{aten*3300}</p>
+              <p className="font-link">{afive >= '1' ?(<span>{afive*3300} K</span>) : (<span> {afive*3300} birr </span>) }</p>
             </Col>
             <Col>
-              <p className="font-link">{afifty*5500}</p>
+              <p className="font-link">{afive >= '1' ?(<span>{afive*5500} K</span>) : (<span> {afive*5500} birr </span>) }</p>
             </Col>
           </Row>
         </Accordion.Body>

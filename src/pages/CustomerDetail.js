@@ -9,7 +9,6 @@ import Dropdown from "react-bootstrap/Dropdown";
 import { Button } from "react-bootstrap";
 import Sidebar from "../components/Sidebar";
 
-
 const CustomerDetail = () => {
   const navigate = useNavigate();
   const goBack = () => {
@@ -42,7 +41,26 @@ const CustomerDetail = () => {
     var day = date.slice(8, 10);
     return day + "/" + month + "/" + year;
   };
+  const Status = (status) => {
+    var Status;
 
+    switch (status) {
+      case 1:
+        Status = "Active";
+        break;
+      case 2:
+        Status = "Expired";
+        break;
+
+      case 3:
+        Status = "Terminated";
+        break;
+      default:
+        Status = "Pending";
+    }
+
+    return Status;
+  };
   //calculate and return the license expire date
   const ExpireDate = (date, plan) => {
     var year = date.slice(0, 4);
@@ -50,35 +68,33 @@ const CustomerDetail = () => {
     var day = date.slice(8, 10);
 
     if (plan == 1) {
-      month = parseInt(month) +1;
+      month = parseInt(month) + 1;
     } else {
-       year = parseInt(year) +1;
+      year = parseInt(year) + 1;
     }
 
     return day + "/" + month + "/" + year;
   };
 
-const Payment=(mode)=>{
-   var gateway;
+  const Payment = (mode) => {
+    var gateway;
 
-  switch(mode){
-    case 1000:
-      gateway="With Cash";
-      break;
+    switch (mode) {
+      case 1000:
+        gateway = "With Cash";
+        break;
       case 1001:
         gateway = "Chapa";
         break;
-        case 1002:
-          gateway= "Telebirr";
-          break;
-          default: 
-          gateway="With Cash";
-  }
+      case 1002:
+        gateway = "Telebirr";
+        break;
+      default:
+        gateway = "With Cash";
+    }
 
-
-  return gateway;
-}
-  
+    return gateway;
+  };
 
   const OpenDialog = (item, operation) => {
     var info = operation === "add" ? "Upgrade to" : "Downgrade to";
@@ -151,7 +167,28 @@ const Payment=(mode)=>{
                   <Col className="ms-4 ps-2  align-items.center justify-content-center">
                     <Row>
                       <span className="primary-text fw-semibold fs-5 mt-1 text-capitalize">
-                        {state.first_name+ " " + state.middle_name + " "+ state.last_name} 
+                        {state.first_name +
+                          " " +
+                          state.middle_name +
+                          " " +
+                          state.last_name}{" "}
+                        {state.status == 1 ? (
+                          <span class="badge bg-success bg-opacity-10 text-success px-4 rounded-1">
+                            {Status(state.status)}
+                          </span>
+                        ) : state.status == 2 ? (
+                          <span class="badge bg-danger bg-opacity-10 text-danger px-4 rounded-1">
+                            {Status(state.status)}
+                          </span>
+                        ) : state.status == 3 ? (
+                          <span class="badge bg-dark bg-opacity-10 text-dark px-4 rounded-1">
+                            {Status(state.status)}
+                          </span>
+                        ) : (
+                          <span class="badge bg-secondary bg-opacity-10 text-secondary px-4 rounded-1">
+                            {Status(state.status)}
+                          </span>
+                        )}
                       </span>
                     </Row>
                     <Row>
@@ -165,7 +202,9 @@ const Payment=(mode)=>{
                 <Row className="p-2 ps-1 m-1 mt-4">
                   <Col sm={4} className="alighn-items-start">
                     {" "}
-                    <span className="text-secondary  fw-normal">Customer ID:</span>
+                    <span className="text-secondary  fw-normal">
+                      Customer ID:
+                    </span>
                   </Col>
 
                   <Col className="alighn-items-start">
@@ -175,7 +214,6 @@ const Payment=(mode)=>{
 
                 <Row className="p-2 ps-1 m-1 mt-1">
                   <Col sm={4} className="alighn-items-start">
-                    
                     <span className="text-secondary  fw-normal">
                       Email Address:
                     </span>
@@ -188,7 +226,6 @@ const Payment=(mode)=>{
 
                 <Row className="p-2 ps-1  m-1">
                   <Col sm={4} className="alighn-items-start">
-                   
                     <span className="text-secondary  fw-normal">
                       Phone Number:
                     </span>
@@ -201,7 +238,6 @@ const Payment=(mode)=>{
 
                 <Row className="p-2 ps-1  m-1">
                   <Col sm={4} className="alighn-items-start">
-                  
                     <span className="text-secondary  fw-normal">
                       Living Address:
                     </span>
@@ -214,8 +250,6 @@ const Payment=(mode)=>{
                   </Col>
                 </Row>
 
-             
-
                 <Row className="p-2 ps-1  m-1">
                   <Col sm={4} className="alighn-items-start">
                     <span className="text-secondary  fw-normal">
@@ -225,7 +259,7 @@ const Payment=(mode)=>{
 
                   <Col className="alighn-items-start">
                     <span className="text-dark fw-semibold">
-                      {DateSlice(state.created_at)} 
+                      {DateSlice(state.created_at)}
                     </span>
                   </Col>
                 </Row>
@@ -253,14 +287,13 @@ const Payment=(mode)=>{
 
                   <Col className="alighn-items-start">
                     <span className="text-dark fw-semibold">
-                      {ExpireDate(state.created_at, state.subscription)} 
+                      {ExpireDate(state.created_at, state.subscription)}
                     </span>
                   </Col>
                 </Row>
 
                 <Row className="p-2 ps-1  m-1">
                   <Col sm={4} className="alighn-items-start">
-                    
                     <span className="text-secondary  fw-normal">
                       Payment Method:
                     </span>
@@ -316,7 +349,6 @@ const Payment=(mode)=>{
                 <Col sm={2} className=" align-items-end  ms-1 m-3 mb-2">
                   <Button
                     onClick={goBack}
-                    
                     variant="light"
                     className="d-flex btn btn-md btn-light w-100 text-dark fw-semibold text-center justify-content-center mt-2 "
                   >

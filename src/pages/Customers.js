@@ -471,6 +471,35 @@ export const Customers = () => {
       });
   };
 
+//activate pending users
+const Approve=(id)=>{
+   var Api = Connection.api + Connection.activate+id; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
+    var headers = {
+      accept: "application/json",
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    };
+
+var Data = {
+  status:1,
+};
+
+
+    fetch(Api, {
+      method: "PUT",
+      headers: headers,
+      body: JSON.stringify(Data)
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        if(response === "activated"){
+          getCustomers();
+       PendingCount();
+        }
+      
+      });
+  
+};
   const getCustomers = async (currentPage) => {
     var Api =
       Connection.api +
@@ -667,6 +696,7 @@ export const Customers = () => {
                                     state: { ...item },
                                   })
                                 }
+                                approve={()=>Approve(item.id)}
                               />
                             ))}
                           </tbody>
