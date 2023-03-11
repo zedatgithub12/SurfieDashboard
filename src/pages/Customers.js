@@ -21,7 +21,7 @@ import { BsCheckCircle } from "react-icons/bs";
 
 export const Customers = () => {
   const navigate = useNavigate();
-
+  
   const [activeTab, setActiveTab] = useState("1");
   const [loading, setLoading] = useState(true);
   const [show, setShow] = useState(false);
@@ -30,13 +30,13 @@ export const Customers = () => {
   const [search, setSearch] = useState();
   const [license, setLicense] = useState(); //modal dropdown license listing states
   const [notFound, setNotFound] = useState("There is no customer data here!");
-  const [pageCount, setPageCount] = useState(5);
   const [paging, setPaging] = useState({
     initialPage: "",
     totalCount: "",
-
-  })
-  const count = customers.filter((items) => items.status == "0").length;
+  });
+  const [count, setCount] = useState({
+    pendings:"0",
+  });
   //modal dynamic attributes
   const [initialValue, setInitialValue] = useState({
     title: "",
@@ -109,8 +109,8 @@ export const Customers = () => {
     }
   };
 
-  const Tabs = (name) => {
-    setActiveTab(name);
+  const Tabs = (id) => {
+    setActiveTab(id);
   };
 
   const handleClose = () => setShow(false);
@@ -366,9 +366,12 @@ export const Customers = () => {
     }
   };
 
-  const FindCustomer = () => {
+  const FindCustomer = (currentPage) => {
     if (search !== "") {
-      var Api = Connection.api + Connection.search + search;
+      var Api =
+        Connection.api +
+        Connection.search +
+        `?name=${search}&page=${currentPage}&status=${activeTab}`;
       var headers = {
         accept: "application/json",
         "Content-Type": "application/json",
@@ -379,7 +382,11 @@ export const Customers = () => {
       })
         .then((response) => response.json())
         .then((response) => {
-          setCustomers(response);
+          if ([response].length > 0) {
+            setCustomers(response);
+          } else {
+            setNotFound("No result found");
+          }
         })
         .catch((e) => {
           setNotFound("No result found");
@@ -392,21 +399,28 @@ export const Customers = () => {
   //fetch customer while use clicked the next button every time
 
   const fetchCustomer = async (currentPage) => {
-    var Api = Connection.api + Connection.customers+`?page=${currentPage}`; // update this line of code to the something like 'http://localhost:3000/customers?_page=${currentPage}&_limit=${limit}
+    var Api =
+      Connection.api +
+      Connection.customers +
+      `?page=${currentPage}&status=${activeTab}`; // update this line of code to the something like 'http://localhost:3000/customers?_page=${currentPage}&_limit=${limit}
     var headers = {
       accept: "application/json",
       "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
     };
-  const data = await fetch(Api, {
+    var request = {
+      status: activeTab,
+    };
+    const data = await fetch(Api, {
       method: "GET",
       headers: headers,
     });
     const response = await data.json();
     console.log(response.data);
-      return response.data;
+    return response.data;
   };
 
-  
+  //pagination buttons onclick handler
 
   const handlePageClick = async (data) => {
     let currentPage = data.selected + 1;
@@ -416,13 +430,15 @@ export const Customers = () => {
     // setCustomers(customers);
   };
 
+  const PendingCount = () => {
+
+    var Api = Connection.api + Connection.pending; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
  
-  const getCustomers = async () => {
-    var Api =
-      Connection.api + Connection.customers + `?page=1`; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
+  
     var headers = {
       accept: "application/json",
       "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
     };
 
     fetch(Api, {
@@ -431,13 +447,43 @@ export const Customers = () => {
     })
       .then((response) => response.json())
       .then((response) => {
+      
+        setCount({
+          ...count,
+          pendings: response});
+      console.log(response);
+      });
+  
+  };
+
+  const getCustomers = async (currentPage) => {
+    var Api =
+      Connection.api +
+      Connection.customers +
+      `?page=${currentPage}&status=${activeTab}`; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
+    var headers = {
+      accept: "application/json",
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    };
+    // var data = {
+    //   status: parseInt(activeTab),
+    // };
+
+    fetch(Api, {
+      method: "GET",
+      headers: headers,
+      // Body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((response) => {
         setCustomers(response.data);
         setPaging({
           ...paging,
           initialPage: response.from,
           totalCount: response.last_page,
-        })
-        console.log(response.last_page);
+        });
+      
       })
       .catch((e) => {
         console.log(e);
@@ -448,6 +494,7 @@ export const Customers = () => {
   //when the functional component cames to life we will getcustomers by deafult
   useEffect(() => {
     getCustomers();
+    PendingCount();
     return () => {};
   }, [activeTab]);
 
@@ -529,7 +576,7 @@ export const Customers = () => {
                           {item.title}
                           {item.id === "0" ? (
                             <span className="position-absolute top-0 start-100  translate-middle badge rounded-pill bg-danger  ">
-                              {count}
+                              {count.pendings}
                             </span>
                           ) : null}
                         </Button>
@@ -585,32 +632,28 @@ export const Customers = () => {
                             </tr>
                           </thead>
                           <tbody>
-                            {customers
-                              .filter((items) => items.status == activeTab)
-                              .map((item, index) => (
-                                <CustomerTable
-                                  key={index}
-                                  id={item.id}
-                                  name={
-                                    item.first_name + " " + item.middle_name
-                                  }
-                                  license={item.license}
-                                  subscription={item.subscription}
-                                  date={item.updated_at}
-                                  add={() => OpenDialog(item, "add")}
-                                  remove={() => OpenDialog(item, "remove")}
-                                  deactivate={() =>
-                                    OpenDialog(item, "deactivate")
-                                  }
-                                  detach={() => OpenDialog(item, "detach")}
-                                  detail="/customerdetail?id=item.id"
-                                  rowPressed={() =>
-                                    navigate("/customerdetail", {
-                                      state: { ...item },
-                                    })
-                                  }
-                                />
-                              ))}
+                            {customers.map((item, index) => (
+                              <CustomerTable
+                                key={index}
+                                id={item.id}
+                                name={item.first_name + " " + item.middle_name}
+                                license={item.license}
+                                subscription={item.subscription}
+                                date={item.updated_at}
+                                add={() => OpenDialog(item, "add")}
+                                remove={() => OpenDialog(item, "remove")}
+                                deactivate={() =>
+                                  OpenDialog(item, "deactivate")
+                                }
+                                detach={() => OpenDialog(item, "detach")}
+                                detail="/customerdetail?id=item.id"
+                                rowPressed={() =>
+                                  navigate("/customerdetail", {
+                                    state: { ...item },
+                                  })
+                                }
+                              />
+                            ))}
                           </tbody>
                         </Table>
                       ) : (
@@ -629,11 +672,10 @@ export const Customers = () => {
                       {/* Bottom Pagination */}
 
                       <ReactPaginate
-                      
                         previousLabel={"previous"}
                         nextLabel={"next"}
                         breakLabel={"..."}
-                        pageCount={paging.totalCount}
+                        pageCount={Math.ceil(paging.totalCount)}
                         marginPagesDisplayed={3}
                         pageRangeDisplayed={3}
                         onPageChange={handlePageClick}

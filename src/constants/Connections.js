@@ -9,6 +9,7 @@ const Connection = {
     removeLicense: "/remove/",
     deactivate: "/deactivate/",
     detach: "/detach/",
+    pending: "/pending",
 };
 
 export default Connection;
