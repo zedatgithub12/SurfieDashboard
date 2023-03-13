@@ -84,10 +84,10 @@ function HightlightAccordion({mfive, mten, mfifty, afive,aten,afifty}) {
               <p className="font-link">{afive >= '1' ?(<span>{afive*2200} K</span>) : (<span> {afive*2200} birr </span>) }</p>
             </Col>
             <Col>
-              <p className="font-link">{afive >= '1' ?(<span>{afive*3300} K</span>) : (<span> {afive*3300} birr </span>) }</p>
+              <p className="font-link">{aten >= '1' ?(<span>{aten*3300} K</span>) : (<span> {aten*3300} birr </span>) }</p>
             </Col>
             <Col>
-              <p className="font-link">{afive >= '1' ?(<span>{afive*5500} K</span>) : (<span> {afive*5500} birr </span>) }</p>
+              <p className="font-link">{afifty >= '1' ?(<span>{afifty*5500} K</span>) : (<span> {afifty*5500} birr </span>) }</p>
             </Col>
           </Row>
         </Accordion.Body>
