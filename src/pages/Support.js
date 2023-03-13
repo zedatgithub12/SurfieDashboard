@@ -5,12 +5,16 @@ import Sidebar from "../components/Sidebar";
 import Connection from "../constants/Connections";
 import support from "../assets/support.png";
 import { useNavigate } from "react-router-dom";
+import { BsCheckCircle } from "react-icons/bs";
 
 const Support = () => {
   const navigate = useNavigate();
 
   const [queries, setQueries] = useState([]);
-  const [prompt, setPrompt] = useState();
+  const [prompt, setPrompt] = useState({
+    show: false,
+    content: "",
+  });
   const [modalContent, setModalContent] = useState({
     status: false,
     content: {},
@@ -52,13 +56,25 @@ const Support = () => {
         // the action will be taken depending on the server response
 
         if (response === "done") {
-          setPrompt("Ticket get closed!");
+          setPrompt({
+            ...prompt,
+            show: true,
+            content: "Ticket get closed!",
+          });
         } else {
-          setPrompt("Unable to close ticket at the moment!");
+          setPrompt({
+            ...prompt,
+            show: true,
+            content: "Unable to close ticket at the moment!",
+          });
         }
       })
       .catch((e) => {
-        setPrompt("Error Closing ticket!");
+        setPrompt({
+          ...prompt,
+          show: true,
+          content: "Error Closing ticket!",
+        });
       });
   };
 
@@ -70,9 +86,6 @@ const Support = () => {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
     };
-    // var data = {
-    //   status: parseInt(activeTab),
-    // };
 
     fetch(Api, {
       method: "GET",
@@ -125,7 +138,7 @@ const Support = () => {
                 </thead>
                 {queries.map((item, index) => (
                   <tbody>
-                    <tr key={index}>
+                    <tr key={item.id}>
                       <td onClick={() => OpenModal(item)}>
                         <div className="d-flex align-items-center">
                           <div className="ms-3">
@@ -141,11 +154,11 @@ const Support = () => {
                       </td>
                       <td onClick={() => OpenModal(item)}>
                         {item.status == "1" ? (
-                          <span className="bg-opacity-10 bg-danger px-4 py-1 text-success rounded-pill d-inline">
+                          <span className="bg-opacity-10 bg-success px-4 py-1 text-success rounded-pill d-inline">
                             Replied
                           </span>
                         ) : item.status == "2" ? (
-                          <span className="bg-opacity-10 bg-danger px-4 py-1 text-secondary rounded-pill d-inline">
+                          <span className="bg-opacity-10 bg-secondary px-4 py-1 text-secondary rounded-pill d-inline">
                             Closed
                           </span>
                         ) : (
@@ -176,11 +189,11 @@ const Support = () => {
                   <span className="fw-semibold text-muted">Status: </span>
                   <span>
                     {modalContent.content.status == "1" ? (
-                      <span className="bg-opacity-10 bg-danger px-4 py-1 text-success rounded-pill d-inline">
+                      <span className="bg-opacity-10 bg-success px-4 py-1 text-success rounded-pill d-inline">
                         Replied
                       </span>
                     ) : modalContent.content.status == "2" ? (
-                      <span className="bg-opacity-10 bg-danger px-4 py-1 text-secondary rounded-pill d-inline">
+                      <span className="bg-opacity-10 bg-secondary px-4 py-1 text-secondary rounded-pill d-inline">
                         Closed
                       </span>
                     ) : (
@@ -227,6 +240,7 @@ const Support = () => {
                     Reply
                   </Button>
                 </div>
+                {prompt.show ? <div className="d-flex justify-content-between align-items-center mb-0 mt-5 bg-success bg-opacity-10 rounded  px-3 ">   <span>{prompt.content}</span>  <BsCheckCircle size={18} className="text-success my-3" /></div> : null}
               </>
             ) : (
               <div className="align-items-center justify-content-center  ">

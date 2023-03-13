@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Col, Container, Row, Spinner } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import AuthUser from "../components/AuthUser";
 import Logo from "../assets/logo.png";
 import Connection from "../constants/Connections";
@@ -31,7 +31,7 @@ const Signin = () => {
     successMsg: false,
     message: "",
   });
-  const [remember, setRemember] = useState(false); //user session managing state
+  // const [remember, setRemember] = useState(false); //user session managing state
 
   const EmailAddress = (event) => {
     setCredentials({

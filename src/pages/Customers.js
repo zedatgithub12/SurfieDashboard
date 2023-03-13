@@ -7,7 +7,6 @@ import Button from "react-bootstrap/Button";
 import HightlightAccordion from "../components/Accordion";
 import Status from "../assets/Status";
 import CustomerTable from "../components/CustomerTable";
-import Users from "../assets/Customers";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
