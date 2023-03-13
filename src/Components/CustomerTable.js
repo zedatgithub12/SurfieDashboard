@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Row from "react-bootstrap/Row";
 import Dropdown from "react-bootstrap/Dropdown";
 import { Button } from "react-bootstrap";
+import { RxLoop,RxCheck } from "react-icons/rx";
 
 function CustomerTable({
   id,
@@ -13,10 +14,10 @@ function CustomerTable({
   rowPressed,
   add,
   remove,
-  detail,
   deactivate,
   detach,
-  approve
+  approve,
+  reactivate
 }) {
   const [period, setPeriod] = useState("monthly");
   const DateSlice=(date)=>{
@@ -48,8 +49,10 @@ function CustomerTable({
       <td onClick={rowPressed}>{DateSlice(date)}</td>
       <td className="text-end">
         {status == "0"?(
-            <Button  onClick={approve} variant="white" className="btn btn-sm btn-outline-success border-0 my-1 text-end" >Activate</Button>
-        ):(
+            <Button  onClick={approve} variant="white" className="btn btn-sm btn-outline-success border-0 my-1 text-end" > Activate <RxCheck size={18} className="pe-1 pb-1"/></Button>
+        ): status == "3"?(
+          <Button  onClick={reactivate} variant="white" className="btn btn-sm btn-outline-success border-0 my-1 text-end" ><RxLoop size={18} className="pe-1 pb-1"/>Reactivate</Button>
+      ):(
                <Dropdown>
           <Dropdown.Toggle
             variant="light"

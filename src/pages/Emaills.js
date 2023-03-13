@@ -13,6 +13,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import "draft-js/dist/Draft.css";
 import { useNavigate, useLocation,} from "react-router-dom";
 import Sidebar from "../components/Sidebar";
+import Connection from "../constants/Connections";
 
 const Emaills = () => {
 const navigate=useNavigate();
@@ -21,6 +22,99 @@ const { state } = useLocation();
 const goBack = () => {
   navigate(-1);
 }
+
+const [compose, setCompose] = React.useState({
+  fullname: state==null? "Anonimious" : state.fullname,
+  to: state == null? "" : state.email,
+  subject:"",
+  message:"",
+  show: false,
+  errmsg:"",
+});
+
+
+const To=(event)=>{
+  setCompose({
+    ...compose,
+    to: event.target.value,
+  });
+}
+
+const Subject = (event)=>{
+  setCompose({
+    ...compose,
+    subject: event.target.value,
+  })
+}
+
+const Message = (event)=>{
+  setCompose({
+    ...compose,
+    message: event.target.value,
+  })
+};
+
+
+const SendMail =()=>{
+
+  if(compose.to ===""|| compose.subject === ""|| compose.message ===""){
+    setCompose({
+      ...compose,
+      show: true,
+      errmsg: "Please fill all fields",
+    });
+  }
+  else {
+
+    var Api = Connection.api+Connection.compose;
+    var headers = {
+      accept: "application/json",
+      "Content-Type": "application/json",
+      
+    };
+    
+    var data ={
+      fullname: compose.fullname,
+      email: compose.to,
+      subject: compose.subject,
+      description: compose.message,
+      status: 1,
+    };
+
+    fetch(Api,{
+      method: "POST",
+      headers:headers,
+      body: JSON.stringify(data),
+    })
+    .then((response)=> response.json())
+    .then((response)=>{
+  
+      if(response === "succeed"){
+        setCompose({
+          ...compose,
+          show: true,
+          errmsg: "Successfully sent!",
+        });
+      }
+      else{
+        setCompose({
+          ...compose,
+          show: true,
+          errmsg: "Unable to send the mail!",
+        });
+      }
+    }).catch((e)=>{
+      setCompose({
+        ...compose,
+        show: true,
+        errmsg: "Error sending the mail!",
+      });
+    })
+
+
+  }
+}
+
 
   return (
     <>
@@ -39,44 +133,16 @@ const goBack = () => {
           <hr />
           <p className="align-item-center justify-content-center">
             <span>
-              <HiOutlineInbox />
+              <HiOutlineInbox size={16}/>
             </span>{" "}
-            Inbox
+            Conversation
           </p>
-          <hr />
-          <p>
-            <span>
-              <TbBrandTelegram />
-            </span>{" "}
-            Sent
-          </p>
-          <hr />
-          <p>
-            <span>
-              <HiOutlinePencilAlt />
-            </span>{" "}
-            Draft
-          </p>
+    
           <hr />
           <p>
             {" "}
             <span>
-              <MdOutlineOutbox />
-            </span>{" "}
-            Outbox
-          </p>
-          <p className="fs-6 fw-bold">Filtered</p>
-          <p>
-            <span>
-              <AiOutlineStar />
-            </span>{" "}
-            Starred
-          </p>
-          <hr />
-          <p>
-            {" "}
-            <span>
-              <BsArchive />
+              <BsArchive size={16}/>
             </span>{" "}
             Archived
           </p>
@@ -84,11 +150,15 @@ const goBack = () => {
         <Col sm={9} className="bg-white border border-2 border-light rounded-0 rounded-end">
           <Row className="mt-2 p-4 pt-1">
             <p className="fs-5 ms-2">Compose Email</p>
+          
             <InputGroup className="mb-3">
               <Form.Control
                 aria-label="to"
                 placeholder="To"
                 className="m-1 mb-0 rounded bg-light border-0"
+                defaultValue={compose.to}
+                onChange={To}
+                required
               />
             
             </InputGroup>
@@ -98,6 +168,9 @@ const goBack = () => {
                 aria-label="Subject"
                 placeholder="Subject"
                 className="m-1 mt-0 rounded bg-light border-0"
+                defaultValue={compose.subject}
+                onChange={Subject}
+                required
               />
             </InputGroup>
             <InputGroup>
@@ -108,12 +181,22 @@ const goBack = () => {
                 id="exampleFormControlTextarea1"
                 rows="5"
                 placeholder="Compose here..."
+                defaultValue={compose.message}
+                onChange={Message}
+                required
               ></textarea>
           
             </InputGroup>
           </Row>
           <Row className="justify-content-end align-items-center  my-2 py-2">
-            <Col sm={2} className="justify-content-end align-items-end">
+            <Col sm={5} className="d-flex justify-content-start align-items-center align-self-center">
+              {compose.show ?(
+                    <div className="d-flex align-items-start border-0 rounded-1 px-5 py-1"><span className="">{compose.errmsg}</span> </div>
+              ):null
+
+              }
+            </Col>
+            <Col sm={2} className="justify-content-center align-items-center">
             <Button
                 onClick={goBack}
                   
@@ -124,12 +207,13 @@ const goBack = () => {
                 </Button>
             </Col>
             <Col
-              sm={2}
-              className="d-flex justify-content-start align-items-start"
+              sm={3}
+              className="d-flex justify-content-center align-items-center"
             >
               <Button
                 className="d-flex btn primary-bg  text-center justify-content-center text-dark border-0 px-4 fw-semibold"
                 variant="light"
+                onClick={()=>SendMail()}
               >
                 Send
               </Button>

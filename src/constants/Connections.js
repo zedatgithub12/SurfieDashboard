@@ -16,7 +16,10 @@ const Connection = {
 
     // support api's
     support: "/support",
-    closeTicket: "/closeticket/"
+    closeTicket: "/closeticket/",
+
+    //mailing api's
+    compose: "/compose"
 };
 
 export default Connection;

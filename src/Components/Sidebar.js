@@ -52,7 +52,7 @@ const SidebarWrap = styled.div`
 
 const Sidebar = () => {
   const {token,logout, user} = AuthUser();
-  const [sidebar, setSidebar] = useState(true);
+  const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => setSidebar(!sidebar);
   const navigate=useNavigate();
 

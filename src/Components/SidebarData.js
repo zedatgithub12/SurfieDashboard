@@ -12,14 +12,14 @@ export const SidebarData = [
     icon: <FiIcons.FiUsers size={20}/>,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
-     subNav: [
-      {
-        title: "Emails",
-        path: "/emails",
-        icon: <HiOutlineMail size={18}/>,
-        cName: "sub-nav",
-      },
-    ],
+    //  subNav: [
+    //   {
+    //     title: "Emails",
+    //     path: "/emails",
+    //     icon: <HiOutlineMail size={18}/>,
+    //     cName: "sub-nav",
+    //   },
+    // ],
   },
   // {
   //   title: "Manage Users",
@@ -37,6 +37,11 @@ export const SidebarData = [
   //   iconOpened: <RiIcons.RiArrowUpSFill />,
 
   // },
+  {
+    title: "Emails",
+    path: "/emails",
+    icon: <HiOutlineMail size={18}/>,
+  },
   {
     title: "Supports",
     path: "/support",

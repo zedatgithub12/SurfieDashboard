@@ -696,6 +696,7 @@ var Data = {
                                   })
                                 }
                                 approve={()=>Approve(item.id)}
+                                reactivate={()=>Approve(item.id)}
                               />
                             ))}
                           </tbody>
