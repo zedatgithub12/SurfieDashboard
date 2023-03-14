@@ -44,6 +44,8 @@ export const Customers = () => {
     afive: "0",
     aten: "0",
     afifty: "0",
+    newm: "0",
+    newa: "0",
   });
   //modal dynamic attributes
   const [initialValue, setInitialValue] = useState({
@@ -456,7 +458,7 @@ export const Customers = () => {
           ...count,
           pendings: response.pendings,
           active: response.actives,
-          monthly:response.monthly,
+          monthly: response.monthly,
           annual: response.annual,
           mfive: response.mfive,
           mten: response.mten,
@@ -464,42 +466,40 @@ export const Customers = () => {
           afive: response.afive,
           aten: response.aten,
           afifty: response.afifty,
+          newm: response.newm,
+          newa: response.newa,
         });
-
-        
       });
   };
 
-//activate pending users
-const Approve=(id)=>{
-   var Api = Connection.api + Connection.activate+id; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
+  //activate pending users
+  const Approve = (id) => {
+    var Api = Connection.api + Connection.activate + id; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
     var headers = {
       accept: "application/json",
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
     };
 
-var Data = {
-  status:1,
-};
-
+    var Data = {
+      status: 1,
+    };
 
     fetch(Api, {
       method: "PUT",
       headers: headers,
-      body: JSON.stringify(Data)
+      body: JSON.stringify(Data),
     })
       .then((response) => response.json())
       .then((response) => {
-        if(response === "activated"){
+        if (response === "activated") {
           getCustomers();
-       PendingCount();
+          PendingCount();
         }
-      
       });
-  
-};
+  };
   const getCustomers = async (currentPage) => {
+    setLoading(false);
     var Api =
       Connection.api +
       Connection.customers +
@@ -526,9 +526,11 @@ var Data = {
           initialPage: response.from,
           totalCount: response.last_page,
         });
+        setLoading(true);
       })
       .catch((e) => {
         console.log(e);
+        setLoading(true);
       });
   };
 
@@ -547,11 +549,11 @@ var Data = {
         <Row className="mt-5 mb-3">
           <Col
             sm={2}
-            className="card justify-content-md-center   shadow-sm border-0  pt-2 p-2 "
+            className="card justify-content-md-center shadow-sm border-0 me-0 border-start border-success  pt-4"
           >
             <div>
               <h5 className="text-center font-link fw-bold">{count.active}</h5>
-              <p className="text-center font-link text-success responsive-font-example">
+              <p className="text-center font-link text-success  responsive-font-example">
                 Active Customers
               </p>
             </div>
@@ -559,10 +561,15 @@ var Data = {
 
           <Col
             sm={2}
-            className="card justify-content-md-center  shadow-sm border-0 m-2 mt-0 mb-0  pt-2"
+            className="card justify-content-md-center  shadow-sm border-0 ms-2 mt-0 mb-0  pt-4 border-start border-primary"
           >
             <div>
-              <h5 className="text-center font-link fw-bold">{count.monthly}</h5>
+              <h5 className="text-center font-link fw-bold">
+                {count.monthly}
+                {count.newm >= 1 ? (
+                  <span class="position-absolute ms-3 mt-1 translate-middle badge rounded-pill bg-success bg-opacity-10 text-success fw-lighter">+{count.newm}</span>
+                ) :  null}
+              </h5>
               <p className="text-center font-link text-secondary">
                 Monthly Subscribers
               </p>
@@ -570,10 +577,13 @@ var Data = {
           </Col>
           <Col
             sm={2}
-            className="card justify-content-md-center shadow-sm border-0 m-2 mt-0 mb-0  pt-2"
+            className="card justify-content-md-center shadow-sm  border-start border-warning border-0 m-2 mt-0 mb-0  pt-4"
           >
             <div>
-              <h5 className="text-center font-link fw-bold">{count.annual}</h5>
+              <h5 className="text-center font-link fw-bold">{count.annual}
+              {count.newa >= 1 ? (
+                  <span class="position-absolute ms-3 mt-1 translate-middle badge rounded-pill bg-success bg-opacity-10 text-success fw-lighter">+{count.newa}</span>
+                ) :  null}</h5>
               <p className="text-center font-link text-secondary ">
                 Annual Subcribers
               </p>
@@ -628,8 +638,7 @@ var Data = {
                 </Col>
               </Row>
 
-              {loading ? (
-                <>
+            
                   <Row className="d-flex justify-content-start align-items-center">
                     <Col sm={8} className="pt-2 pb-2">
                       <div className="input-group mb-4 mt-4">
@@ -654,6 +663,8 @@ var Data = {
                       </div>
                     </Col>
                   </Row>
+                  {loading ? (
+                <>
                   <Row>
                     <Col className="bg-white">
                       {customers.length >= 1 ? (
@@ -695,8 +706,8 @@ var Data = {
                                     state: { ...item },
                                   })
                                 }
-                                approve={()=>Approve(item.id)}
-                                reactivate={()=>Approve(item.id)}
+                                approve={() => Approve(item.id)}
+                                reactivate={() => Approve(item.id)}
                               />
                             ))}
                           </tbody>
@@ -739,12 +750,12 @@ var Data = {
                   </Row>
                 </>
               ) : (
-                <div className="justify-content-center align-items-center m-auto p-4 ">
+                <div className="d-flex justify-content-center align-items-center m-auto h-100 w-100 p-5 bg-opacity-10">
                   <div
-                    class="spinner-border text-secondary"
+                    class="spinner-border primary-text spinner-border-sm"
                     role="status"
                   ></div>
-                  <p>Loading...</p>
+                  <p className="m-1 text-center">Loading...</p>
                 </div>
               )}
             </Row>

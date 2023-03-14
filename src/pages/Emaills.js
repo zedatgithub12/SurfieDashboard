@@ -32,7 +32,7 @@ const [compose, setCompose] = React.useState({
   errmsg:"",
 });
 
-
+const [loading, setLoading] = React.useState(false);
 const To=(event)=>{
   setCompose({
     ...compose,
@@ -65,7 +65,7 @@ const SendMail =()=>{
     });
   }
   else {
-
+    setLoading(true);
     var Api = Connection.api+Connection.compose;
     var headers = {
       accept: "application/json",
@@ -95,6 +95,7 @@ const SendMail =()=>{
           show: true,
           errmsg: "Successfully sent!",
         });
+        setLoading(false);
       }
       else{
         setCompose({
@@ -102,6 +103,7 @@ const SendMail =()=>{
           show: true,
           errmsg: "Unable to send the mail!",
         });
+        setLoading(false);
       }
     }).catch((e)=>{
       setCompose({
@@ -109,6 +111,7 @@ const SendMail =()=>{
         show: true,
         errmsg: "Error sending the mail!",
       });
+      setLoading(false);
     })
 
 
@@ -189,9 +192,9 @@ const SendMail =()=>{
             </InputGroup>
           </Row>
           <Row className="justify-content-end align-items-center  my-2 py-2">
-            <Col sm={5} className="d-flex justify-content-start align-items-center align-self-center">
+            <Col sm={5} className="d-flex justify-content-start align-items-center ">
               {compose.show ?(
-                    <div className="d-flex align-items-start border-0 rounded-1 px-5 py-1"><span className="">{compose.errmsg}</span> </div>
+                    <div className="d-flex align-items-start align-self-start border-0 rounded-1 px-5 py-1"><span className="">{compose.errmsg}</span> </div>
               ):null
 
               }
@@ -214,8 +217,19 @@ const SendMail =()=>{
                 className="d-flex btn primary-bg  text-center justify-content-center text-dark border-0 px-4 fw-semibold"
                 variant="light"
                 onClick={()=>SendMail()}
+                className="ms-3 primary-bg border-0 px-5"
+                disabled={loading ? true : false}
               >
-                Send
+                {loading ? (
+                            <div
+                              class="spinner-border spinner-border-sm text-secondary"
+                              role="status"
+                            >
+                              <span class="visually-hidden">Loading...</span>
+                            </div>
+                          ) : (
+                            <span>Send</span>
+                          )}
               </Button>
             </Col>
           </Row>

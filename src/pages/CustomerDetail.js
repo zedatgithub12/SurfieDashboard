@@ -8,6 +8,9 @@ import Modal from "react-bootstrap/Modal";
 import Dropdown from "react-bootstrap/Dropdown";
 import { Button } from "react-bootstrap";
 import Sidebar from "../components/Sidebar";
+import Connection from "../constants/Connections";
+import { BsCheckCircle } from "react-icons/bs";
+
 
 const CustomerDetail = () => {
   const navigate = useNavigate();
@@ -24,13 +27,16 @@ const CustomerDetail = () => {
     updatedInfo: "",
     operation: "",
     cofirmationtxt: "",
+    errormsg: "",
+    lid: "",
+    cid: "",
   });
+  
 
   //modal dropdown license listing states
   const [license, setLicense] = useState();
 
   const [show, setShow] = useState(false);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [confirm, setConfirm] = useState(false);
@@ -100,57 +106,310 @@ const CustomerDetail = () => {
     var info = operation === "add" ? "Upgrade to" : "Downgrade to";
 
     if (operation === "add") {
-      setConfirm(false);
+      setConfirm("1");
       setInitialValue({
         ...initialValue,
         title: "Add Subscription",
         currentPlan: item.license,
         updatedInfo: info,
         operation: operation,
+        lid: item.id,
+        errormsg: "",
       });
       setLicense(item.license);
       handleShow();
     } else if (operation === "remove") {
-      setConfirm(false);
+      setConfirm("1");
       setInitialValue({
         ...initialValue,
         title: "Remove Subscription",
         currentPlan: item.license,
         updatedInfo: info,
         operation: operation,
+        lid: item.id,
+        errormsg: "",
       });
       setLicense(item.license);
       handleShow();
     }
     //when the user clicked deactivate account button from dropdown
     else if (operation === "deactivate") {
-      setConfirm(true);
+      setConfirm("2");
       setInitialValue({
         ...initialValue,
         title: "Deactivate Account!",
         cofirmationtxt:
           "Are you sure do you want to deactivate this user account!",
         operation: operation,
+        lid: item.id,
+        errormsg: "",
       });
       setLicense(item.license);
       handleShow();
     } else {
-      setConfirm(true);
+      setConfirm("2");
       setInitialValue({
         ...initialValue,
         title: "Detach Credentials",
         cofirmationtxt:
           "Are you sure do you want to Detach this user credentials!",
         operation: operation,
+        lid: item.id,
+        errormsg: "",
       });
       setLicense(item.license);
       handleShow();
     }
   };
+   // add License functionality
+  //adding license to databse go performed here
+  const UpdateID = (event) => {
+    setInitialValue({
+      ...initialValue,
+      cid: event.target.value,
+      errormsg: "",
+    });
+  };
+
+  const AddSubscription = () => {
+    if (initialValue.currentPlan == 15) {
+      setInitialValue({
+        ...initialValue,
+        errormsg: "You are using the maximum plan of Surfi Ethiopia!",
+      });
+    } else if (license <= initialValue.currentPlan) {
+      setInitialValue({
+        ...initialValue,
+        errormsg: "Selected a license supports same or less devices!",
+      });
+    } else if (initialValue.cid !== "" && initialValue.currentPlan < 15) {
+      var Api = Connection.api + Connection.addlicense + initialValue.lid;
+      var headers = {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      };
+
+      var Data = {
+        reomteid: initialValue.cid,
+        localid: initialValue.lid,
+        license: license,
+      };
+
+      fetch(Api, {
+        method: "PUT",
+        headers: headers,
+        body: JSON.stringify(Data),
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          // the action will be taken depending on the server response
+
+          if (response === "succeed") {
+            console.log("well done!");
+            setConfirm("3");
+            setInitialValue({
+              ...initialValue,
+              cofirmationtxt: `Succeessfully Upgraded to ${license} device license`,
+
+              errormsg: "",
+            });
+          } else {
+            setInitialValue({
+              ...initialValue,
+              cofirmationtxt: "",
+              lid: "",
+              cid: "",
+              errormsg: "Failed to to upgrade license",
+            });
+          }
+        });
+    } else {
+      setInitialValue({
+        ...initialValue,
+        errormsg: "Please enter remote customer id!",
+      });
+    }
+  };
+
+  // remove the subscription
+  const RemoveSubscription = () => {
+    if (initialValue.currentPlan == 5) {
+      setInitialValue({
+        ...initialValue,
+        errormsg: "You are using the minimum plan of Surfi Ethiopia!",
+      });
+    } else if (license >= initialValue.currentPlan) {
+      setInitialValue({
+        ...initialValue,
+        errormsg: "Selected a license supports same or more devices!",
+      });
+    } else if (initialValue.cid !== "" && initialValue.currentPlan > 5) {
+      var Api = Connection.api + Connection.removeLicense + initialValue.lid;
+      var headers = {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      };
+
+      var Data = {
+        reomteid: initialValue.cid,
+        localid: initialValue.lid,
+        license: license,
+      };
+
+      fetch(Api, {
+        method: "PUT",
+        headers: headers,
+        body: JSON.stringify(Data),
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          // the action will be taken depending on the server response
+
+          if (response === "succeed") {
+            setConfirm("3");
+            setInitialValue({
+              ...initialValue,
+              cofirmationtxt: `Succeessfully Downgraded license to ${license} device license`,
+              errormsg: "",
+            });
+          } else {
+            setInitialValue({
+              ...initialValue,
+              cofirmationtxt: "",
+              lid: "",
+              cid: "",
+              errormsg: "Failed to to downgrade license",
+            });
+          }
+        })
+        .catch((e) => {
+          setInitialValue({
+            ...initialValue,
+            errormsg: "Error downgrade license",
+          });
+        });
+    } else {
+      setInitialValue({
+        ...initialValue,
+        errormsg: "Please enter remote customer id!",
+      });
+    }
+  };
+
+  // deactivate customer account
+  const Deactivate = () => {
+    if (initialValue.cid !== "") {
+      var Api = Connection.api + Connection.deactivate + initialValue.lid;
+      var headers = {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      };
+
+      var Data = {
+        reomteid: initialValue.cid,
+        localid: initialValue.lid,
+        cstatus: 3,
+      };
+
+      fetch(Api, {
+        method: "PUT",
+        headers: headers,
+        body: JSON.stringify(Data),
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          // the action will be taken depending on the server response
+
+          if (response === "deactivated") {
+            setConfirm("3");
+            setInitialValue({
+              ...initialValue,
+              cofirmationtxt: `Succeessfully Deactivated!`,
+              errormsg: "",
+            });
+          } else {
+            setInitialValue({
+              ...initialValue,
+              cofirmationtxt: "",
+              lid: "",
+              cid: "",
+              errormsg: "Failed to deactivate customer credentials",
+            });
+          }
+        })
+        .catch((e) => {
+          setInitialValue({
+            ...initialValue,
+            errormsg: "Error deactivating customer credentials",
+          });
+        });
+    } else {
+      setInitialValue({
+        ...initialValue,
+        errormsg: "Please enter remote customer id!",
+      });
+    }
+  };
+
+  // deactivate customer account
+  const Detach = () => {
+    if (initialValue.cid !== "") {
+      var Api = Connection.api + Connection.detach + initialValue.lid;
+      var headers = {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      };
+
+      var Data = {
+        reomteid: initialValue.cid,
+        localid: initialValue.lid,
+        cstatus: 3,
+      };
+
+      fetch(Api, {
+        method: "PUT",
+        headers: headers,
+        body: JSON.stringify(Data),
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          // the action will be taken depending on the server response
+
+          if (response === "detached") {
+            setConfirm("3");
+            setInitialValue({
+              ...initialValue,
+              cofirmationtxt: `Succeessfully Detached!`,
+              errormsg: "",
+            });
+          } else {
+            setInitialValue({
+              ...initialValue,
+              cofirmationtxt: "",
+              lid: "",
+              cid: "",
+              errormsg: "Failed to detach User credentials",
+            });
+          }
+        })
+        .catch((e) => {
+          setInitialValue({
+            ...initialValue,
+            errormsg: "Error detaching user credentials",
+          });
+        });
+    } else {
+      setInitialValue({
+        ...initialValue,
+        errormsg: "Please enter remote customer id!",
+      });
+    }
+  };
+
 
   useEffect(() => {
     return () => {};
-  }, []);
+  }, [initialValue]);
 
   return (
     <>
@@ -365,8 +624,28 @@ const CustomerDetail = () => {
             <Modal.Title>{initialValue.title}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {confirm ? (
-              <p>{initialValue.cofirmationtxt}</p>
+            {confirm == 3 ? (
+              <div className=" text-center align-items-center justify-content-center h-100  m-auto p-4  mt-3 mb-2">
+                <BsCheckCircle size={66} className="text-success m-3" />
+                <p>{initialValue.cofirmationtxt}</p>
+              </div>
+            ) : confirm == 2 ? (
+              <div className="p-2 pt-0 pb-3">
+                <p className="fw-semibold">{initialValue.cofirmationtxt}</p>
+
+                <Row className="mb-2 mt-2">
+                  <Col sm={8}>
+                    <input
+                      type="text"
+                      required
+                      value={initialValue.cid}
+                      onChange={UpdateID}
+                      className="form-control border-secondary "
+                      placeholder="Enter customer ID"
+                    />
+                  </Col>
+                </Row>
+              </div>
             ) : (
               <Form>
                 <Row>
@@ -374,7 +653,7 @@ const CustomerDetail = () => {
                     <p>Current Plan:</p>
                   </Col>
                   <Col sm={6} className="align-items-center">
-                    <p className="text-primary fw-bold align-items-center">
+                    <p className="primary-text fw-semibold align-items-center">
                       {initialValue.currentPlan} Device License
                     </p>
                   </Col>
@@ -395,46 +674,65 @@ const CustomerDetail = () => {
                       </Dropdown.Toggle>
 
                       <Dropdown.Menu variant="light">
-                        <Dropdown.Item onClick={() => setLicense(1)}>
-                          1 License
-                        </Dropdown.Item>
-                        <Dropdown.Item onClick={() => setLicense(3)}>
-                          3 License
-                        </Dropdown.Item>
                         <Dropdown.Item onClick={() => setLicense(5)}>
                           5 License
                         </Dropdown.Item>
                         <Dropdown.Item onClick={() => setLicense(10)}>
                           10 License
                         </Dropdown.Item>
-                        <Dropdown.Item onClick={() => setLicense(20)}>
-                          20 License
+                        <Dropdown.Item onClick={() => setLicense(15)}>
+                          15 License
                         </Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
+                  </Col>
+                </Row>
+                <Row className="mb-2 mt-2">
+                  <Col sm={8}>
+                    <input
+                      type="text"
+                      required
+                      value={initialValue.cid}
+                      onChange={UpdateID}
+                      className="form-control border-secondary "
+                      placeholder="Customer ID"
+                    />
                   </Col>
                 </Row>
               </Form>
             )}
           </Modal.Body>
           <Modal.Footer>
+          <div className="position-relative  ms-0 rounded  px-2 ps-0 text-start">
+              <p className="text-danger text-center pt-2">
+                {initialValue.errormsg}
+              </p>
+            </div>
             <Button variant="light" onClick={handleClose}>
               Back
             </Button>
             {initialValue.operation === "add" ? (
-              <Button variant="primary" onClick={() => alert("add")}>
+              <Button
+                variant="light"
+                className="primary-bg border-0"
+                onClick={() => AddSubscription()}
+              >
                 Confirm
               </Button>
             ) : initialValue.operation === "remove" ? (
-              <Button variant="primary" onClick={() => alert("remove")}>
+              <Button
+                variant="light"
+                className="primary-bg border-0"
+                onClick={() => RemoveSubscription()}
+              >
                 Confirm
               </Button>
             ) : initialValue.operation === "deactivate" ? (
-              <Button variant="danger" onClick={() => alert("deactivate")}>
+              <Button variant="danger" onClick={() => Deactivate()}>
                 Deactivate
               </Button>
             ) : initialValue.operation === "detach" ? (
-              <Button variant="danger" onClick={() => alert("Detach")}>
+              <Button variant="danger" onClick={() => Detach()}>
                 Detach
               </Button>
             ) : null}

@@ -22,9 +22,12 @@ import { BsCheckCircle } from "react-icons/bs";
 import Connection from "../constants/Connections";
 import Sidebar from "../components/Sidebar";
 import Constants from "../constants/Constants";
+import Modal from "react-bootstrap/Modal";
+
 
 function CreateAccount() {
   const [created, setCreated] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [license, setLicense] = useState("Select License");
   const [Period, setPeriod] = useState("monthly");
   const [showpass, setShowPass] = useState(false);
@@ -34,7 +37,6 @@ function CreateAccount() {
   });
 
   const navigate = useNavigate();
-
   const [input, setInput] = useState({
     firstname: "",
     middlename: "",
@@ -49,6 +51,10 @@ function CreateAccount() {
     errormessage: "",
   });
 
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const [confirm, setConfirm] = useState(false);
   //update first name
   const UpdateFname = (event) => {
     setInput({
@@ -212,118 +218,77 @@ function CreateAccount() {
       //   .then((res) => res.json())
       //   .then((res) => {
       //     if (res.Status.id == 0) {
-            var Api = Connection.api + Connection.customers; // update this line of code to the something like 'http://localhost:3000/customers?_page=${currentPage}&_limit=${limit}
-            var headers = {
-              accept: "application/json",
-              "Content-Type": "application/json",
-              
-            };
-            const data = {
-              firstname: input.firstname,
-              middlename: input.middlename,
-              lastname: input.lastname,
-              emailaddress: input.emailaddress,
-              phone: input.phone,
-              address: input.address,
-              username: input.username,
-              password: input.password,
-              subscription: Period,
-              license: license,
-              payment: selected.active,
-              status: 0,
-            };
-    
-            fetch(Api, {
-              method: "POST",
-              headers: headers,
-              body: JSON.stringify(data),
-            })
-              .then((response) => response.json())
-              .then((response) => {
-                if (response === "succeed") {
-                  setInput({
-                    ...input,
-                    errormessage: "Successfully Created!",
-                  });
-                  setCreated(true);
-                } else {
-                  setInput({
-                    ...input,
-                    errormessage: "We have issue creating account",
-                  });
-                  setCreated(false);
-                }
-              });
-          // } else if (res.Status.id == 1001) {
-          //   console.log(res.Status.desc);
-          // } else if (res.Status.id == 1002) {
-          //   console.log(res.Status.desc);
-          // } else if (res.Status.id == 1003) {
-          //   console.log(res.Status.desc);
-          // } else if (res.Status.id == 1004) {
-          //   console.log(res.Status.desc);
-          // } else if (res.Status.id == 1005) {
-          //   console.log(res.Status.desc);
-          // } else if (res.Status.id == 1006) {
-          //   console.log(res.Status.desc);
-          // } else if (res.Status.id == 1007) {
-          //   console.log(res.Status.desc);
-          // } else if (res.Status.id == 1008) {
-          //   console.log(res.Status.desc);
-          // } else if (res.Status.id == 1009) {
-          //   console.log(res.Status.desc);
-          // } else {
-          //   console.log("couldn't trace error");
-          // }
-        
+        setLoading(true);
+      var Api = Connection.api + Connection.customers; // update this line of code to the something like 'http://localhost:3000/customers?_page=${currentPage}&_limit=${limit}
+      var headers = {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      };
+      const data = {
+        firstname: input.firstname,
+        middlename: input.middlename,
+        lastname: input.lastname,
+        emailaddress: input.emailaddress,
+        phone: input.phone,
+        address: input.address,
+        username: input.username,
+        password: input.password,
+        subscription: Period,
+        license: license,
+        payment: selected.active,
+        status: 0,
+      };
+
+      fetch(Api, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(data),
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          if (response === "succeed") {
+            setInput({
+              ...input,
+              errormessage: "Successfully Created!",
+            });
+            handleShow();
+            setLoading(false);
+          } else {
+            setInput({
+              ...input,
+              errormessage: "We have issue creating account",
+            });
+            
+            setLoading(false);
+          }
+        });
+      // } else if (res.Status.id == 1001) {
+      //   console.log(res.Status.desc);
+      // } else if (res.Status.id == 1002) {
+      //   console.log(res.Status.desc);
+      // } else if (res.Status.id == 1003) {
+      //   console.log(res.Status.desc);
+      // } else if (res.Status.id == 1004) {
+      //   console.log(res.Status.desc);
+      // } else if (res.Status.id == 1005) {
+      //   console.log(res.Status.desc);
+      // } else if (res.Status.id == 1006) {
+      //   console.log(res.Status.desc);
+      // } else if (res.Status.id == 1007) {
+      //   console.log(res.Status.desc);
+      // } else if (res.Status.id == 1008) {
+      //   console.log(res.Status.desc);
+      // } else if (res.Status.id == 1009) {
+      //   console.log(res.Status.desc);
+      // } else {
+      //   console.log("couldn't trace error");
+      // }
     }
 
     return true;
   };
 
-  if (created) {
-    return (
-      <Container>
-        <Row>
-          <Col
-            sm={10}
-            className=" text-center align-items-center justify-content-center h-100 bg-white m-auto p-4  mt-4 mb-3 rounded shadow-sm"
-          >
-            <BsCheckCircle size={66} className="text-success m-3" />
-            <p className="fs-5 ">Successfully Created</p>
-
-            <Row className="d-flex justify-content-evenly align-items-center m-auto mt-5 w-50">
-              <Col>
-                <Link
-                  onClick={() => setCreated(!created)}
-                  to="/createaccount"
-                  variant="light"
-                  className="
-                d-flex justify-content-center align-items-center
-                btn btn-light
-                text-decoration-none text-success fw-semibold "
-                >
-                  Back
-                </Link>
-              </Col>
-
-              <Col>
-                <Link
-                  to="/customers"
-                  className="
-                d-flex justify-content-evenly align-self-center
-                text-decoration-none text-dark btn btn-success text-white bg-gradient "
-                >
-                  Home
-                </Link>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-      </Container>
-    );
-  }
-
+  
   return (
     <>
       <Sidebar />
@@ -593,7 +558,6 @@ function CreateAccount() {
                                   <div className="m-2 mt-0 mb-0 justify-content-center ">
                                     <img
                                       src={item.icon}
-                                      
                                       width="50"
                                       height="50"
                                       alt="icon"
@@ -620,11 +584,10 @@ function CreateAccount() {
                         </MDBCol>
                       </MDBRow>
                       <div className="d-flex justify-content-end align-items-center pt-3 p-3">
-             
-                          <p className="text-danger mx-4 text-center m-auto justify-content-center align-items-center">
-                            {input.errormessage}
-                          </p>
-                     
+                        <p className="text-danger mx-4 text-center m-auto justify-content-center align-items-center">
+                          {input.errormessage}
+                        </p>
+
                         <Button
                           variant="light"
                           size="md"
@@ -641,12 +604,22 @@ function CreateAccount() {
 
                         <Button
                           type="button"
-                          variant="warning"
+                          variant="light"
                           size="md"
-                          className="ms-3"
+                          className="ms-3 primary-bg border-0 px-5"
                           onClick={() => ValidateInput()}
+                          disabled={loading ? true : false}
                         >
-                          Create Account
+                          {loading ? (
+                            <div
+                              class="spinner-border spinner-border-sm text-secondary"
+                              role="status"
+                            >
+                              <span class="visually-hidden">Loading...</span>
+                            </div>
+                          ) : (
+                            <span>Create Account</span>
+                          )}
                         </Button>
                       </div>
                     </form>
@@ -656,6 +629,50 @@ function CreateAccount() {
             </MDBContainer>
           </Col>
         </Row>
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton/>
+          <Modal.Body>
+     
+          <Row>
+          <Col
+            sm={10}
+            className=" text-center align-items-center justify-content-center  m-auto p-3  mt-2 mb-1 "
+          >
+            <BsCheckCircle size={66} className="text-success m-3" />
+            <p className="fs-5 ">Successfully Created</p>
+            <p className="fs-6 ">We have sent you an email check your inbox</p>
+         
+            <Row className="d-flex justify-content-evenly align-items-center m-auto mt-5 w-50">
+              <Col>
+                <Link
+                  onClick={() => handleClose()}
+                  to="/createaccount"
+                  variant="light"
+                  className="
+                d-flex justify-content-center align-items-center
+                btn btn-light
+                text-decoration-none text-dark fw-semibold "
+                >
+                  Back
+                </Link>
+              </Col>
+
+              <Col>
+                <Link
+                  to="/customers"
+                  variant = "light"
+                  className="
+                d-flex justify-content-evenly align-self-center
+                text-decoration-none text-dark btn primary-bg text-dark "
+                >
+                  Home
+                </Link>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+        </Modal.Body>
+        </Modal>
       </Container>
     </>
   );
