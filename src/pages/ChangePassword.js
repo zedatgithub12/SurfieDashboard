@@ -92,7 +92,7 @@ const ChangePassword = () => {
         confirmPasserrmsg: "Confirm new password!",
       });
       return false;
-    } else if (state.newpassword != state.confirmpassword) {
+    } else if (state.newpassword !== state.confirmpassword) {
       setState({
         ...state,
         confirmPassState: true,
@@ -170,7 +170,7 @@ const ChangePassword = () => {
                 New Password
               </label>
               <input
-                type="password"
+              
                 className={
                   state.newPassb ? "form-control border-danger" : "form-control"
                 }

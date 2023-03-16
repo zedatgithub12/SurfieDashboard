@@ -1,59 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React, {useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Container from "react-bootstrap/Container";
 import { Link, useNavigate } from "react-router-dom";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import HightlightAccordion from "../components/Accordion";
-import Status from "../assets/Status";
 import CustomerTable from "../components/CustomerTable";
 import Table from "react-bootstrap/Table";
-import Form from "react-bootstrap/Form";
-import Modal from "react-bootstrap/Modal";
-import Dropdown from "react-bootstrap/Dropdown";
 import { AiOutlineSearch } from "react-icons/ai";
 import Connection from "../constants/Connections";
 import Empty from "../assets/Empty.png";
 import ReactPaginate from "react-paginate";
-import { BsCheckCircle } from "react-icons/bs";
 
 export const Users = () => {
 
   const navigate = useNavigate();
 
-  const [activeTab, setActiveTab] = useState("1");
   const [loading, setLoading] = useState(true);
-  const [show, setShow] = useState(false);
-  const [confirm, setConfirm] = useState("1");
   const [customers, setCustomers] = useState([]);
   const [search, setSearch] = useState();
-  const [license, setLicense] = useState(); //modal dropdown license listing states
   const [notFound, setNotFound] = useState("No customer with this status!");
-  const [paging, setPaging] = useState({
-    initialPage: "",
-    totalCount: "",
-  });
+  // const [paging, setPaging] = useState({
+  //   initialPage: "",
+  //   totalCount: "",
+  // });
 
-  const [initialValue, setInitialValue] = useState({
-    title: "",
-    currentPlan: "",
-    updatedInfo: "",
-    operation: "",
-    cofirmationtxt: "",
-    errormsg: "",
-    lid: "",
-    cid: "",
-  });
-  const Tabs = (id) => {
-    setActiveTab(id);
-  };
+  
   const FindCustomer = (currentPage) => {
     if (search !== "") {
       var Api =
         Connection.api +
         Connection.search +
-        `?name=${search}&page=${currentPage}&status=${activeTab}`;
+        `?name=${search}&page=${currentPage}`;
       var headers = {
         accept: "application/json",
         "Content-Type": "application/json",
@@ -78,10 +56,12 @@ export const Users = () => {
     }
   };
   const fetchCustomer = async (currentPage) => {
+
+    setLoading(false);
     var Api =
       Connection.api +
       Connection.customers +
-      `?page=${currentPage}&status=${activeTab}`; // update this line of code to the something like 'http://localhost:3000/customers?_page=${currentPage}&_limit=${limit}
+      `?page=${currentPage}`; // update this line of code to the something like 'http://localhost:3000/customers?_page=${currentPage}&_limit=${limit}
     var headers = {
       accept: "application/json",
       "Content-Type": "application/json",
@@ -93,6 +73,7 @@ export const Users = () => {
       headers: headers,
     });
     const response = await data.json();
+    setLoading(false);
     return response.data;
   };
 
@@ -248,7 +229,7 @@ export const Users = () => {
                         previousLabel={"previous"}
                         nextLabel={"next"}
                         breakLabel={"..."}
-                        pageCount={Math.ceil(paging.totalCount)}
+                        pageCount={"5"}
                         marginPagesDisplayed={3}
                         pageRangeDisplayed={3}
                         onPageChange={handlePageClick}

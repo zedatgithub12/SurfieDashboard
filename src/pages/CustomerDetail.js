@@ -73,7 +73,7 @@ const CustomerDetail = () => {
     var month = date.slice(5, 7);
     var day = date.slice(8, 10);
 
-    if (plan == 1) {
+    if (plan === 1) {
       month = parseInt(month) + 1;
     } else {
       year = parseInt(year) + 1;
@@ -172,7 +172,7 @@ const CustomerDetail = () => {
   };
 
   const AddSubscription = () => {
-    if (initialValue.currentPlan == 15) {
+    if (initialValue.currentPlan === 15) {
       setInitialValue({
         ...initialValue,
         errormsg: "You are using the maximum plan of Surfi Ethiopia!",
@@ -233,7 +233,7 @@ const CustomerDetail = () => {
 
   // remove the subscription
   const RemoveSubscription = () => {
-    if (initialValue.currentPlan == 5) {
+    if (initialValue.currentPlan === 5) {
       setInitialValue({
         ...initialValue,
         errormsg: "You are using the minimum plan of Surfi Ethiopia!",
@@ -431,15 +431,15 @@ const CustomerDetail = () => {
                           state.middle_name +
                           " " +
                           state.last_name}{" "}
-                        {state.status == 1 ? (
+                        {state.status === 1 ? (
                           <span class="badge bg-success bg-opacity-10 text-success px-4 rounded-1">
                             {Status(state.status)}
                           </span>
-                        ) : state.status == 2 ? (
+                        ) : state.status === 2 ? (
                           <span class="badge bg-danger bg-opacity-10 text-danger px-4 rounded-1">
                             {Status(state.status)}
                           </span>
-                        ) : state.status == 3 ? (
+                        ) : state.status === 3 ? (
                           <span class="badge bg-dark bg-opacity-10 text-dark px-4 rounded-1">
                             {Status(state.status)}
                           </span>
@@ -624,12 +624,12 @@ const CustomerDetail = () => {
             <Modal.Title>{initialValue.title}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {confirm == 3 ? (
+            {confirm === 3 ? (
               <div className=" text-center align-items-center justify-content-center h-100  m-auto p-4  mt-3 mb-2">
                 <BsCheckCircle size={66} className="text-success m-3" />
                 <p>{initialValue.cofirmationtxt}</p>
               </div>
-            ) : confirm == 2 ? (
+            ) : confirm === 2 ? (
               <div className="p-2 pt-0 pb-3">
                 <p className="fw-semibold">{initialValue.cofirmationtxt}</p>
 

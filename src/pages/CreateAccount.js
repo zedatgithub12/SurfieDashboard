@@ -21,12 +21,10 @@ import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { BsCheckCircle } from "react-icons/bs";
 import Connection from "../constants/Connections";
 import Sidebar from "../components/Sidebar";
-import Constants from "../constants/Constants";
 import Modal from "react-bootstrap/Modal";
 
 
 function CreateAccount() {
-  const [created, setCreated] = useState(false);
   const [loading, setLoading] = useState(false);
   const [license, setLicense] = useState("Select License");
   const [Period, setPeriod] = useState("monthly");
@@ -81,7 +79,7 @@ function CreateAccount() {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [confirm, setConfirm] = useState(false);
+
   //update first name
   const UpdateFname = (event) => {
     setInput({
@@ -171,7 +169,7 @@ function CreateAccount() {
 
     if (FirstChar === "+") {
       Phoneno = phone.slice(1, phone.length - 1);
-    } else if (FirstChar == 0) {
+    } else if (FirstChar === 0) {
       Phoneno = parseInt(ccode) + phone.slice(1, phone.length - 1);
     }
 
@@ -197,7 +195,7 @@ function CreateAccount() {
   }
   //validate user input when user pressed submit button
   const ValidateInput = () => {
-    var packages = `AFROMINA_${license}`; //packages id to be sent to puresight
+    // var packages = `AFROMINA_${license}`; //packages id to be sent to puresight
     // console.log(MakeitPhone(input.phone))
 
     if (
@@ -216,7 +214,7 @@ function CreateAccount() {
 
       });
       return false;
-    } else if (input.password != input.confirmpassword) {
+    } else if (input.password !== input.confirmpassword) {
       setInput({
         ...input,
         errormessage: "Password you entered doesn't match",
@@ -277,7 +275,7 @@ function CreateAccount() {
         middlename: input.middlename,
         lastname: input.lastname,
         emailaddress: input.emailaddress,
-        phone: input.phone,
+        phone: MakeitPhone(input.phone),
         address: input.address,
         username: input.username,
         password: input.password,
@@ -514,7 +512,7 @@ function CreateAccount() {
                                   >
                                     {license === "Select License"
                                       ? "Select License"
-                                      : license + " " + "License"}
+                                      : license + " License"}
                                   </Dropdown.Toggle>
 
                                   <Dropdown.Menu variant="light" id="licenses">

@@ -17,6 +17,9 @@ import Empty from "../assets/Empty.png";
 import ReactPaginate from "react-paginate";
 import Sidebar from "../components/Sidebar";
 import { BsCheckCircle } from "react-icons/bs";
+import Toast from 'react-bootstrap/Toast';
+import ToastContainer from 'react-bootstrap/ToastContainer';
+
 
 export const Customers = () => {
   const navigate = useNavigate();
@@ -29,6 +32,7 @@ export const Customers = () => {
   const [search, setSearch] = useState();
   const [license, setLicense] = useState(); //modal dropdown license listing states
   const [notFound, setNotFound] = useState("No customer with this status!");
+  const [position, setPosition] = useState(false);
   const [paging, setPaging] = useState({
     initialPage: "",
     totalCount: "",
@@ -142,7 +146,7 @@ export const Customers = () => {
   };
 
   const AddSubscription = () => {
-    if (initialValue.currentPlan == 15) {
+    if (initialValue.currentPlan === 15) {
       setInitialValue({
         ...initialValue,
         errormsg: "You are using the maximum plan of Surfi Ethiopia!",
@@ -203,7 +207,7 @@ export const Customers = () => {
 
   // remove the subscription
   const RemoveSubscription = () => {
-    if (initialValue.currentPlan == 5) {
+    if (initialValue.currentPlan === 5) {
       setInitialValue({
         ...initialValue,
         errormsg: "You are using the minimum plan of Surfi Ethiopia!",
@@ -437,37 +441,7 @@ export const Customers = () => {
     // setCustomers(customers);
   };
 
-  const PendingCount = () => {
-    var Api = Connection.api + Connection.pending; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
-    var headers = {
-      accept: "application/json",
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-    };
-
-    fetch(Api, {
-      method: "GET",
-      headers: headers,
-    })
-      .then((response) => response.json())
-      .then((response) => {
-        setCount({
-          ...count,
-          pendings: response.pendings,
-          active: response.actives,
-          monthly: response.monthly,
-          annual: response.annual,
-          mfive: response.mfive,
-          mten: response.mten,
-          mfifty: response.mfifty,
-          afive: response.afive,
-          aten: response.aten,
-          afifty: response.afifty,
-          newm: response.newm,
-          newa: response.newa,
-        });
-      });
-  };
+ 
 
   //activate pending users
   const Approve = (id) => {
@@ -490,52 +464,86 @@ export const Customers = () => {
       .then((response) => response.json())
       .then((response) => {
         if (response === "activated") {
-          getCustomers();
-          PendingCount();
+          setPosition(true);
+          
         }
       });
   };
-  const getCustomers = async (currentPage) => {
-    setLoading(false);
-    var Api =
-      Connection.api +
-      Connection.customers +
-      `?page=${currentPage}&status=${activeTab}`; 
-      
-      var headers = {
-      accept: "application/json",
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-    };
   
-    fetch(Api, {
-      method: "GET",
-      headers: headers,
-      
-    })
-      .then((response) => response.json())
-      .then((response) => {
-        setCustomers(response.data);
-        setPaging({
-          ...paging,
-          initialPage: response.from,
-          totalCount: response.last_page,
-        });
-        setLoading(true);
-      })
-      .catch((e) => {
-        console.log(e);
-        setLoading(true);
-      });
-  };
-
   //use effect function
   //when the functional component cames to life we will getcustomers by deafult
   useEffect(() => {
+    const getCustomers = async (currentPage) => {
+      setLoading(false);
+      var Api =
+        Connection.api +
+        Connection.customers +
+        `?page=${currentPage}&status=${activeTab}`; 
+        
+        var headers = {
+        accept: "application/json",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      };
+    
+      fetch(Api, {
+        method: "GET",
+        headers: headers,
+        
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          setCustomers(response.data);
+          setPaging({
+            ...paging,
+            initialPage: response.from,
+            totalCount: response.last_page,
+          });
+          setLoading(true);
+        })
+        .catch((e) => {
+          console.log(e);
+          setLoading(true);
+        });
+    };
+  
     getCustomers();
+
+
+    const PendingCount = () => {
+      var Api = Connection.api + Connection.pending; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
+      var headers = {
+        accept: "application/json",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      };
+  
+      fetch(Api, {
+        method: "GET",
+        headers: headers,
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          setCount({
+            ...count,
+            pendings: response.pendings,
+            active: response.actives,
+            monthly: response.monthly,
+            annual: response.annual,
+            mfive: response.mfive,
+            mten: response.mten,
+            mfifty: response.mfifty,
+            afive: response.afive,
+            aten: response.aten,
+            afifty: response.afifty,
+            newm: response.newm,
+            newa: response.newa,
+          });
+        });
+    };
     PendingCount();
     return () => {};
-  }, [activeTab]);
+  }, [activeTab, paging.initialPage, position]);
 
   return (
     <>
@@ -773,12 +781,12 @@ export const Customers = () => {
             <Modal.Title>{initialValue.title}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {confirm == 3 ? (
+            {confirm === 3 ? (
               <div className=" text-center align-items-center justify-content-center h-100  m-auto p-4  mt-3 mb-2">
                 <BsCheckCircle size={66} className="text-success m-3" />
                 <p>{initialValue.cofirmationtxt}</p>
               </div>
-            ) : confirm == 2 ? (
+            ) : confirm === 2 ? (
               <div className="p-2 pt-0 pb-3">
                 <p className="fw-semibold">{initialValue.cofirmationtxt}</p>
 
@@ -888,6 +896,15 @@ export const Customers = () => {
             ) : null}
           </Modal.Footer>
         </Modal>
+
+
+
+        <ToastContainer position="bottom-center" className="p-3 bg-succees bg-opacity-10"> 
+        <Toast onClose={() => setPosition(false)} show={position} delay={2000} autohide>
+        
+          <Toast.Body className="text-dark fw-semibold">Successfully Activated!</Toast.Body>
+        </Toast>
+        </ToastContainer>
       </Container>
     </>
   );

@@ -153,11 +153,11 @@ const Support = () => {
                         </p>
                       </td>
                       <td onClick={() => OpenModal(item)}>
-                        {item.status == "1" ? (
+                        {item.status === 1 ? (
                           <span className="bg-opacity-10 bg-success px-4 py-1 text-success rounded-pill d-inline">
                             Replied
                           </span>
-                        ) : item.status == "2" ? (
+                        ) : item.status === 2 ? (
                           <span className="bg-opacity-10 bg-secondary px-4 py-1 text-secondary rounded-pill d-inline">
                             Closed
                           </span>
@@ -188,11 +188,11 @@ const Support = () => {
                 <div className="position-absolute end-0 me-3">
                   <span className="fw-semibold text-muted">Status: </span>
                   <span>
-                    {modalContent.content.status == "1" ? (
+                    {modalContent.content.status === 1 ? (
                       <span className="bg-opacity-10 bg-success px-4 py-1 text-success rounded-pill d-inline">
                         Replied
                       </span>
-                    ) : modalContent.content.status == "2" ? (
+                    ) : modalContent.content.status === 2 ? (
                       <span className="bg-opacity-10 bg-secondary px-4 py-1 text-secondary rounded-pill d-inline">
                         Closed
                       </span>
@@ -220,13 +220,13 @@ const Support = () => {
                   <Button
                     variant="light"
                     className={
-                      modalContent.content.status == "2"
+                      modalContent.content.status === 2
                         ? "disabled btn  text-secondary px-4  border-0 me-2"
                         : " btn  text-danger px-4  border-0 me-2"
                     }
                     onClick={() => CloseTicket(modalContent.content.id)}
                   >
-                    {modalContent.content.status == "2" ? "Closed" : "Close"}
+                    {modalContent.content.status === 2 ? "Closed" : "Close"}
                   </Button>
                   <Button
                     variant="light"

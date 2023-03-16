@@ -3,10 +3,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
-import { HiOutlineInbox, HiOutlinePencilAlt } from "react-icons/hi";
-import { TbBrandTelegram } from "react-icons/tb";
-import { MdOutlineOutbox } from "react-icons/md";
-import { AiOutlineStar } from "react-icons/ai";
+import { HiOutlineInbox} from "react-icons/hi";
 import { BsArchive } from "react-icons/bs";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
@@ -217,7 +214,6 @@ const SendMail =()=>{
                 className="d-flex btn primary-bg  text-center justify-content-center text-dark border-0 px-4 fw-semibold"
                 variant="light"
                 onClick={()=>SendMail()}
-                className="ms-3 primary-bg border-0 px-5"
                 disabled={loading ? true : false}
               >
                 {loading ? (
