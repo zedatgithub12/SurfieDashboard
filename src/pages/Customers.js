@@ -418,15 +418,12 @@ export const Customers = () => {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
     };
-    var request = {
-      status: activeTab,
-    };
+  
     const data = await fetch(Api, {
       method: "GET",
       headers: headers,
     });
     const response = await data.json();
-    console.log(response.data);
     return response.data;
   };
 
@@ -503,20 +500,18 @@ export const Customers = () => {
     var Api =
       Connection.api +
       Connection.customers +
-      `?page=${currentPage}&status=${activeTab}`; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
-    var headers = {
+      `?page=${currentPage}&status=${activeTab}`; 
+      
+      var headers = {
       accept: "application/json",
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
     };
-    // var data = {
-    //   status: parseInt(activeTab),
-    // };
-
+  
     fetch(Api, {
       method: "GET",
       headers: headers,
-      // Body: JSON.stringify(data),
+      
     })
       .then((response) => response.json())
       .then((response) => {

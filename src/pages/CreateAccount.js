@@ -39,14 +39,41 @@ function CreateAccount() {
   const navigate = useNavigate();
   const [input, setInput] = useState({
     firstname: "",
+    firsths: false,
+    firstht: "",
+
     middlename: "",
+    middlehs: false,
+    middleht: "",
+
     lastname: "",
+    latshs: false,
+    lastht: "",
+
     emailaddress: "",
+    emailhs: false,
+    emailht: "",
+
     phone: "",
+    phonehs: false,
+    phoneht: "",
+
     address: "",
+    addresshs: false,
+    addressht: "",
+
     username: "",
+    usernamehs: false,
+    usernameht: "",
+
     password: "",
+    passwordhs: false,
+    passwordht: "",
+
     confirmpassword: "",
+    confirmhs: false,
+    confirmht: "",
+
 
     errormessage: "",
   });
@@ -151,6 +178,23 @@ function CreateAccount() {
     return Phoneno;
   };
 
+
+  const Pricing = (license)=>{
+    var price;
+    switch(license){
+  
+        case 10:
+          price = 450;
+          break;
+          case 15:
+          price=600;
+           break;
+           default: 
+           price=300;
+              break;
+    }
+    return price
+  }
   //validate user input when user pressed submit button
   const ValidateInput = () => {
     var packages = `AFROMINA_${license}`; //packages id to be sent to puresight
@@ -169,12 +213,15 @@ function CreateAccount() {
       setInput({
         ...input,
         errormessage: "Please fill all form",
+
       });
       return false;
     } else if (input.password != input.confirmpassword) {
       setInput({
         ...input,
         errormessage: "Password you entered doesn't match",
+        confirmhs: true,
+        confirmht: "Password you entered doesn't match" 
       });
       document.getElementById("form8").focus();
       return false;
@@ -191,6 +238,7 @@ function CreateAccount() {
       setInput({
         ...input,
         errormessage: "Please select payment option!",
+
       });
 
       return false;
@@ -235,6 +283,7 @@ function CreateAccount() {
         password: input.password,
         subscription: Period,
         license: license,
+        price: Pricing(license),
         payment: selected.active,
         status: 0,
       };
@@ -256,7 +305,7 @@ function CreateAccount() {
           } else {
             setInput({
               ...input,
-              errormessage: "We have issue creating account",
+              errormessage: "error creating account!",
             });
             
             setLoading(false);
