@@ -1,7 +1,6 @@
-import React, {useState} from 'react';
-import axios from "axios";
+import React from 'react';
 import {useNavigate} from 'react-router-dom';
-import Connection from '../constants/Connections';
+
 
 
 export default function AuthUser() {
@@ -19,8 +18,8 @@ export default function AuthUser() {
     }
 
 
-  const [token, setToken] = useState(getToken());
-  const [user, setUser] = useState(getUser());
+  const [token, setToken] = React.useState(getToken());
+  const [user, setUser] = React.useState(getUser());
 
   const saveToken = (user, token) => {
     sessionStorage.setItem('token', JSON.stringify(token));
@@ -36,12 +35,7 @@ export default function AuthUser() {
     navigate('/login');
   }
 
-  // var http = axios.create({
-  //   baseUrl: "http://localhost:8000/api",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  // });
+
   return {
     setToken: saveToken,
     token, 

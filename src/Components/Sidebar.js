@@ -11,7 +11,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import { FaUserCircle } from "react-icons/fa";
 import { Row } from "react-bootstrap";
 import AuthUser from "./AuthUser";
-import Signin from "../pages/Signin";
+
 
 
 
@@ -57,7 +57,7 @@ const Sidebar = () => {
   const navigate=useNavigate();
 
  const Logout =()=>{
-  if(token != undefined){
+  if(token !== undefined){
     logout();
   }
   }
