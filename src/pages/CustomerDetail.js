@@ -624,12 +624,12 @@ const CustomerDetail = () => {
             <Modal.Title>{initialValue.title}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {confirm === 3 ? (
+            {confirm === "3" ? (
               <div className=" text-center align-items-center justify-content-center h-100  m-auto p-4  mt-3 mb-2">
                 <BsCheckCircle size={66} className="text-success m-3" />
                 <p>{initialValue.cofirmationtxt}</p>
               </div>
-            ) : confirm === 2 ? (
+            ) : confirm === "2" ? (
               <div className="p-2 pt-0 pb-3">
                 <p className="fw-semibold">{initialValue.cofirmationtxt}</p>
 
