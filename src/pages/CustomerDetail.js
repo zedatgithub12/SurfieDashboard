@@ -73,7 +73,7 @@ const CustomerDetail = () => {
     var month = date.slice(5, 7);
     var day = date.slice(8, 10);
 
-    if (plan === 1) {
+    if (plan === "monthly") {
       month = parseInt(month) + 1;
     } else {
       year = parseInt(year) + 1;
