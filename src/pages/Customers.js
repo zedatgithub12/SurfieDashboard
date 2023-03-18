@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import HightlightAccordion from "../components/Accordion";
+import HightlightAccordion from "./Highlight";
 import Status from "../assets/Status";
 import CustomerTable from "../components/CustomerTable";
 import Table from "react-bootstrap/Table";
