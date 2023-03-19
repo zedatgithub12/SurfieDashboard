@@ -4,7 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import HightlightAccordion from "./Highlight";
 import Status from "../assets/Status";
 import CustomerTable from "../components/CustomerTable";
 import Table from "react-bootstrap/Table";
@@ -765,14 +764,105 @@ export const Customers = () => {
           </Col>
 
           <Col sm={3}>
-            <HightlightAccordion
-              mfive={count.mfive}
-              mten={count.mten}
-              mfifty={count.mfifty}
-              afive={count.afive}
-              aten={count.aten}
-              afifty={count.afifty}
-            />
+          <div class="accordion" id="accordionExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingOne">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+      Monthly Subscribers
+      </button>
+    </h2>
+    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+      <Row className="justify-content-md-start align-items-center">
+            <Col sm={8}>
+              <p className="fs-6 font-link">5 Device Subscribers</p>
+            </Col>
+            <Col sm={4}>
+              <p className="fs-6 font-link fw-bold text-secondary text-end">{count.mfive}</p>
+            </Col>
+          </Row>
+          <Row className="justify-content-md-start align-items-center">
+            <Col sm={8}>
+              <p className="fs-6 font-link">10 Device Subscribers</p>
+            </Col>
+            <Col sm={4}>
+              <p className="fs-6 font-link fw-bold text-secondary text-end">{count.mten}</p>
+            </Col>
+          </Row>
+          <Row className="justify-content-md-start align-items-center mb-4">
+            <Col sm={8}>
+              <p className="fs-6 font-link">15 Device Subscribers</p>
+            </Col>
+            <Col sm={4} className="p-2 bd-highlight">
+              <p className="fs-6 font-link fw-bold text-secondary text-end">{count.mfifty}</p>
+            </Col>
+          </Row>
+
+          <p className="fs-6 font-link">Estimated Monthly Revenue (ETB)</p>
+          <hr />
+          <Row className="mb-0">
+            <Col>
+              <p className="font-link">{count.mfive >= '5' ?(<span>{count.mfive*200} K</span>) : (<span> {count.mfive*200} birr </span>) }</p>
+            </Col>
+            <Col>
+              <p className="font-link">{count.mten >= '4' ?(<span>{count.mten*300} K</span>) : (<span> {count.mten*300} birr </span>) }</p>
+            </Col>
+            <Col>
+              <p className="font-link">{count.mfifty >= '2' ?(<span>{count.mfifty*500} K</span>) : (<span> {count.mfifty*500} birr </span>) }</p>
+            </Col>
+          </Row> </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingTwo">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+      Annual Subscribers
+      </button>
+    </h2>
+    <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+      <Row className="justify-content-md-start align-items-center">
+            <Col sm={8}>
+              <p className="fs-6 font-link">5 Device Subscribers</p>
+            </Col>
+            <Col sm={4}>
+              <p className="fs-6 font-link fw-bold text-secondary text-end">{count.afive}</p>
+            </Col>
+          </Row>
+          <Row className="justify-content-md-start align-items-center">
+            <Col sm={8}>
+              <p className="fs-6 font-link">10 Device Subscribers</p>
+            </Col>
+            <Col sm={4}>
+              <p className="fs-6 font-link fw-bold text-secondary text-end">{count.aten}</p>
+            </Col>
+          </Row>
+          <Row className="justify-content-md-start align-items-center mb-4">
+            <Col sm={8}>
+              <p className="fs-6 font-link">15 Device Subscribers</p>
+            </Col>
+            <Col sm={4} className="p-2 bd-highlight">
+              <p className="fs-6 font-link fw-bold text-secondary text-end">{count.afifty}</p>
+            </Col>
+          </Row>
+
+          <p className="fs-6 font-link">Estimated Annual Revenue (ETB)</p>
+          <hr />
+          <Row className="mb-0">
+            <Col>
+              <p className="font-link">{count.afive >= '1' ?(<span>{count.afive*2200} K</span>) : (<span> {count.afive*2200} birr </span>) }</p>
+            </Col>
+            <Col>
+              <p className="font-link">{count.aten >= '1' ?(<span>{count.aten*3300} K</span>) : (<span> {count.aten*3300} birr </span>) }</p>
+            </Col>
+            <Col>
+              <p className="font-link">{count.afifty >= '1' ?(<span>{count.afifty*5500} K</span>) : (<span> {count.afifty*5500} birr </span>) }</p>
+            </Col>
+          </Row> </div>
+    </div>
+  </div>
+  </div>
+
           </Col>
         </Row>
 
