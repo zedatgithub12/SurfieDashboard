@@ -20,12 +20,21 @@ function CustomerTable({
   reactivate
 }) {
 
-  const DateSlice=(date)=>{
-    var year = date.slice(0,4);
-    var month = date.slice(5,7);
-    var day = date.slice(8,10);
-    return day +"/"+ month +"/"+ year;
+     //calculate and return the license expire date
+  const ExpireDate = (date, plan) => {
+    var year = date.slice(0, 4);
+    var month = date.slice(5, 7);
+    var day = date.slice(8, 10);
+
+    if (plan === "monthly") {
+      month = parseInt(month) + 1;
+    } else {
+      year = parseInt(year) + 1;
     }
+
+    return day + "/" + month + "/" + year;
+  };
+
   return (
     <tr className=" align-items-center pt-2">
       <td onClick={rowPressed}>{id}</td>
@@ -46,7 +55,7 @@ function CustomerTable({
         </td>
       )}
 
-      <td onClick={rowPressed}>{DateSlice(date)}</td>
+      <td onClick={rowPressed}>{ExpireDate(date, subscription)}</td>
       <td className="text-end">
         {status === 0?(
             <Button  onClick={approve} variant="white" className="btn btn-sm btn-outline-success border-0 my-1 text-end" > Activate <RxCheck size={18} className="pe-1 pb-1"/></Button>

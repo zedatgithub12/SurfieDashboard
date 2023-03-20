@@ -1,8 +1,6 @@
 import React from 'react';
 import {useNavigate} from 'react-router-dom';
 
-
-
 export default function AuthUser() {
     const navigate = useNavigate();
     const getToken =()=>{
@@ -27,7 +25,7 @@ export default function AuthUser() {
 
     setToken(token);
     setUser(user);
-    navigate('/customers');
+    navigate('/home');
   }
 
   const logout =()=>{

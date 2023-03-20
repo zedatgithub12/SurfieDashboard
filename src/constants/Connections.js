@@ -1,7 +1,7 @@
 const Connection = {
     url: "http://localhost:3000",
     api: "http://localhost:8000/api",
-    remote: "https://pstest.puresight.com/cgi-bin/ProvisionAPI/",
+    remote: "https://surfie-t.puresight.com/cgi-bin/ProvisionAPI/",
     login: "/login",
     customers: "/customers",
    
