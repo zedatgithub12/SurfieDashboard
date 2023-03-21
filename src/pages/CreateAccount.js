@@ -244,14 +244,17 @@ function CreateAccount() {
       var RemoteApi = Connection.remote+ `CreateAccountWithPackageId.py?adminUser=${Constants.user}&adminPassword=${Constants.password}&email=${input.emailaddress}&phoneNumber=${MakeitPhone(input.phone)}&packageId=${packages}&subscriptionId=1&externalRef=AFROMINA`;
 
       fetch(RemoteApi,{
+        method: "GET",
         mode: "no-cors",
+        headers: {
+          "Content-Type":"application/xml; charset=utf-8"
+        }
+        
       })
       .then((res)=>res.text())
       .then((res) => {
-        let parser = new DOMParser();
-        let xml = parser.parseFromString(res, "application/xml");
-        // var status = xml.getElementsByTagName("AddSubscription").getElementById('id');
-        console.log(xml);
+      
+        console.log(res);
 
           if (res.Status.id === 0) {
         setLoading(true);

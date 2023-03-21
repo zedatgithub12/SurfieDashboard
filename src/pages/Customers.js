@@ -166,14 +166,16 @@ export const Customers = () => {
         `AddSubscription.py?accountId=${initialValue.cid}&subscriptionId=1&packageId=${packages}&adminUser=${Constants.user}&adminPassword=${Constants.password}`;
 
       fetch(RemoteApi, {
+        method: "GET",
         mode: "no-cors",
+        headers:{
+          accept: "text/xml",
+          "Content-Type":"application/xml; charset=utf-8"
+        }
       })
-        .then((res) => res.text())
-        .then((res) => {
-          let parser = new DOMParser();
-          let xml = parser.parseFromString(res, "application/xml");
-          var status = xml.getElementsByTagName("AddSubscription").getElementById('id');
-          console.log(status);
+      .then((res) => res.text())
+      .then((res) => {
+          console.log(res);
 
           if (res.Status.id === 0) {
             var Api = Connection.api + Connection.addlicense + initialValue.lid;
@@ -198,7 +200,7 @@ export const Customers = () => {
                 // the action will be taken depending on the server response
 
                 if (response === "succeed") {
-                  console.log("well done!");
+                
                   setConfirm("3");
                   setInitialValue({
                     ...initialValue,
