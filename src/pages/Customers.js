@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
+import HightlightAccordion from "../components/Accordion";
 import Status from "../assets/Status";
 import CustomerTable from "../components/CustomerTable";
 import Table from "react-bootstrap/Table";
@@ -16,9 +17,9 @@ import Empty from "../assets/Empty.png";
 import ReactPaginate from "react-paginate";
 import Sidebar from "../components/Sidebar";
 import { BsCheckCircle } from "react-icons/bs";
-import Toast from 'react-bootstrap/Toast';
-import ToastContainer from 'react-bootstrap/ToastContainer';
-
+import Toast from "react-bootstrap/Toast";
+import ToastContainer from "react-bootstrap/ToastContainer";
+import Constants from "../constants/Constants";
 
 export const Customers = () => {
   const navigate = useNavigate();
@@ -33,9 +34,10 @@ export const Customers = () => {
   const [notFound, setNotFound] = useState("No customer with this status!");
   const [position, setPosition] = useState(false);
   const [paging, setPaging] = useState({
-    initialPage: "",
+    initialPage: 1,
     totalCount: "",
   });
+
   const [count, setCount] = useState({
     pendings: "0",
     active: "0",
@@ -145,6 +147,8 @@ export const Customers = () => {
   };
 
   const AddSubscription = () => {
+    var packages = `AFROMINA_${license}`;
+
     if (initialValue.currentPlan === 15) {
       setInitialValue({
         ...initialValue,
@@ -156,45 +160,100 @@ export const Customers = () => {
         errormsg: "Selected a license supports same or less devices!",
       });
     } else if (initialValue.cid !== "" && initialValue.currentPlan < 15) {
-      var Api = Connection.api + Connection.addlicense + initialValue.lid;
-      var headers = {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      };
+      // remote serve API
+      var RemoteApi =
+        Connection.remote +
+        `AddSubscription.py?accountId=${initialValue.cid}&subscriptionId=1&packageId=${packages}&adminUser=${Constants.user}&adminPassword=${Constants.password}`;
 
-      var Data = {
-        reomteid: initialValue.cid,
-        localid: initialValue.lid,
-        license: license,
-      };
-
-      fetch(Api, {
-        method: "PUT",
-        headers: headers,
-        body: JSON.stringify(Data),
+      fetch(RemoteApi, {
+        mode: "no-cors",
       })
-        .then((response) => response.json())
-        .then((response) => {
-          // the action will be taken depending on the server response
+        .then((res) => res.text())
+        .then((res) => {
+          let parser = new DOMParser();
+          let xml = parser.parseFromString(res, "application/xml");
+          var status = xml.getElementsByTagName("AddSubscription").getElementById('id');
+          console.log(status);
 
-          if (response === "succeed") {
-            console.log("well done!");
-            setConfirm("3");
+          if (res.Status.id === 0) {
+            var Api = Connection.api + Connection.addlicense + initialValue.lid;
+            var headers = {
+              accept: "application/json",
+              "Content-Type": "application/json",
+            };
+
+            var Data = {
+              reomteid: initialValue.cid,
+              localid: initialValue.lid,
+              license: license,
+            };
+
+            fetch(Api, {
+              method: "PUT",
+              headers: headers,
+              body: JSON.stringify(Data),
+            })
+              .then((response) => response.json())
+              .then((response) => {
+                // the action will be taken depending on the server response
+
+                if (response === "succeed") {
+                  console.log("well done!");
+                  setConfirm("3");
+                  setInitialValue({
+                    ...initialValue,
+                    cofirmationtxt: `Succeessfully Upgraded to ${license} device license`,
+
+                    errormsg: "",
+                  });
+                } else {
+                  setInitialValue({
+                    ...initialValue,
+                    cofirmationtxt: "",
+                    lid: "",
+                    cid: "",
+                    errormsg: "Failed to to upgrade license",
+                  });
+                }
+              });
+          } else if (res.Status.id === 1001) {
             setInitialValue({
               ...initialValue,
-              cofirmationtxt: `Succeessfully Upgraded to ${license} device license`,
-
-              errormsg: "",
+              errormsg: "Mandatory parameter missing!",
+            });
+          } else if (res.Status.id === 1002) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Invalid Username or Password!",
+            });
+          } else if (res.Status.id === 1004) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Invalid Package Id!",
+            });
+          } else if (res.Status.id === 1021) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Email already exist!",
+            });
+          } else if (res.Status.id === 1022) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Phone number already exist!",
             });
           } else {
             setInitialValue({
               ...initialValue,
-              cofirmationtxt: "",
-              lid: "",
-              cid: "",
-              errormsg: "Failed to to upgrade license",
+              errormsg: "Invalid response!",
             });
           }
+        })
+        .catch((e) => {
+          setInitialValue({
+            ...initialValue,
+            errormsg: "Error adding subscription!",
+          });
+          console.log(e);
         });
     } else {
       setInitialValue({
@@ -206,6 +265,7 @@ export const Customers = () => {
 
   // remove the subscription
   const RemoveSubscription = () => {
+    var packages = `AFROMINA_${license}`;
     if (initialValue.currentPlan === 5) {
       setInitialValue({
         ...initialValue,
@@ -217,49 +277,97 @@ export const Customers = () => {
         errormsg: "Selected a license supports same or more devices!",
       });
     } else if (initialValue.cid !== "" && initialValue.currentPlan > 5) {
-      var Api = Connection.api + Connection.removeLicense + initialValue.lid;
-      var headers = {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      };
-
-      var Data = {
-        reomteid: initialValue.cid,
-        localid: initialValue.lid,
-        license: license,
-      };
-
-      fetch(Api, {
-        method: "PUT",
-        headers: headers,
-        body: JSON.stringify(Data),
+      var RemoteApi =
+        Connection.remote +
+        `RemoveSubscription.py?accountId=${initialValue.cid}&subscriptionId=1&packageId=${packages}&adminUser=${Constants.user}&adminPassword=${Constants.password}`;
+      fetch(RemoteApi, {
+        mode: "no-cors",
       })
-        .then((response) => response.json())
-        .then((response) => {
-          // the action will be taken depending on the server response
+        .then((res) => {
+          if (res.Status.id === 0) {
+            var Api =
+              Connection.api + Connection.removeLicense + initialValue.lid;
+            var headers = {
+              accept: "application/json",
+              "Content-Type": "application/json",
+            };
 
-          if (response === "succeed") {
-            setConfirm("3");
+            var Data = {
+              reomteid: initialValue.cid,
+              localid: initialValue.lid,
+              license: license,
+            };
+
+            fetch(Api, {
+              method: "PUT",
+              headers: headers,
+              body: JSON.stringify(Data),
+            })
+              .then((response) => response.json())
+              .then((response) => {
+                // the action will be taken depending on the server response
+
+                if (response === "succeed") {
+                  setConfirm("3");
+                  setInitialValue({
+                    ...initialValue,
+                    cofirmationtxt: `Succeessfully Downgraded license to ${license} device license`,
+                    errormsg: "",
+                  });
+                } else {
+                  setInitialValue({
+                    ...initialValue,
+                    cofirmationtxt: "",
+                    lid: "",
+                    cid: "",
+                    errormsg: "Failed to to downgrade license",
+                  });
+                }
+              })
+              .catch((e) => {
+                setInitialValue({
+                  ...initialValue,
+                  errormsg: "Error downgrade license",
+                });
+              });
+          } else if (res.Status.id === 1002) {
             setInitialValue({
               ...initialValue,
-              cofirmationtxt: `Succeessfully Downgraded license to ${license} device license`,
-              errormsg: "",
+              errormsg: "Invalid Username or Password!",
+            });
+          } else if (res.Status.id === 1003) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Subscription id already exist!",
+            });
+          } else if (res.Status.id === 1006) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Account id doesn't exist!",
+            });
+          } else if (res.Status.id === 1004) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Invalid Package Id!",
+            });
+          } else if (res.Status.id === 1014) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Invalid subscription Id!",
             });
           } else {
             setInitialValue({
               ...initialValue,
-              cofirmationtxt: "",
-              lid: "",
-              cid: "",
-              errormsg: "Failed to to downgrade license",
+              errormsg: "Invalid response!",
             });
           }
         })
         .catch((e) => {
           setInitialValue({
             ...initialValue,
-            errormsg: "Error downgrade license",
+            errormsg: "Error removing subscription!",
           });
+          console.log(e);
         });
     } else {
       setInitialValue({
@@ -272,48 +380,84 @@ export const Customers = () => {
   // deactivate customer account
   const Deactivate = () => {
     if (initialValue.cid !== "") {
-      var Api = Connection.api + Connection.deactivate + initialValue.lid;
-      var headers = {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      };
-
-      var Data = {
-        reomteid: initialValue.cid,
-        localid: initialValue.lid,
-        cstatus: 3,
-      };
-
-      fetch(Api, {
-        method: "PUT",
-        headers: headers,
-        body: JSON.stringify(Data),
+      var RemoteApi =
+        Connection.remote +
+        `DeactivateAccount.py?accountId=${initialValue.cid}&adminUser=${Constants.user}&adminPassword=${Constants.password}`;
+      fetch(RemoteApi, {
+        mode: "no-cors",
       })
-        .then((response) => response.json())
-        .then((response) => {
-          // the action will be taken depending on the server response
+        .then((res) => {
+          if (res.Status.id === 0) {
+            var Api = Connection.api + Connection.deactivate + initialValue.lid;
+            var headers = {
+              accept: "application/json",
+              "Content-Type": "application/json",
+            };
 
-          if (response === "deactivated") {
-            setConfirm("3");
+            var Data = {
+              reomteid: initialValue.cid,
+              localid: initialValue.lid,
+              cstatus: 3,
+            };
+
+            fetch(Api, {
+              method: "PUT",
+              headers: headers,
+              body: JSON.stringify(Data),
+            })
+              .then((response) => response.json())
+              .then((response) => {
+                // the action will be taken depending on the server response
+
+                if (response === "deactivated") {
+                  setConfirm("3");
+                  setInitialValue({
+                    ...initialValue,
+                    cofirmationtxt: `Succeessfully Deactivated!`,
+                    errormsg: "",
+                  });
+                } else {
+                  setInitialValue({
+                    ...initialValue,
+                    cofirmationtxt: "",
+                    lid: "",
+                    cid: "",
+                    errormsg: "Failed to deactivate customer credentials",
+                  });
+                }
+              })
+              .catch((e) => {
+                setInitialValue({
+                  ...initialValue,
+                  errormsg: "Error deactivating customer credentials",
+                });
+              });
+          } else if (res.Status.id === 1002) {
             setInitialValue({
               ...initialValue,
-              cofirmationtxt: `Succeessfully Deactivated!`,
-              errormsg: "",
+              errormsg: "Invalid Username or Password!",
+            });
+          } else if (res.Status.id === 1006) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Account id doesn't exist!",
+            });
+          } else if (res.Status.id === 2001) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Account is not active!",
             });
           } else {
             setInitialValue({
               ...initialValue,
-              cofirmationtxt: "",
-              lid: "",
-              cid: "",
-              errormsg: "Failed to deactivate customer credentials",
+              errormsg: "Invalid response!",
             });
           }
         })
         .catch((e) => {
           setInitialValue({
             ...initialValue,
-            errormsg: "Error deactivating customer credentials",
+            errormsg: "Error deactivating account!",
           });
         });
     } else {
@@ -327,48 +471,84 @@ export const Customers = () => {
   // deactivate customer account
   const Detach = () => {
     if (initialValue.cid !== "") {
-      var Api = Connection.api + Connection.detach + initialValue.lid;
-      var headers = {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      };
-
-      var Data = {
-        reomteid: initialValue.cid,
-        localid: initialValue.lid,
-        cstatus: 3,
-      };
-
-      fetch(Api, {
-        method: "PUT",
-        headers: headers,
-        body: JSON.stringify(Data),
+      var RemoteApi =
+        Connection.remote +
+        `DetachUserCredentials.py?adminUser=${Constants.user}&adminPassword=${Constants.password}&accountId=${initialValue.cid}`;
+      fetch(RemoteApi, {
+        mode: "no-cors",
       })
-        .then((response) => response.json())
-        .then((response) => {
-          // the action will be taken depending on the server response
+        .then((res) => {
+          if (res.Status.id === 0) {
+            var Api = Connection.api + Connection.detach + initialValue.lid;
+            var headers = {
+              accept: "application/json",
+              "Content-Type": "application/json",
+            };
 
-          if (response === "detached") {
-            setConfirm("3");
+            var Data = {
+              reomteid: initialValue.cid,
+              localid: initialValue.lid,
+              cstatus: 3,
+            };
+
+            fetch(Api, {
+              method: "PUT",
+              headers: headers,
+              body: JSON.stringify(Data),
+            })
+              .then((response) => response.json())
+              .then((response) => {
+                // the action will be taken depending on the server response
+
+                if (response === "detached") {
+                  setConfirm("3");
+                  setInitialValue({
+                    ...initialValue,
+                    cofirmationtxt: `Succeessfully Detached!`,
+                    errormsg: "",
+                  });
+                } else {
+                  setInitialValue({
+                    ...initialValue,
+                    cofirmationtxt: "",
+                    lid: "",
+                    cid: "",
+                    errormsg: "Failed to detach User credentials",
+                  });
+                }
+              })
+              .catch((e) => {
+                setInitialValue({
+                  ...initialValue,
+                  errormsg: "Error detaching user credentials",
+                });
+              });
+          } else if (res.Status.id === 1002) {
             setInitialValue({
               ...initialValue,
-              cofirmationtxt: `Succeessfully Detached!`,
-              errormsg: "",
+              errormsg: "Invalid Username or Password!",
+            });
+          } else if (res.Status.id === 1006) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Account id doesn't exist!",
+            });
+          } else if (res.Status.id === 2002) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Account is not deactive!",
             });
           } else {
             setInitialValue({
               ...initialValue,
-              cofirmationtxt: "",
-              lid: "",
-              cid: "",
-              errormsg: "Failed to detach User credentials",
+              errormsg: "Invalid response!",
             });
           }
         })
         .catch((e) => {
           setInitialValue({
             ...initialValue,
-            errormsg: "Error detaching user credentials",
+            errormsg: "Error detaching account!",
           });
         });
     } else {
@@ -421,7 +601,7 @@ export const Customers = () => {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
     };
-  
+
     const data = await fetch(Api, {
       method: "GET",
       headers: headers,
@@ -439,8 +619,6 @@ export const Customers = () => {
     setCustomers(customerFromServer);
     // setCustomers(customers);
   };
-
- 
 
   //activate pending users
   const Approve = (id) => {
@@ -464,11 +642,74 @@ export const Customers = () => {
       .then((response) => {
         if (response === "activated") {
           setPosition(true);
-          
         }
       });
   };
-  
+
+  //reactivate terminated customer account
+  const Reactivate = (id, remoteid) => {
+    var RemoteApi =
+      Connection.remote +
+      `ActivateAccount.py?accountId=${remoteid}&adminUser=${Constants.user}&adminPassword=${Constants.password}`;
+    fetch(RemoteApi)
+      .then((res) => {
+        if (res.Status.id === 0) {
+          var Api = Connection.api + Connection.activate + id; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
+          var headers = {
+            accept: "application/json",
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          };
+
+          var Data = {
+            status: 1,
+          };
+
+          fetch(Api, {
+            method: "PUT",
+            headers: headers,
+            body: JSON.stringify(Data),
+          })
+            .then((response) => response.json())
+            .then((response) => {
+              if (response === "activated") {
+                setPosition(true);
+              }
+            });
+        } else if (res.Status.id === 1001) {
+          setInitialValue({
+            ...initialValue,
+            errormsg: "Error Missing Parameter!",
+          });
+        } else if (res.Status.id === 1002) {
+          setInitialValue({
+            ...initialValue,
+            errormsg: "Invalid Username or Password!",
+          });
+        } else if (res.Status.id === 1006) {
+          setInitialValue({
+            ...initialValue,
+            errormsg: "Account id doesn't exist!",
+          });
+        } else if (res.Status.id === 2002) {
+          setInitialValue({
+            ...initialValue,
+            errormsg: "Account is already active!",
+          });
+        } else {
+          setInitialValue({
+            ...initialValue,
+            errormsg: "Invalid response!",
+          });
+        }
+      })
+      .catch((e) => {
+        setInitialValue({
+          ...initialValue,
+          errormsg: "Error reactivating account!",
+        });
+      });
+  };
   //use effect function
   //when the functional component cames to life we will getcustomers by deafult
   useEffect(() => {
@@ -477,18 +718,17 @@ export const Customers = () => {
       var Api =
         Connection.api +
         Connection.customers +
-        `?page=${currentPage}&status=${activeTab}`; 
-        
-        var headers = {
+        `?page=${currentPage}&status=${activeTab}`;
+
+      var headers = {
         accept: "application/json",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
       };
-    
+
       fetch(Api, {
         method: "GET",
         headers: headers,
-        
       })
         .then((response) => response.json())
         .then((response) => {
@@ -505,9 +745,8 @@ export const Customers = () => {
           setLoading(true);
         });
     };
-  
-    getCustomers();
 
+    getCustomers();
 
     const PendingCount = () => {
       var Api = Connection.api + Connection.pending; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
@@ -516,7 +755,7 @@ export const Customers = () => {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
       };
-  
+
       fetch(Api, {
         method: "GET",
         headers: headers,
@@ -569,8 +808,10 @@ export const Customers = () => {
               <h5 className="text-center font-link fw-bold">
                 {count.monthly}
                 {count.newm >= 1 ? (
-                  <span class="position-absolute ms-3 mt-1 translate-middle badge rounded-pill bg-success bg-opacity-10 text-success fw-lighter">+{count.newm}</span>
-                ) :  null}
+                  <span class="position-absolute ms-3 mt-1 translate-middle badge rounded-pill bg-success bg-opacity-10 text-success fw-lighter">
+                    +{count.newm}
+                  </span>
+                ) : null}
               </h5>
               <p className="text-center font-link text-secondary">
                 Monthly Subscribers
@@ -582,10 +823,14 @@ export const Customers = () => {
             className="card justify-content-md-center shadow-sm  border-start border-warning border-0 m-2 mt-0 mb-0  pt-4"
           >
             <div>
-              <h5 className="text-center font-link fw-bold">{count.annual}
-              {count.newa >= 1 ? (
-                  <span class="position-absolute ms-3 mt-1 translate-middle badge rounded-pill bg-success bg-opacity-10 text-success fw-lighter">+{count.newa}</span>
-                ) :  null}</h5>
+              <h5 className="text-center font-link fw-bold">
+                {count.annual}
+                {count.newa >= 1 ? (
+                  <span class="position-absolute ms-3 mt-1 translate-middle badge rounded-pill bg-success bg-opacity-10 text-success fw-lighter">
+                    +{count.newa}
+                  </span>
+                ) : null}
+              </h5>
               <p className="text-center font-link text-secondary ">
                 Annual Subcribers
               </p>
@@ -640,32 +885,31 @@ export const Customers = () => {
                 </Col>
               </Row>
 
-            
-                  <Row className="d-flex justify-content-start align-items-center">
-                    <Col sm={8} className="pt-2 pb-2">
-                      <div className="input-group mb-4 mt-4">
-                        <input
-                          type="text"
-                          className="form-control small ps-3 "
-                          placeholder="Search..."
-                          aria-label="Search"
-                          aria-describedby="basic-addon2"
-                          defaultValue={search}
-                          onChange={SearchText}
-                        />
-                        <div className="input-group-append">
-                          <Button
-                            onClick={() => FindCustomer()}
-                            variant="light"
-                            className=" border rounded-0 rounded-end bg-light text-center pb-2 "
-                          >
-                            <AiOutlineSearch size={20} color="#10a698" />
-                          </Button>
-                        </div>
-                      </div>
-                    </Col>
-                  </Row>
-                  {loading ? (
+              <Row className="d-flex justify-content-start align-items-center">
+                <Col sm={8} className="pt-2 pb-2">
+                  <div className="input-group mb-4 mt-4">
+                    <input
+                      type="text"
+                      className="form-control small ps-3 "
+                      placeholder="Search..."
+                      aria-label="Search"
+                      aria-describedby="basic-addon2"
+                      defaultValue={search}
+                      onChange={SearchText}
+                    />
+                    <div className="input-group-append">
+                      <Button
+                        onClick={() => FindCustomer()}
+                        variant="light"
+                        className=" border rounded-0 rounded-end bg-light text-center pb-2 "
+                      >
+                        <AiOutlineSearch size={20} color="#10a698" />
+                      </Button>
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+              {loading ? (
                 <>
                   <Row>
                     <Col className="bg-white">
@@ -708,8 +952,10 @@ export const Customers = () => {
                                     state: { ...item },
                                   })
                                 }
-                                approve={() => Approve(item.id)}
-                                reactivate={() => Approve(item.id)}
+                                approve={() => Approve(item.id, item.remote_id)}
+                                reactivate={() =>
+                                  Reactivate(item.id, item.remote_id)
+                                }
                               />
                             ))}
                           </tbody>
@@ -764,105 +1010,14 @@ export const Customers = () => {
           </Col>
 
           <Col sm={3}>
-          <div class="accordion" id="accordionExample">
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="headingOne">
-      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-      Monthly Subscribers
-      </button>
-    </h2>
-    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-      <Row className="justify-content-md-start align-items-center">
-            <Col sm={8}>
-              <p className="fs-6 font-link">5 Device Subscribers</p>
-            </Col>
-            <Col sm={4}>
-              <p className="fs-6 font-link fw-bold text-secondary text-end">{count.mfive}</p>
-            </Col>
-          </Row>
-          <Row className="justify-content-md-start align-items-center">
-            <Col sm={8}>
-              <p className="fs-6 font-link">10 Device Subscribers</p>
-            </Col>
-            <Col sm={4}>
-              <p className="fs-6 font-link fw-bold text-secondary text-end">{count.mten}</p>
-            </Col>
-          </Row>
-          <Row className="justify-content-md-start align-items-center mb-4">
-            <Col sm={8}>
-              <p className="fs-6 font-link">15 Device Subscribers</p>
-            </Col>
-            <Col sm={4} className="p-2 bd-highlight">
-              <p className="fs-6 font-link fw-bold text-secondary text-end">{count.mfifty}</p>
-            </Col>
-          </Row>
-
-          <p className="fs-6 font-link">Estimated Monthly Revenue (ETB)</p>
-          <hr />
-          <Row className="mb-0">
-            <Col>
-              <p className="font-link">{count.mfive >= '5' ?(<span>{count.mfive*200} K</span>) : (<span> {count.mfive*200} birr </span>) }</p>
-            </Col>
-            <Col>
-              <p className="font-link">{count.mten >= '4' ?(<span>{count.mten*300} K</span>) : (<span> {count.mten*300} birr </span>) }</p>
-            </Col>
-            <Col>
-              <p className="font-link">{count.mfifty >= '2' ?(<span>{count.mfifty*500} K</span>) : (<span> {count.mfifty*500} birr </span>) }</p>
-            </Col>
-          </Row> </div>
-    </div>
-  </div>
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="headingTwo">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-      Annual Subscribers
-      </button>
-    </h2>
-    <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-      <Row className="justify-content-md-start align-items-center">
-            <Col sm={8}>
-              <p className="fs-6 font-link">5 Device Subscribers</p>
-            </Col>
-            <Col sm={4}>
-              <p className="fs-6 font-link fw-bold text-secondary text-end">{count.afive}</p>
-            </Col>
-          </Row>
-          <Row className="justify-content-md-start align-items-center">
-            <Col sm={8}>
-              <p className="fs-6 font-link">10 Device Subscribers</p>
-            </Col>
-            <Col sm={4}>
-              <p className="fs-6 font-link fw-bold text-secondary text-end">{count.aten}</p>
-            </Col>
-          </Row>
-          <Row className="justify-content-md-start align-items-center mb-4">
-            <Col sm={8}>
-              <p className="fs-6 font-link">15 Device Subscribers</p>
-            </Col>
-            <Col sm={4} className="p-2 bd-highlight">
-              <p className="fs-6 font-link fw-bold text-secondary text-end">{count.afifty}</p>
-            </Col>
-          </Row>
-
-          <p className="fs-6 font-link">Estimated Annual Revenue (ETB)</p>
-          <hr />
-          <Row className="mb-0">
-            <Col>
-              <p className="font-link">{count.afive >= '1' ?(<span>{count.afive*2200} K</span>) : (<span> {count.afive*2200} birr </span>) }</p>
-            </Col>
-            <Col>
-              <p className="font-link">{count.aten >= '1' ?(<span>{count.aten*3300} K</span>) : (<span> {count.aten*3300} birr </span>) }</p>
-            </Col>
-            <Col>
-              <p className="font-link">{count.afifty >= '1' ?(<span>{count.afifty*5500} K</span>) : (<span> {count.afifty*5500} birr </span>) }</p>
-            </Col>
-          </Row> </div>
-    </div>
-  </div>
-  </div>
-
+            <HightlightAccordion
+              mfive={count.mfive}
+              mten={count.mten}
+              mfifty={count.mfifty}
+              afive={count.afive}
+              aten={count.aten}
+              afifty={count.afifty}
+            />
           </Col>
         </Row>
 
@@ -987,13 +1142,20 @@ export const Customers = () => {
           </Modal.Footer>
         </Modal>
 
-
-
-        <ToastContainer position="bottom-center" className="p-3 bg-succees bg-opacity-10"> 
-        <Toast onClose={() => setPosition(false)} show={position} delay={2000} autohide>
-        
-          <Toast.Body className="text-dark fw-semibold">Successfully Activated!</Toast.Body>
-        </Toast>
+        <ToastContainer
+          position="bottom-center"
+          className="p-3 bg-succees bg-opacity-10"
+        >
+          <Toast
+            onClose={() => setPosition(false)}
+            show={position}
+            delay={2000}
+            autohide
+          >
+            <Toast.Body className="text-dark fw-semibold">
+              Successfully Activated!
+            </Toast.Body>
+          </Toast>
         </ToastContainer>
       </Container>
     </>

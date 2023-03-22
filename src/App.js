@@ -43,9 +43,9 @@ return ()=>{}
       {getToken ? (
         <div>
         
-          <Routes exact path="/">
+          <Routes exact path="/home">
           
-          <Route path="/" element={<Customers />} />
+          <Route path="/home" element={<Customers />} />
             <Route path="/login" element={<Signin />} />
             <Route path="/customers" element={<Customers />} />
             <Route path="/users" element={<Users />} />

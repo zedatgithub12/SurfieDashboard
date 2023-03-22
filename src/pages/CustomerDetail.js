@@ -10,6 +10,7 @@ import { Button } from "react-bootstrap";
 import Sidebar from "../components/Sidebar";
 import Connection from "../constants/Connections";
 import { BsCheckCircle } from "react-icons/bs";
+import Constants from "../constants/Constants";
 
 
 const CustomerDetail = () => {
@@ -171,7 +172,10 @@ const CustomerDetail = () => {
     });
   };
 
+ 
   const AddSubscription = () => {
+    var packages = `AFROMINA_${license}`;
+
     if (initialValue.currentPlan === 15) {
       setInitialValue({
         ...initialValue,
@@ -183,45 +187,90 @@ const CustomerDetail = () => {
         errormsg: "Selected a license supports same or less devices!",
       });
     } else if (initialValue.cid !== "" && initialValue.currentPlan < 15) {
-      var Api = Connection.api + Connection.addlicense + initialValue.lid;
-      var headers = {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      };
+      // remote serve API
+      var RemoteApi =
+        Connection.remote +
+        `AddSubscription.py?accountId=${initialValue.cid}&subscriptionId=${license}&packageId=${packages}&adminUser=${Constants.user}&adminPassword=${Constants.password}`;
+      fetch(RemoteApi)
+        .then((res) => {
+          if (res.Status.id === 0) {
+            var Api = Connection.api + Connection.addlicense + initialValue.lid;
+            var headers = {
+              accept: "application/json",
+              "Content-Type": "application/json",
+            };
 
-      var Data = {
-        reomteid: initialValue.cid,
-        localid: initialValue.lid,
-        license: license,
-      };
+            var Data = {
+              reomteid: initialValue.cid,
+              localid: initialValue.lid,
+              license: license,
+            };
 
-      fetch(Api, {
-        method: "PUT",
-        headers: headers,
-        body: JSON.stringify(Data),
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          // the action will be taken depending on the server response
+            fetch(Api, {
+              method: "PUT",
+              headers: headers,
+              body: JSON.stringify(Data),
+            })
+              .then((response) => response.json())
+              .then((response) => {
+                // the action will be taken depending on the server response
 
-          if (response === "succeed") {
-            console.log("well done!");
-            setConfirm("3");
+                if (response === "succeed") {
+                  console.log("well done!");
+                  setConfirm("3");
+                  setInitialValue({
+                    ...initialValue,
+                    cofirmationtxt: `Succeessfully Upgraded to ${license} device license`,
+
+                    errormsg: "",
+                  });
+                } else {
+                  setInitialValue({
+                    ...initialValue,
+                    cofirmationtxt: "",
+                    lid: "",
+                    cid: "",
+                    errormsg: "Failed to to upgrade license",
+                  });
+                }
+              });
+          } else if (res.Status.id === 1001) {
             setInitialValue({
               ...initialValue,
-              cofirmationtxt: `Succeessfully Upgraded to ${license} device license`,
-
-              errormsg: "",
+              errormsg: "Mandatory parameter missing!",
+            });
+          } else if (res.Status.id === 1002) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Invalid Username or Password!",
+            });
+          } else if (res.Status.id === 1004) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Invalid Package Id!",
+            });
+          } else if (res.Status.id === 1021) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Email already exist!",
+            });
+          } else if (res.Status.id === 1022) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Phone number already exist!",
             });
           } else {
             setInitialValue({
               ...initialValue,
-              cofirmationtxt: "",
-              lid: "",
-              cid: "",
-              errormsg: "Failed to to upgrade license",
+              errormsg: "Invalid response!",
             });
           }
+        })
+        .catch((e) => {
+          setInitialValue({
+            ...initialValue,
+            errormsg: "Error adding subscription!",
+          });
         });
     } else {
       setInitialValue({
@@ -233,6 +282,7 @@ const CustomerDetail = () => {
 
   // remove the subscription
   const RemoveSubscription = () => {
+    var packages = `AFROMINA_${license}`;
     if (initialValue.currentPlan === 5) {
       setInitialValue({
         ...initialValue,
@@ -244,48 +294,93 @@ const CustomerDetail = () => {
         errormsg: "Selected a license supports same or more devices!",
       });
     } else if (initialValue.cid !== "" && initialValue.currentPlan > 5) {
-      var Api = Connection.api + Connection.removeLicense + initialValue.lid;
-      var headers = {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      };
+      var RemoteApi =
+        Connection.remote +
+        `RemoveSubscription.py?accountId=${initialValue.cid}&subscriptionId=${license}&packageId=${packages}&adminUser=${Constants.user}&adminPassword=${Constants.password}`;
+      fetch(RemoteApi)
+        .then((res) => {
+          if (res.Status.id === 0) {
+            var Api =
+              Connection.api + Connection.removeLicense + initialValue.lid;
+            var headers = {
+              accept: "application/json",
+              "Content-Type": "application/json",
+            };
 
-      var Data = {
-        reomteid: initialValue.cid,
-        localid: initialValue.lid,
-        license: license,
-      };
+            var Data = {
+              reomteid: initialValue.cid,
+              localid: initialValue.lid,
+              license: license,
+            };
 
-      fetch(Api, {
-        method: "PUT",
-        headers: headers,
-        body: JSON.stringify(Data),
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          // the action will be taken depending on the server response
+            fetch(Api, {
+              method: "PUT",
+              headers: headers,
+              body: JSON.stringify(Data),
+            })
+              .then((response) => response.json())
+              .then((response) => {
+                // the action will be taken depending on the server response
 
-          if (response === "succeed") {
-            setConfirm("3");
+                if (response === "succeed") {
+                  setConfirm("3");
+                  setInitialValue({
+                    ...initialValue,
+                    cofirmationtxt: `Succeessfully Downgraded license to ${license} device license`,
+                    errormsg: "",
+                  });
+                } else {
+                  setInitialValue({
+                    ...initialValue,
+                    cofirmationtxt: "",
+                    lid: "",
+                    cid: "",
+                    errormsg: "Failed to to downgrade license",
+                  });
+                }
+              })
+              .catch((e) => {
+                setInitialValue({
+                  ...initialValue,
+                  errormsg: "Error downgrade license",
+                });
+              });
+          } else if (res.Status.id === 1002) {
             setInitialValue({
               ...initialValue,
-              cofirmationtxt: `Succeessfully Downgraded license to ${license} device license`,
-              errormsg: "",
+              errormsg: "Invalid Username or Password!",
+            });
+          } else if (res.Status.id === 1003) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Subscription id already exist!",
+            });
+          } else if (res.Status.id === 1006) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Account id doesn't exist!",
+            });
+          } else if (res.Status.id === 1004) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Invalid Package Id!",
+            });
+          } else if (res.Status.id === 1014) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Invalid subscription Id!",
             });
           } else {
             setInitialValue({
               ...initialValue,
-              cofirmationtxt: "",
-              lid: "",
-              cid: "",
-              errormsg: "Failed to to downgrade license",
+              errormsg: "Invalid response!",
             });
           }
         })
         .catch((e) => {
           setInitialValue({
             ...initialValue,
-            errormsg: "Error downgrade license",
+            errormsg: "Error removing subscription!",
           });
         });
     } else {
@@ -299,48 +394,82 @@ const CustomerDetail = () => {
   // deactivate customer account
   const Deactivate = () => {
     if (initialValue.cid !== "") {
-      var Api = Connection.api + Connection.deactivate + initialValue.lid;
-      var headers = {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      };
+      var RemoteApi =
+        Connection.remote +
+        `DeactivateAccount.py?accountId=${initialValue.cid}&adminUser=${Constants.user}&adminPassword=${Constants.password}`;
+      fetch(RemoteApi)
+        .then((res) => {
+          if (res.Status.id === 0) {
+            var Api = Connection.api + Connection.deactivate + initialValue.lid;
+            var headers = {
+              accept: "application/json",
+              "Content-Type": "application/json",
+            };
 
-      var Data = {
-        reomteid: initialValue.cid,
-        localid: initialValue.lid,
-        cstatus: 3,
-      };
+            var Data = {
+              reomteid: initialValue.cid,
+              localid: initialValue.lid,
+              cstatus: 3,
+            };
 
-      fetch(Api, {
-        method: "PUT",
-        headers: headers,
-        body: JSON.stringify(Data),
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          // the action will be taken depending on the server response
+            fetch(Api, {
+              method: "PUT",
+              headers: headers,
+              body: JSON.stringify(Data),
+            })
+              .then((response) => response.json())
+              .then((response) => {
+                // the action will be taken depending on the server response
 
-          if (response === "deactivated") {
-            setConfirm("3");
+                if (response === "deactivated") {
+                  setConfirm("3");
+                  setInitialValue({
+                    ...initialValue,
+                    cofirmationtxt: `Succeessfully Deactivated!`,
+                    errormsg: "",
+                  });
+                } else {
+                  setInitialValue({
+                    ...initialValue,
+                    cofirmationtxt: "",
+                    lid: "",
+                    cid: "",
+                    errormsg: "Failed to deactivate customer credentials",
+                  });
+                }
+              })
+              .catch((e) => {
+                setInitialValue({
+                  ...initialValue,
+                  errormsg: "Error deactivating customer credentials",
+                });
+              });
+          } else if (res.Status.id === 1002) {
             setInitialValue({
               ...initialValue,
-              cofirmationtxt: `Succeessfully Deactivated!`,
-              errormsg: "",
+              errormsg: "Invalid Username or Password!",
+            });
+          } else if (res.Status.id === 1006) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Account id doesn't exist!",
+            });
+          } else if (res.Status.id === 2001) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Account is not active!",
             });
           } else {
             setInitialValue({
               ...initialValue,
-              cofirmationtxt: "",
-              lid: "",
-              cid: "",
-              errormsg: "Failed to deactivate customer credentials",
+              errormsg: "Invalid response!",
             });
           }
         })
         .catch((e) => {
           setInitialValue({
             ...initialValue,
-            errormsg: "Error deactivating customer credentials",
+            errormsg: "Error deactivating account!",
           });
         });
     } else {
@@ -354,48 +483,82 @@ const CustomerDetail = () => {
   // deactivate customer account
   const Detach = () => {
     if (initialValue.cid !== "") {
-      var Api = Connection.api + Connection.detach + initialValue.lid;
-      var headers = {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      };
+      var RemoteApi =
+        Connection.remote +
+        `DetachUserCredentials.py?adminUser=${Constants.user}&adminPassword=${Constants.password}&accountId=${initialValue.cid}`;
+      fetch(RemoteApi)
+        .then((res) => {
+          if (res.Status.id === 0) {
+            var Api = Connection.api + Connection.detach + initialValue.lid;
+            var headers = {
+              accept: "application/json",
+              "Content-Type": "application/json",
+            };
 
-      var Data = {
-        reomteid: initialValue.cid,
-        localid: initialValue.lid,
-        cstatus: 3,
-      };
+            var Data = {
+              reomteid: initialValue.cid,
+              localid: initialValue.lid,
+              cstatus: 3,
+            };
 
-      fetch(Api, {
-        method: "PUT",
-        headers: headers,
-        body: JSON.stringify(Data),
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          // the action will be taken depending on the server response
+            fetch(Api, {
+              method: "PUT",
+              headers: headers,
+              body: JSON.stringify(Data),
+            })
+              .then((response) => response.json())
+              .then((response) => {
+                // the action will be taken depending on the server response
 
-          if (response === "detached") {
-            setConfirm("3");
+                if (response === "detached") {
+                  setConfirm("3");
+                  setInitialValue({
+                    ...initialValue,
+                    cofirmationtxt: `Succeessfully Detached!`,
+                    errormsg: "",
+                  });
+                } else {
+                  setInitialValue({
+                    ...initialValue,
+                    cofirmationtxt: "",
+                    lid: "",
+                    cid: "",
+                    errormsg: "Failed to detach User credentials",
+                  });
+                }
+              })
+              .catch((e) => {
+                setInitialValue({
+                  ...initialValue,
+                  errormsg: "Error detaching user credentials",
+                });
+              });
+          } else if (res.Status.id === 1002) {
             setInitialValue({
               ...initialValue,
-              cofirmationtxt: `Succeessfully Detached!`,
-              errormsg: "",
+              errormsg: "Invalid Username or Password!",
+            });
+          } else if (res.Status.id === 1006) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Account id doesn't exist!",
+            });
+          } else if (res.Status.id === 2002) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Account is not deactive!",
             });
           } else {
             setInitialValue({
               ...initialValue,
-              cofirmationtxt: "",
-              lid: "",
-              cid: "",
-              errormsg: "Failed to detach User credentials",
+              errormsg: "Invalid response!",
             });
           }
         })
         .catch((e) => {
           setInitialValue({
             ...initialValue,
-            errormsg: "Error detaching user credentials",
+            errormsg: "Error detaching account!",
           });
         });
     } else {
