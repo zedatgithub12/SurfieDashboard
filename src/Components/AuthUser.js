@@ -2,6 +2,8 @@ import React from 'react';
 import {useNavigate} from 'react-router-dom';
 
 export default function AuthUser() {
+  //wether user is loged or not is retrieved from our context
+
     const navigate = useNavigate();
     const getToken =()=>{
       const tokenString = sessionStorage.getItem('token');
@@ -25,7 +27,7 @@ export default function AuthUser() {
 
     setToken(token);
     setUser(user);
-    navigate('/home');
+    navigate('/');
   }
 
   const logout =()=>{

@@ -11,7 +11,7 @@ import Sidebar from "../components/Sidebar";
 import Connection from "../constants/Connections";
 import { BsCheckCircle } from "react-icons/bs";
 import Constants from "../constants/Constants";
-
+import XMLParser from "react-xml-parser";
 
 const CustomerDetail = () => {
   const navigate = useNavigate();
@@ -190,10 +190,18 @@ const CustomerDetail = () => {
       // remote serve API
       var RemoteApi =
         Connection.remote +
-        `AddSubscription.py?accountId=${initialValue.cid}&subscriptionId=${license}&packageId=${packages}&adminUser=${Constants.user}&adminPassword=${Constants.password}`;
-      fetch(RemoteApi)
+        `AddSubscription.py?accountId=${initialValue.cid}&subscriptionId=1&packageId=${packages}&adminUser=${Constants.user}&adminPassword=${Constants.password}`;
+     
+        fetch(RemoteApi)
+        .then((res) => res.text())
         .then((res) => {
-          if (res.Status.id === 0) {
+
+
+        var xml = new XMLParser().parseFromString(res); // Assume xmlText contains the example XML
+        var message = xml.children[0].attributes.id;
+     
+
+          if (message === "0") {
             var Api = Connection.api + Connection.addlicense + initialValue.lid;
             var headers = {
               accept: "application/json",
@@ -216,7 +224,6 @@ const CustomerDetail = () => {
                 // the action will be taken depending on the server response
 
                 if (response === "succeed") {
-                  console.log("well done!");
                   setConfirm("3");
                   setInitialValue({
                     ...initialValue,
@@ -234,27 +241,34 @@ const CustomerDetail = () => {
                   });
                 }
               });
-          } else if (res.Status.id === 1001) {
+          } else if (message === "1001") {
             setInitialValue({
               ...initialValue,
               errormsg: "Mandatory parameter missing!",
             });
-          } else if (res.Status.id === 1002) {
+          } else if (message === "1002") {
             setInitialValue({
               ...initialValue,
               errormsg: "Invalid Username or Password!",
             });
-          } else if (res.Status.id === 1004) {
+          }
+          else if (message === "1003") {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Already Subscribed!",
+            });
+          }
+           else if (message === "1004") {
             setInitialValue({
               ...initialValue,
               errormsg: "Invalid Package Id!",
             });
-          } else if (res.Status.id === 1021) {
+          } else if (message === "1021") {
             setInitialValue({
               ...initialValue,
               errormsg: "Email already exist!",
             });
-          } else if (res.Status.id === 1022) {
+          } else if (message === "1022") {
             setInitialValue({
               ...initialValue,
               errormsg: "Phone number already exist!",
@@ -271,6 +285,7 @@ const CustomerDetail = () => {
             ...initialValue,
             errormsg: "Error adding subscription!",
           });
+          console.log(e);
         });
     } else {
       setInitialValue({
@@ -296,10 +311,17 @@ const CustomerDetail = () => {
     } else if (initialValue.cid !== "" && initialValue.currentPlan > 5) {
       var RemoteApi =
         Connection.remote +
-        `RemoveSubscription.py?accountId=${initialValue.cid}&subscriptionId=${license}&packageId=${packages}&adminUser=${Constants.user}&adminPassword=${Constants.password}`;
-      fetch(RemoteApi)
+        `RemoveSubscription.py?accountId=${initialValue.cid}&subscriptionId=1&packageId=${packages}&adminUser=${Constants.user}&adminPassword=${Constants.password}`;
+      
+        fetch(RemoteApi)
+        .then((res) => res.text())
         .then((res) => {
-          if (res.Status.id === 0) {
+
+
+          var xml = new XMLParser().parseFromString(res); // Assume xmlText contains the example XML
+          var message = xml.children[0].attributes.id;
+     
+          if (message === "0") {
             var Api =
               Connection.api + Connection.removeLicense + initialValue.lid;
             var headers = {
@@ -345,27 +367,27 @@ const CustomerDetail = () => {
                   errormsg: "Error downgrade license",
                 });
               });
-          } else if (res.Status.id === 1002) {
+          } else if (message === "1002") {
             setInitialValue({
               ...initialValue,
               errormsg: "Invalid Username or Password!",
             });
-          } else if (res.Status.id === 1003) {
+          } else if (message === "1003") {
             setInitialValue({
               ...initialValue,
               errormsg: "Subscription id already exist!",
             });
-          } else if (res.Status.id === 1006) {
+          } else if (message === "1006") {
             setInitialValue({
               ...initialValue,
               errormsg: "Account id doesn't exist!",
             });
-          } else if (res.Status.id === 1004) {
+          } else if (message === "1004") {
             setInitialValue({
               ...initialValue,
               errormsg: "Invalid Package Id!",
             });
-          } else if (res.Status.id === 1014) {
+          } else if (message === "1014") {
             setInitialValue({
               ...initialValue,
               errormsg: "Invalid subscription Id!",
@@ -382,6 +404,7 @@ const CustomerDetail = () => {
             ...initialValue,
             errormsg: "Error removing subscription!",
           });
+          console.log(e);
         });
     } else {
       setInitialValue({
@@ -397,9 +420,16 @@ const CustomerDetail = () => {
       var RemoteApi =
         Connection.remote +
         `DeactivateAccount.py?accountId=${initialValue.cid}&adminUser=${Constants.user}&adminPassword=${Constants.password}`;
-      fetch(RemoteApi)
+     
+        fetch(RemoteApi)
+        .then((res) => res.text())
         .then((res) => {
-          if (res.Status.id === 0) {
+
+
+          var xml = new XMLParser().parseFromString(res); // Assume xmlText contains the example XML
+          var message = xml.children[0].attributes.id;
+
+          if (message === "0") {
             var Api = Connection.api + Connection.deactivate + initialValue.lid;
             var headers = {
               accept: "application/json",
@@ -444,17 +474,17 @@ const CustomerDetail = () => {
                   errormsg: "Error deactivating customer credentials",
                 });
               });
-          } else if (res.Status.id === 1002) {
+          } else if (message === "1002") {
             setInitialValue({
               ...initialValue,
               errormsg: "Invalid Username or Password!",
             });
-          } else if (res.Status.id === 1006) {
+          } else if (message === "1006") {
             setInitialValue({
               ...initialValue,
               errormsg: "Account id doesn't exist!",
             });
-          } else if (res.Status.id === 2001) {
+          } else if (message === "2001") {
             setInitialValue({
               ...initialValue,
               errormsg: "Account is not active!",
@@ -486,9 +516,16 @@ const CustomerDetail = () => {
       var RemoteApi =
         Connection.remote +
         `DetachUserCredentials.py?adminUser=${Constants.user}&adminPassword=${Constants.password}&accountId=${initialValue.cid}`;
-      fetch(RemoteApi)
+        fetch(RemoteApi)
+        .then((res) => res.text())
         .then((res) => {
-          if (res.Status.id === 0) {
+
+
+          var xml = new XMLParser().parseFromString(res); // Assume xmlText contains the example XML
+          var message = xml.children[0].attributes.id;
+
+
+          if (message === "0") {
             var Api = Connection.api + Connection.detach + initialValue.lid;
             var headers = {
               accept: "application/json",
@@ -533,17 +570,17 @@ const CustomerDetail = () => {
                   errormsg: "Error detaching user credentials",
                 });
               });
-          } else if (res.Status.id === 1002) {
+          } else if (message === "1002") {
             setInitialValue({
               ...initialValue,
               errormsg: "Invalid Username or Password!",
             });
-          } else if (res.Status.id === 1006) {
+          } else if (message === "1006") {
             setInitialValue({
               ...initialValue,
               errormsg: "Account id doesn't exist!",
             });
-          } else if (res.Status.id === 2002) {
+          } else if (message === "2002") {
             setInitialValue({
               ...initialValue,
               errormsg: "Account is not deactive!",
@@ -568,7 +605,6 @@ const CustomerDetail = () => {
       });
     }
   };
-
 
   useEffect(() => {
     return () => {};
@@ -622,51 +658,64 @@ const CustomerDetail = () => {
                 </Row>
 
                 <Row className="p-2 ps-1 m-1 mt-4">
-                  <Col sm={4} className="alighn-items-start">
-                    {" "}
-                    <span className="text-secondary  fw-normal">
-                      Customer ID:
+                  <Col sm={4} className="alighn-items-start" >
+                    
+                    <span className="text-dark fw-semibold ">
+                      Remote ID:
                     </span>
                   </Col>
 
                   <Col className="alighn-items-start">
-                    <span className="text-dark fw-semibold">{state.id}</span>
+                    <span className="text-dark fw-normal">{state.remote_id}</span>
                   </Col>
                 </Row>
 
                 <Row className="p-2 ps-1 m-1 mt-1">
                   <Col sm={4} className="alighn-items-start">
-                    <span className="text-secondary  fw-normal">
+                  
+                    <span className="text-dark  fw-semibold">
+                      Local ID:
+                    </span>
+                  </Col>
+
+                  <Col className="alighn-items-start">
+                    <span className="text-dark fw-normal">{state.id}</span>
+                  </Col>
+                </Row>
+
+                <Row className="p-2 ps-1 m-1 mt-1">
+                  <Col sm={4} className="alighn-items-start">
+                    <span className="text-dark  fw-semibold">
                       Email Address:
                     </span>
                   </Col>
 
                   <Col className="alighn-items-start">
-                    <span className="text-dark fw-semibold">{state.email}</span>
+                    <span className="text-dark fw-normal">{state.email}</span>
                   </Col>
                 </Row>
 
                 <Row className="p-2 ps-1  m-1">
                   <Col sm={4} className="alighn-items-start">
-                    <span className="text-secondary  fw-normal">
+                    <span className="text-dark  fw-semibold">
                       Phone Number:
                     </span>
                   </Col>
 
                   <Col className="alighn-items-start">
-                    <span className="text-dark fw-semibold">{state.phone}</span>
+                    <span className="text-dark fw-normal">{state.phone}</span>
                   </Col>
                 </Row>
 
                 <Row className="p-2 ps-1  m-1">
                   <Col sm={4} className="alighn-items-start">
-                    <span className="text-secondary  fw-normal">
+                    <span className="text-dark  fw-semibold">
                       Living Address:
                     </span>
                   </Col>
 
                   <Col className="alighn-items-start">
-                    <span className="text-dark fw-semibold">
+                    <span className="text-dark fw-normal">
                       {state.living_address}
                     </span>
                   </Col>
@@ -674,41 +723,41 @@ const CustomerDetail = () => {
 
                 <Row className="p-2 ps-1  m-1">
                   <Col sm={4} className="alighn-items-start">
-                    <span className="text-secondary  fw-normal">
+                    <span className="text-dark  fw-semibold">
                       Subscription Date:
                     </span>
                   </Col>
 
                   <Col className="alighn-items-start">
-                    <span className="text-dark fw-semibold">
+                    <span className="text-dark fw-normal">
                       {DateSlice(state.created_at)}
                     </span>
                   </Col>
                 </Row>
                 <Row className="p-2 ps-1  m-1">
                   <Col sm={4} className="alighn-items-start">
-                    <span className="text-secondary  fw-normal">
+                    <span className="text-dark fw-semibold">
                       Subscription Plan:
                     </span>
                   </Col>
 
                   <Col className="alighn-items-start">
                     {state.subscription === "monthly" ? (
-                      <span className="text-dark fw-semibold">Monthly</span>
+                      <span className="text-dark fw-normal">Monthly</span>
                     ) : (
-                      <span className="text-dark fw-semibold">Annual</span>
+                      <span className="text-dark fw-normal">Annual</span>
                     )}
                   </Col>
                 </Row>
                 <Row className="p-2 ps-1  m-1">
                   <Col sm={4} className="alighn-items-start">
-                    <span className="text-secondary  fw-normal">
+                    <span className="text-dark  fw-semibold">
                       Expire Date:
                     </span>
                   </Col>
 
                   <Col className="alighn-items-start">
-                    <span className="text-dark fw-semibold">
+                    <span className="text-dark fw-normal">
                       {ExpireDate(state.created_at, state.subscription)}
                     </span>
                   </Col>
@@ -716,13 +765,13 @@ const CustomerDetail = () => {
 
                 <Row className="p-2 ps-1  m-1">
                   <Col sm={4} className="alighn-items-start">
-                    <span className="text-secondary  fw-normal">
+                    <span className="text-dark  fw-semibold">
                       Payment Method:
                     </span>
                   </Col>
 
                   <Col className="alighn-items-start">
-                    <span className="text-dark fw-semibold">
+                    <span className="text-dark fw-normal">
                       {Payment(state.payment_method)}
                     </span>
                   </Col>
