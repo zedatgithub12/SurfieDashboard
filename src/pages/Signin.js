@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
-import AuthUser from "../components/AuthUser";
 import Logo from "../assets/logo.png";
 import Connection from "../constants/Connections";
+import { AuthContext } from "../components/Context";
 
 const Signin = () => {
-  const { setToken } = AuthUser(); // the axios methos imported from AuthUser Function inside the component folder
+  const { SignIn } = React.useContext(AuthContext);
+  const loginState = (user, token) => {
+    SignIn(user, token);
+  };// the axios methos imported from AuthUser Function inside the component folder
   const [credentials, setCredentials] = useState({
     email: "",
     emailvalid: "",
@@ -24,6 +27,8 @@ const Signin = () => {
   });
 
   const [loading, setLoading] = useState(false);
+
+  
   //server reponse states
   const [serverresponse, setServerResponse] = useState({
     visible: false,
@@ -68,7 +73,7 @@ const Signin = () => {
       .then((response) => response.json())
       .then((response) => {
         if (response.status === "succeed") {
-          setToken(response.user, response.access_token);
+          loginState(response.user, response.access_token);
           setServerResponse({
             ...serverresponse,
             visible: true,

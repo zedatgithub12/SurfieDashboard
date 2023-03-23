@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
-
+import {useNavigate } from "react-router-dom";
 import * as BsIcons from "react-icons/bs";
 import { SidebarData } from "./SidebarData";
 import SubMenu from "./SubMenu";
@@ -9,11 +8,8 @@ import { IconContext } from "react-icons/lib";
 import logo from "../assets/LogoMedium.png";
 import Dropdown from "react-bootstrap/Dropdown";
 import { FaUserCircle } from "react-icons/fa";
-import { Row } from "react-bootstrap";
-import AuthUser from "./AuthUser";
-
-
-
+import {  Row } from "react-bootstrap";
+import { AuthContext } from "./Context";
 
 const Nav = styled.div`
   background: #00c6d4;
@@ -23,14 +19,7 @@ const Nav = styled.div`
   align-items: center;
 `;
 
-const NavIcon = styled(Link)`
-  margin-left: 0.7rem;
-  font-size: 2rem;
-  height: 70px;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-`;
+
 
 const SidebarNav = styled.nav`
   background: #15171c;
@@ -51,26 +40,26 @@ const SidebarWrap = styled.div`
 `;
 
 const Sidebar = () => {
-  const {token,logout, user} = AuthUser();
+  const { SignOut } = React.useContext(AuthContext);
+
   const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => setSidebar(!sidebar);
-  const navigate=useNavigate();
+  const navigate = useNavigate();
+  const userString = localStorage.getItem("user");
+  const user = JSON.parse(userString);
 
- const Logout =()=>{
-  if(token !== undefined){
-    logout();
-  }
-  }
- 
+  const Logout = () => {
+    SignOut();
+    navigate("/");
+  };
   return (
     <>
-
       <IconContext.Provider value={{ color: "#fff" }}>
         <Nav className="sticky-top">
-          <NavIcon to="#">
-            <BsIcons.BsList onClick={showSidebar} />
+          <span onClick={showSidebar} className="ps-4">
+            <BsIcons.BsList onClick={showSidebar} size={24} />
             <img src={logo} alt="logo" width="120" height="120" />
-          </NavIcon>
+          </span>
 
           <div className="position-absolute end-0 me-4">
             <Dropdown className="text-center">
@@ -91,8 +80,15 @@ const Sidebar = () => {
                   <span>{user.email}</span>
                 </Row>
                 <hr />
-                <Dropdown.Item onClick={()=> navigate('/changepassword')} >Change Password </Dropdown.Item>
-                <Dropdown.Item onClick={()=> Logout()} className="text-primary">Sign Out</Dropdown.Item>
+                <Dropdown.Item onClick={() => navigate("/changepassword")}>
+                  Change Password
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => Logout()}
+                  className="text-primary"
+                >
+                  Sign Out
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </div>

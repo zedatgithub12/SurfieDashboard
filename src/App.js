@@ -11,41 +11,56 @@ import CustomerDetail from "./pages/CustomerDetail";
 import CreateAccount from "./pages/CreateAccount";
 import ChangePassword from "./pages/ChangePassword";
 import Signin from "./pages/Signin";
-
-// (function () {
-
-//   // Fetch all the forms we want to apply custom Bootstrap validation styles to
-//   var forms = document.querySelectorAll('.needs-validation')
-
-//   // Loop over them and prevent submission
-//   Array.prototype.slice.call(forms)
-//     .forEach(function (form) {
-//       form.addEventListener('submit', function (event) {
-//         if (!form.checkValidity()) {
-//           event.preventDefault()
-//           event.stopPropagation()
-//         }
-
-//         form.classList.add('was-validated')
-//       }, false)
-//     })
-// })()
+import { AuthContext } from "./components/Context";
 
 function App() {
-  const getToken = sessionStorage.getItem("token");
+  const [loged, setLoged] = React.useState(false);
+
+  const authContext = React.useMemo(() => ({
+    SignIn: async (user, token) => {
+      try {
+        localStorage.setItem("token", JSON.stringify(token));
+        localStorage.setItem("user", JSON.stringify(user));
+        setLoged(true);
+      } catch (e) {
+        console.log(e);
+      }
+    },
+  
+    SignOut: async () => {
+      localStorage.clear();
+      setLoged(false);
+    },
+
+    getToken: async () => {
+      const tokenString = localStorage.getItem("token");
+      const userToken = JSON.parse(tokenString);
+      return userToken;
+    },
+
+    getUser: async () => {
+      const userString = localStorage.getItem("user");
+      const userDetails = JSON.parse(userString);
+      return userDetails;
+    },
+   
+  }), []);
 
   useEffect(() => {
-return ()=>{}
-  }, [getToken]);
+    var tokens = localStorage.getItem("token");
+  
+    if (tokens !== null) {
+      setLoged(true);
+    }
+    return () => {};
+  }, [loged]);
 
   return (
-    <Router>
-      {getToken ? (
-        <div>
-        
-          <Routes exact path="/home">
-          
-          <Route path="/home" element={<Customers />} />
+    <AuthContext.Provider value={authContext}>
+      <Router>
+        {loged ? (
+          <Routes>
+            <Route path="/" element={<Customers />} />
             <Route path="/login" element={<Signin />} />
             <Route path="/customers" element={<Customers />} />
             <Route path="/users" element={<Users />} />
@@ -56,11 +71,14 @@ return ()=>{}
             <Route path="/createaccount" element={<CreateAccount />} />
             <Route path="/changepassword" element={<ChangePassword />} />
           </Routes>
-        </div>
-      ) : (
-        <Signin />
-      )}
-    </Router>
+        ) : (
+          <Routes>
+            <Route path="/" element={<Signin />} />
+            <Route path="/login" element={<Signin />} />
+          </Routes>
+        )}
+      </Router>
+    </AuthContext.Provider>
   );
 }
 

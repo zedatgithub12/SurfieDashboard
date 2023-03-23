@@ -1,22 +1,17 @@
 
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Accordion from 'react-bootstrap/Accordion';
+
 
 function HightlightAccordion({mfive, mten, mfifty, afive,aten,afifty}) {
   return (
+<>
+    <Accordion defaultActiveKey="0">
+    <Accordion.Item eventKey="0">
+      <Accordion.Header>Monthly Subscribers</Accordion.Header>
+      <Accordion.Body>
 
-
-
-
-<div class="accordion" id="accordionExample">
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="headingOne">
-      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-      Monthly Subscribers
-      </button>
-    </h2>
-    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
       <Row className="justify-content-md-start align-items-center">
             <Col sm={8}>
               <p className="fs-6 font-link">5 Device Subscribers</p>
@@ -54,17 +49,15 @@ function HightlightAccordion({mfive, mten, mfifty, afive,aten,afifty}) {
             <Col>
               <p className="font-link">{mfifty >= '2' ?(<span>{mfifty*500} K</span>) : (<span> {mfifty*500} birr </span>) }</p>
             </Col>
-          </Row> </div>
-    </div>
-  </div>
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="headingTwo">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-      Annual Subscribers
-      </button>
-    </h2>
-    <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
+          </Row> 
+          </Accordion.Body>
+      </Accordion.Item>
+   
+
+   <Accordion.Item eventKey="1">
+   <Accordion.Header>Annual Subscribers</Accordion.Header>
+   <Accordion.Body>
+ 
       <Row className="justify-content-md-start align-items-center">
             <Col sm={8}>
               <p className="fs-6 font-link">5 Device Subscribers</p>
@@ -102,11 +95,12 @@ function HightlightAccordion({mfive, mten, mfifty, afive,aten,afifty}) {
             <Col>
               <p className="font-link">{afifty >= '1' ?(<span>{afifty*5500} K</span>) : (<span> {afifty*5500} birr </span>) }</p>
             </Col>
-          </Row> </div>
-    </div>
-  </div>
-  </div>
+          </Row>
 
+          </Accordion.Body>
+      </Accordion.Item>
+          </Accordion>
+</>
   );
 }
 

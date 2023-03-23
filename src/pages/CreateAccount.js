@@ -23,6 +23,9 @@ import Connection from "../constants/Connections";
 import Sidebar from "../components/Sidebar";
 import Modal from "react-bootstrap/Modal";
 import Constants from "../constants/Constants";
+import XMLParser from "react-xml-parser";
+
+
 
 function CreateAccount() {
   const [loading, setLoading] = useState(false);
@@ -71,7 +74,6 @@ function CreateAccount() {
     confirmpassword: "",
     confirmhs: false,
     confirmht: "",
-
 
     errormessage: "",
   });
@@ -176,27 +178,24 @@ function CreateAccount() {
     return Phoneno;
   };
 
-
-  const Pricing = (license)=>{
+  const Pricing = (license) => {
     var price;
-    switch(license){
-  
-        case 10:
-          price = 450;
-          break;
-          case 15:
-          price=600;
-           break;
-           default: 
-           price=300;
-              break;
+    switch (license) {
+      case 10:
+        price = 450;
+        break;
+      case 15:
+        price = 600;
+        break;
+      default:
+        price = 300;
+        break;
     }
-    return price
-  }
+    return price;
+  };
   //validate user input when user pressed submit button
   const ValidateInput = () => {
     var packages = `AFROMINA_${license}`; //packages id to be sent to puresight
- 
 
     if (
       input.firstname === "" ||
@@ -211,7 +210,6 @@ function CreateAccount() {
       setInput({
         ...input,
         errormessage: "Please fill all form",
-
       });
       return false;
     } else if (input.password !== input.confirmpassword) {
@@ -219,7 +217,7 @@ function CreateAccount() {
         ...input,
         errormessage: "Password you entered doesn't match",
         confirmhs: true,
-        confirmht: "Password you entered doesn't match" 
+        confirmht: "Password you entered doesn't match",
       });
       document.getElementById("form8").focus();
       return false;
@@ -236,117 +234,116 @@ function CreateAccount() {
       setInput({
         ...input,
         errormessage: "Please select payment option!",
-
       });
 
       return false;
     } else {
-      var RemoteApi = Connection.remote+ `CreateAccountWithPackageId.py?adminUser=${Constants.user}&adminPassword=${Constants.password}&email=${input.emailaddress}&phoneNumber=${MakeitPhone(input.phone)}&packageId=${packages}&subscriptionId=1&externalRef=AFROMINA`;
+      var RemoteApi =
+        Connection.remote +
+        `CreateAccountWithPackageId.py?adminUser=${
+          Constants.user
+        }&adminPassword=${Constants.password}&email=${
+          input.emailaddress
+        }&phoneNumber=${MakeitPhone(
+          input.phone
+        )}&packageId=${packages}&subscriptionId=1&externalRef=AFROMINA`;
 
-      fetch(RemoteApi,{
-        mode: "no-cors",
-      })
-      .then((res)=>res.text())
-      .then((res) => {
-        let parser = new DOMParser();
-        let xml = parser.parseFromString(res, "application/xml");
-        // var status = xml.getElementsByTagName("AddSubscription").getElementById('id');
-        console.log(xml);
+        fetch(RemoteApi)
+        .then((res) => res.text())
+        .then((res) => {
 
-          if (res.Status.id === 0) {
-        setLoading(true);
-      var Api = Connection.api + Connection.customers; // update this line of code to the something like 'http://localhost:3000/customers?_page=${currentPage}&_limit=${limit}
-      var headers = {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      };
-      const data = {
-        remote_id: res.Account.account_id,
-        firstname: input.firstname,
-        middlename: input.middlename,
-        lastname: input.lastname,
-        emailaddress: input.emailaddress,
-        phone: MakeitPhone(input.phone),
-        address: input.address,
-        username: input.username,
-        password: input.password,
-        subscription: Period,
-        license: license,
-        price: Pricing(license),
-        payment: selected.active,
-        status: 0,
-      };
+        var xml = new XMLParser().parseFromString(res); // Assume xmlText contains the example XML
+        var message = xml.children[0].attributes.id;
+          if (message === "0") {
+            var remoteid = xml.children[1].children[0].attributes.account_id; // an id given to user from external server
+           
+            setLoading(true);
+            var Api = Connection.api + Connection.customers; // update this line of code to the something like 'http://localhost:3000/customers?_page=${currentPage}&_limit=${limit}
+            var headers = {
+              accept: "application/json",
+              "Content-Type": "application/json",
+            };
+            const data = {
+              remote_id: remoteid,
+              firstname: input.firstname,
+              middlename: input.middlename,
+              lastname: input.lastname,
+              emailaddress: input.emailaddress,
+              phone: MakeitPhone(input.phone),
+              address: input.address,
+              username: input.username,
+              password: input.password,
+              subscription: Period,
+              license: license,
+              price: Pricing(license),
+              payment: selected.active,
+              status: 0,
+            };
 
-      fetch(Api, {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(data),
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          if (response === "succeed") {
+            fetch(Api, {
+              method: "POST",
+              headers: headers,
+              body: JSON.stringify(data),
+            })
+              .then((response) => response.json())
+              .then((response) => {
+                if (response === "succeed") {
+                  setInput({
+                    ...input,
+                    errormessage: "Successfully Created!",
+                  });
+                  handleShow();
+                  setLoading(false);
+                } else {
+                  setInput({
+                    ...input,
+                    errormessage: "error creating account!",
+                  });
+
+                  setLoading(false);
+                }
+              });
+          } else if (message === "1001") {
             setInput({
               ...input,
-              errormessage: "Successfully Created!",
+              errormessage: "Error Missing Parameter!",
             });
-            handleShow();
-            setLoading(false);
+          } else if (message === "1002") {
+            setInput({
+              ...input,
+              errormessage: "Invalid Username or Password!",
+            });
+          } else if (message === "1004") {
+            setInput({
+              ...input,
+              errormessage: "Invalid Package Id!",
+            });
+          } else if (message === "1021") {
+            setInput({
+              ...input,
+              errormessage: "Email already exist!",
+            });
+          } else if (message === "1022") {
+            setInput({
+              ...input,
+              errormessage: "Phone number already exist!",
+            });
           } else {
             setInput({
               ...input,
-              errormessage: "error creating account!",
+              errormessage: "Invalid response!",
             });
-            
-            setLoading(false);
           }
+        })
+        .catch((e) => {
+          console.log(e);
+          setLoading(false);
         });
-      } else if (res.Status.id === 1001) {
-        setInput({
-          ...input,
-          errormessage: "Error Missing Parameter!",
-        });
-       
-      } else if (res.Status.id === 1002) {
-        setInput({
-          ...input,
-          errormessage: "Invalid Username or Password!",
-        });
-     
-      } else if (res.Status.id === 1004) {
-         setInput({
-          ...input,
-          errormessage: "Invalid Package Id!",
-        });
-      }
-      else if (res.Status.id === 2021) {
-        setInput({
-          ...input,
-          errormessage: "Email already exist!",
-        });
-      }
-       else if (res.Status.id === 2022) {
-        setInput({
-          ...input,
-          errormessage: "Phone number already exist!",
-        });
-  
-      } else {
-       
-        setInput({
-          ...input,
-          errormessage: "Invalid response!",
-        });
-      }
-        }
-      ).catch((e)=>{
-        console.log(e);
-      })
     }
 
     return true;
   };
 
-  
   return (
     <>
       <Sidebar />
@@ -688,48 +685,49 @@ function CreateAccount() {
           </Col>
         </Row>
         <Modal show={show} onHide={handleClose}>
-          <Modal.Header closeButton/>
+          <Modal.Header closeButton />
           <Modal.Body>
-     
-          <Row>
-          <Col
-            sm={10}
-            className=" text-center align-items-center justify-content-center  m-auto p-3  mt-2 mb-1 "
-          >
-            <BsCheckCircle size={66} className="text-success m-3" />
-            <p className="fs-5 ">Successfully Created</p>
-            <p className="fs-6 ">We have sent you an email check your inbox</p>
-         
-            <Row className="d-flex justify-content-evenly align-items-center m-auto mt-5 w-50">
-              <Col>
-                <Link
-                  onClick={() => handleClose()}
-                  to="/createaccount"
-                  variant="light"
-                  className="
+            <Row>
+              <Col
+                sm={10}
+                className=" text-center align-items-center justify-content-center  m-auto p-3  mt-2 mb-1 "
+              >
+                <BsCheckCircle size={66} className="text-success m-3" />
+                <p className="fs-5 ">Successfully Created</p>
+                <p className="fs-6 ">
+                  We have sent you an email check your inbox
+                </p>
+
+                <Row className="d-flex justify-content-evenly align-items-center m-auto mt-5 w-50">
+                  <Col>
+                    <Link
+                      onClick={() => handleClose()}
+                      to="/createaccount"
+                      variant="light"
+                      className="
                 d-flex justify-content-center align-items-center
                 btn btn-light
                 text-decoration-none text-dark fw-semibold "
-                >
-                  Back
-                </Link>
-              </Col>
+                    >
+                      Back
+                    </Link>
+                  </Col>
 
-              <Col>
-                <Link
-                  to="/customers"
-                  variant = "light"
-                  className="
+                  <Col>
+                    <Link
+                      to="/customers"
+                      variant="light"
+                      className="
                 d-flex justify-content-evenly align-self-center
                 text-decoration-none text-dark btn primary-bg text-dark "
-                >
-                  Home
-                </Link>
+                    >
+                      Home
+                    </Link>
+                  </Col>
+                </Row>
               </Col>
             </Row>
-          </Col>
-        </Row>
-        </Modal.Body>
+          </Modal.Body>
         </Modal>
       </Container>
     </>
