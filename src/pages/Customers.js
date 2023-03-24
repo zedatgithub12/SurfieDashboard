@@ -34,25 +34,24 @@ export const Customers = () => {
   const [license, setLicense] = useState(); //modal dropdown license listing states
   const [notFound, setNotFound] = useState("No customer with this status!");
   const [position, setPosition] = useState(false);
-  const [paging, setPaging] = useState({
-    initialPage: 1,
-    totalCount: "",
-  });
+  const [paging, setPaging] = useState([]);
+  const [count, setCount] = useState([]);
 
-  const [count, setCount] = useState({
-    pendings: "0",
-    active: "0",
-    monthly: "0",
-    annual: "0",
-    mfive: "0",
-    mten: "0",
-    mfifty: "0",
-    afive: "0",
-    aten: "0",
-    afifty: "0",
-    newm: "0",
-    newa: "0",
-  });
+
+  // const [count, setCount] = useState({
+  //   pendings: "0",
+  //   active: "0",
+  //   monthly: "0",
+  //   annual: "0",
+  //   mfive: "0",
+  //   mten: "0",
+  //   mfifty: "0",
+  //   afive: "0",
+  //   aten: "0",
+  //   afifty: "0",
+  //   newm: "0",
+  //   newa: "0",
+  // });
   //modal dynamic attributes
   const [initialValue, setInitialValue] = useState({
     title: "",
@@ -475,6 +474,75 @@ export const Customers = () => {
     }
   };
 
+ //reactivate terminated customer account
+ const Reactivate = (id, remoteid) => {
+  var RemoteApi =
+    Connection.remote +
+    `ActivateAccount.py?accountId=${remoteid}&adminUser=${Constants.user}&adminPassword=${Constants.password}`;
+    fetch(RemoteApi)
+    .then((res) => res.text())
+    .then((res) => {
+      var xml = new XMLParser().parseFromString(res); // Assume xmlText contains the example XML
+      var message = xml.children[0].attributes.id;
+
+      if (message === "0") {
+        var Api = Connection.api + Connection.activate + id; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
+        var headers = {
+          accept: "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        };
+
+        var Data = {
+          status: 1,
+        };
+
+        fetch(Api, {
+          method: "PUT",
+          headers: headers,
+          body: JSON.stringify(Data),
+        })
+          .then((response) => response.json())
+          .then((response) => {
+            if (response === "activated") {
+              setPosition(true);
+            }
+          });
+      } else if (message === "1001") {
+        setInitialValue({
+          ...initialValue,
+          errormsg: "Error Missing Parameter!",
+        });
+      } else if (message === "1002") {
+        setInitialValue({
+          ...initialValue,
+          errormsg: "Invalid Username or Password!",
+        });
+      } else if (message === "1006") {
+        setInitialValue({
+          ...initialValue,
+          errormsg: "Account id doesn't exist!",
+        });
+      } else if (message === "2002") {
+        setInitialValue({
+          ...initialValue,
+          errormsg: "Account is already active!",
+        });
+      } else {
+        setInitialValue({
+          ...initialValue,
+          errormsg: "Invalid response!",
+        });
+      }
+    })
+    .catch((e) => {
+      setInitialValue({
+        ...initialValue,
+        errormsg: "Error reactivating account!",
+      });
+    });
+};
+
   // deactivate customer account
   const Detach = () => {
     if (initialValue.cid !== "") {
@@ -599,7 +667,6 @@ export const Customers = () => {
   };
 
   //fetch customer while use clicked the next button every time
-
   const fetchCustomer = async (currentPage) => {
     var Api =
       Connection.api +
@@ -620,7 +687,6 @@ export const Customers = () => {
   };
 
   //pagination buttons onclick handler
-
   const handlePageClick = async (data) => {
     let currentPage = data.selected + 1;
     const customerFromServer = await fetchCustomer(currentPage);
@@ -655,140 +721,65 @@ export const Customers = () => {
       });
   };
 
-  //reactivate terminated customer account
-  const Reactivate = (id, remoteid) => {
-    var RemoteApi =
-      Connection.remote +
-      `ActivateAccount.py?accountId=${remoteid}&adminUser=${Constants.user}&adminPassword=${Constants.password}`;
-    fetch(RemoteApi)
-      .then((res) => {
-        if (res.Status.id === 0) {
-          var Api = Connection.api + Connection.activate + id; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
-          var headers = {
-            accept: "application/json",
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          };
+ 
+ 
 
-          var Data = {
-            status: 1,
-          };
-
-          fetch(Api, {
-            method: "PUT",
-            headers: headers,
-            body: JSON.stringify(Data),
-          })
-            .then((response) => response.json())
-            .then((response) => {
-              if (response === "activated") {
-                setPosition(true);
-              }
-            });
-        } else if (res.Status.id === 1001) {
-          setInitialValue({
-            ...initialValue,
-            errormsg: "Error Missing Parameter!",
-          });
-        } else if (res.Status.id === 1002) {
-          setInitialValue({
-            ...initialValue,
-            errormsg: "Invalid Username or Password!",
-          });
-        } else if (res.Status.id === 1006) {
-          setInitialValue({
-            ...initialValue,
-            errormsg: "Account id doesn't exist!",
-          });
-        } else if (res.Status.id === 2002) {
-          setInitialValue({
-            ...initialValue,
-            errormsg: "Account is already active!",
-          });
-        } else {
-          setInitialValue({
-            ...initialValue,
-            errormsg: "Invalid response!",
-          });
-        }
+ 
+//featch all numerical count of customer information
+  const PendingCount = () => {
+    var Api = Connection.api + Connection.pending; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
+    var headers = {
+      accept: "application/json",
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    };
+    fetch(Api, {
+      method: "GET",
+      headers: headers,
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        setCount(response);
       })
-      .catch((e) => {
-        setInitialValue({
-          ...initialValue,
-          errormsg: "Error reactivating account!",
-        });
+      .catch((e)=>{
+        //catch errors
       });
+      
   };
+
+ 
   //use effect function
   //when the functional component cames to life we will getcustomers by deafult
   useEffect(() => {
-    const getCustomers = async (currentPage) => {
-      setLoading(false);
-      var Api =
-        Connection.api +
-        Connection.customers +
-        `?page=${currentPage}&status=${activeTab}`;
+   
+  const getCustomers = async (currentPage) => {
+    setLoading(false);
+    var Api =
+      Connection.api +
+      Connection.customers +
+      `?page=${currentPage}&status=${activeTab}`;
 
-      var headers = {
-        accept: "application/json",
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      };
-
-      fetch(Api, {
-        method: "GET",
-        headers: headers,
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          setCustomers(response.data);
-          setPaging({
-            ...paging,
-            initialPage: response.from,
-            totalCount: response.last_page,
-          });
-          setLoading(true);
-        })
-        .catch((e) => {
-       
-          setLoading(true);
-        });
+    var headers = {
+      accept: "application/json",
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
     };
 
+    fetch(Api, {
+      method: "GET",
+      headers: headers,
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        setCustomers(response.data);
+        setPaging(response);
+        setLoading(true);
+      })
+      .catch((e) => {
+        setLoading(true);
+      });
+  };
     getCustomers();
-
-    const PendingCount = () => {
-      
-      var Api = Connection.api + Connection.pending; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
-      var headers = {
-        accept: "application/json",
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      };
-
-      fetch(Api, {
-        method: "GET",
-        headers: headers,
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          setCount({
-            ...count,
-            pendings: response.pendings,
-            active: response.actives,
-            monthly: response.monthly,
-            annual: response.annual,
-            mfive: response.mfive,
-            mten: response.mten,
-            mfifty: response.mfifty,
-            afive: response.afive,
-            aten: response.aten,
-            afifty: response.afifty,
-            newm: response.newm,
-            newa: response.newa,
-          });
-        });
-    };
     PendingCount();
     return () => {};
   }, [activeTab]);
@@ -803,7 +794,7 @@ export const Customers = () => {
             className="card justify-content-md-center shadow-sm border-0 me-0 border-start border-success  pt-4"
           >
             <div>
-              <h5 className="text-center font-link fw-bold">{count.active}</h5>
+              <h5 className="text-center font-link fw-bold">{count.actives}</h5>
               <p className="text-center font-link text-success  responsive-font-example">
                 Active Customers
               </p>
@@ -989,7 +980,7 @@ export const Customers = () => {
                         previousLabel={"previous"}
                         nextLabel={"next"}
                         breakLabel={"..."}
-                        pageCount={Math.ceil(paging.totalCount)}
+                        pageCount={Math.ceil(paging.last_page)}
                         marginPagesDisplayed={3}
                         pageRangeDisplayed={3}
                         onPageChange={handlePageClick}
@@ -1153,7 +1144,7 @@ export const Customers = () => {
         </Modal>
 
         <ToastContainer
-          position="bottom-center"
+          position="top-center"
           className="p-3 bg-succees bg-opacity-10"
         >
           <Toast
