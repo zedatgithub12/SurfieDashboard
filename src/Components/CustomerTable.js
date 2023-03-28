@@ -57,9 +57,9 @@ function CustomerTable({
 
       <td onClick={rowPressed}>{ExpireDate(date, subscription)}</td>
       <td className="text-end">
-        {status === "0"?(
+        {status == 0 ?(
             <Button  onClick={approve} variant="white" className="btn btn-sm btn-outline-success border-0 my-1 text-end" > Activate <RxCheck size={18} className="pe-1 pb-1"/></Button>
-        ): status === "3"?(
+        ): status == 3?(
           <Button  onClick={reactivate} variant="white" className="btn btn-sm btn-outline-success border-0 my-1 text-end" ><RxLoop size={18} className="pe-1 pb-1"/>Reactivate</Button>
       ):(
                <Dropdown>

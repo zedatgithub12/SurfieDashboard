@@ -469,13 +469,7 @@ export const Customers = () => {
         Connection.remote +
         `DeactivateAccount.py?accountId=${initialValue.cid}&adminUser=${Constants.user}&adminPassword=${Constants.password}`;
 
-      fetch(RemoteApi,{
-        credentials: "include",
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': '*',
-          'Access-Control-Allow-Headers': 'Content-Type,text/xml', }
-      })
+      fetch(RemoteApi)
         .then((res) => res.text())
         .then((res) => {
           var xml = new XMLParser().parseFromString(res); // Assume xmlText contains the example XML
@@ -1254,7 +1248,7 @@ export const Customers = () => {
               <Button variant="danger" onClick={() => Deactivate()}>
                   {actionload ? (
                   <div
-                    class="spinner-border spinner-border-sm text-secondary"
+                    class="spinner-border spinner-border-sm text-white"
                     role="status"
                   >
                   </div>
@@ -1266,7 +1260,7 @@ export const Customers = () => {
               <Button variant="danger" onClick={() => Detach()}>
                   {actionload ? (
                   <div
-                    class="spinner-border spinner-border-sm text-secondary"
+                    class="spinner-border spinner-border-sm text-white"
                     role="status"
                   >
                   </div>
