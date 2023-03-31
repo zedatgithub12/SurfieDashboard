@@ -126,14 +126,8 @@ export const Customers = () => {
   };
 
   // add License functionality
-  //adding license to databse go performed here
-  const UpdateID = (event) => {
-    setInitialValue({
-      ...initialValue,
-      cid: event.target.value,
-      errormsg: "",
-    });
-  };
+  //adding license to database performed here
+
 
   const AddSubscription = () => {
     var packages = `AFROMINA_${license}`;
@@ -150,90 +144,71 @@ export const Customers = () => {
       });
     } else if (initialValue.cid !== "" && initialValue.currentPlan < 15) {
       setactionload(true);
-      // remote serve API
-      var RemoteApi =
-        Connection.remote +
-        `AddSubscription.py?accountId=${initialValue.cid}&subscriptionId=1&packageId=${packages}&adminUser=${Constants.user}&adminPassword=${Constants.password}`;
 
-      fetch(RemoteApi)
-        .then((res) => res.text())
-        .then((res) => {
-          var xml = new XMLParser().parseFromString(res); // Assume xmlText contains the example XML
-          var message = xml.children[0].attributes.id;
+      var Api = Connection.api + Connection.addlicense + initialValue.lid;
+      var headers = {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      };
 
-          if (message === "0") {
-            var Api = Connection.api + Connection.addlicense + initialValue.lid;
-            var headers = {
-              accept: "application/json",
-              "Content-Type": "application/json",
-            };
+      var Data = {
+        reomteid: initialValue.cid,
+        localid: initialValue.lid,
+        license: license,
+        package: packages,
+      };
 
-            var Data = {
-              reomteid: initialValue.cid,
-              localid: initialValue.lid,
-              license: license,
-            };
-
-            fetch(Api, {
-              method: "PUT",
-              headers: headers,
-              body: JSON.stringify(Data),
-            })
-              .then((response) => response.json())
-              .then((response) => {
-                // the action will be taken depending on the server response
-
-                if (response === "succeed") {
-                  setConfirm("3");
-                  setInitialValue({
-                    ...initialValue,
-                    cofirmationtxt: `Succeessfully Upgraded to ${license} device license`,
-
-                    errormsg: "",
-                  });
-                  setactionload(false);
-                } else {
-                  setInitialValue({
-                    ...initialValue,
-                    cofirmationtxt: "",
-                    lid: "",
-                    cid: "",
-                    errormsg: "Failed to to upgrade license",
-                  });
-                  setactionload(false);
-                }
-              });
-          } else if (message === "1001") {
+      fetch(Api, {
+        method: "PUT",
+        headers: headers,
+        body: JSON.stringify(Data),
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          // the action will be taken depending on the server response
+          
+          if (response == 0) {
+            setConfirm("3");
             setInitialValue({
               ...initialValue,
+              cofirmationtxt: `Succeessfully Upgraded to ${license} device license`,
+              errormsg: "",
+            });
+            setactionload(false);
+          } else if (response == 1001) {
+            setInitialValue({
+              ...initialValue,
+              cofirmationtxt: "",
+              lid: "",
+              cid: "",
               errormsg: "Mandatory parameter missing!",
             });
             setactionload(false);
-          } else if (message === "1002") {
+          } else if (response == 1002) {
             setInitialValue({
               ...initialValue,
               errormsg: "Invalid Username or Password!",
             });
             setactionload(false);
-          } else if (message === "1003") {
+          } else if (response == 1003) {
             setInitialValue({
               ...initialValue,
               errormsg: "Already Subscribed!",
             });
             setactionload(false);
-          } else if (message === "1004") {
+          } else if (response == 1004) {
             setInitialValue({
               ...initialValue,
               errormsg: "Invalid Package Id!",
             });
             setactionload(false);
-          } else if (message === "1021") {
+          } else if (response == 1021) {
             setInitialValue({
               ...initialValue,
               errormsg: "Email already exist!",
             });
             setactionload(false);
-          } else if (message === "1022") {
+          } else if (response == 1022) {
             setInitialValue({
               ...initialValue,
               errormsg: "Phone number already exist!",
@@ -242,17 +217,10 @@ export const Customers = () => {
           } else {
             setInitialValue({
               ...initialValue,
-              errormsg: "Invalid response!",
+              errormsg: "Failed to to upgrade license",
             });
             setactionload(false);
           }
-        })
-        .catch((e) => {
-          setInitialValue({
-            ...initialValue,
-            errormsg: "Error adding subscription!",
-          });
-          setactionload(false);
         });
     } else {
       setInitialValue({
@@ -279,181 +247,88 @@ export const Customers = () => {
         errormsg: "Selected a license supports same or more devices!",
       });
     } else if (initialValue.cid !== "" && initialValue.currentPlan > 5) {
-
       setactionload(true);
-      //remove license
-      // first we need to add the package we wanted
-      // then we call remove api with current package number
-      var addApi =
-        Connection.remote +
-        `AddSubscription.py?accountId=${initialValue.cid}&subscriptionId=1&packageId=${packages}&adminUser=${Constants.user}&adminPassword=${Constants.password}`;
 
-      fetch(addApi)
-        .then((res) => res.text())
-        .then((res) => {
-          var xml = new XMLParser().parseFromString(res); // Assume xmlText contains the example XML
-          var message = xml.children[0].attributes.id;
-          if (message === "0") {
-            var RemoteApi =
-              Connection.remote +
-              `RemoveSubscription.py?accountId=${initialValue.cid}&subscriptionId=1&packageId=${currentPackages}&adminUser=${Constants.user}&adminPassword=${Constants.password}`;
-            fetch(RemoteApi)
-              .then((res) => res.text())
-              .then((res) => {
-                var xml = new XMLParser().parseFromString(res); // Assume xmlText contains the example XML
-                var message = xml.children[0].attributes.id;
+      var Api = Connection.api + Connection.removeLicense + initialValue.lid;
+      var headers = {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      };
 
-                if (message === "0") {
-                  var Api =
-                    Connection.api +
-                    Connection.removeLicense +
-                    initialValue.lid;
-                  var headers = {
-                    accept: "application/json",
-                    "Content-Type": "application/json",
-                  };
+      var Data = {
+        reomteid: initialValue.cid,
+        localid: initialValue.lid,
+        license: license,
+        package: packages,
+        currentPackage: currentPackages,
+      };
 
-                  var Data = {
-                    reomteid: initialValue.cid,
-                    localid: initialValue.lid,
-                    license: license,
-                  };
+      fetch(Api, {
+        method: "PUT",
+        headers: headers,
+        body: JSON.stringify(Data),
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          // the action will be taken depending on the server response
 
-                  fetch(Api, {
-                    method: "PUT",
-                    headers: headers,
-                    body: JSON.stringify(Data),
-                  })
-                    .then((response) => response.json())
-                    .then((response) => {
-                      // the action will be taken depending on the server response
-
-                      if (response === "succeed") {
-                        setConfirm("3");
-                        setInitialValue({
-                          ...initialValue,
-                          cofirmationtxt: `Succeessfully Downgraded license to ${license} device license`,
-                          errormsg: "",
-                        });
-                        setactionload(false);
-                      } else {
-                        setInitialValue({
-                          ...initialValue,
-                          cofirmationtxt: "",
-                          lid: "",
-                          cid: "",
-                          errormsg: "Failed to to downgrade license",
-                        });
-                        setactionload(false);
-                      }
-                    })
-                    .catch((e) => {
-                      setInitialValue({
-                        ...initialValue,
-                        errormsg: "Error downgrade license",
-                      });
-                      setactionload(false);
-                    });
-                } else if (message === "1002") {
-                  setInitialValue({
-                    ...initialValue,
-                    errormsg: "Invalid Username or Password!",
-                  });
-                         setactionload(false);
-                } else if (message === "1003") {
-                  setInitialValue({
-                    ...initialValue,
-                    errormsg: "Subscription id already exist!",
-                  });
-                         setactionload(false);
-                } else if (message === "1006") {
-                  setInitialValue({
-                    ...initialValue,
-                    errormsg: "Account id doesn't exist!",
-                  });
-                         setactionload(false);
-                } else if (message === "1004") {
-                  setInitialValue({
-                    ...initialValue,
-                    errormsg: "Invalid Package Id!",
-                  });
-                         setactionload(false);
-                } else if (message === "1014") {
-                  setInitialValue({
-                    ...initialValue,
-                    errormsg: "Invalid subscription Id!",
-                  });
-                         setactionload(false);
-                } else {
-                  setInitialValue({
-                    ...initialValue,
-                    errormsg: "Invalid response!",
-                  });
-                         setactionload(false);
-                }
-              })
-              .catch((e) => {
-                setInitialValue({
-                  ...initialValue,
-                  errormsg: "Error removing subscription!",
-                });
-                setactionload(false);
-              });
-          } else if (message === "1001") {
+          if (response == 0) {
+            setConfirm("3");
             setInitialValue({
               ...initialValue,
-              errormsg: "Mandatory parameter missing!",
+              cofirmationtxt: `Succeessfully Downgraded license to ${license} device license`,
+              errormsg: "",
             });
-                   setactionload(false);
-          } else if (message === "1002") {
+            setactionload(false);
+          } else if (response == 1002) {
             setInitialValue({
               ...initialValue,
               errormsg: "Invalid Username or Password!",
             });
-                   setactionload(false);
-          } else if (message === "1003") {
+            setactionload(false);
+          } else if (response == 1003) {
             setInitialValue({
               ...initialValue,
-              errormsg: "Already Subscribed!",
+              errormsg: "Subscription id already exist!",
             });
-                   setactionload(false);
-          } else if (message === "1004") {
+            setactionload(false);
+          } else if (response == 1006) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Account id doesn't exist!",
+            });
+            setactionload(false);
+          } else if (response == 1004) {
             setInitialValue({
               ...initialValue,
               errormsg: "Invalid Package Id!",
             });
-                   setactionload(false);
-          } else if (message === "1021") {
+            setactionload(false);
+          } else if (response == 1014) {
             setInitialValue({
               ...initialValue,
-              errormsg: "Email already exist!",
+              errormsg: "Invalid subscription Id!",
             });
-                   setactionload(false);
-          } else if (message === "1022") {
-            setInitialValue({
-              ...initialValue,
-              errormsg: "Phone number already exist!",
-            });
-                   setactionload(false);
+            setactionload(false);
           } else {
             setInitialValue({
               ...initialValue,
               errormsg: "Invalid response!",
             });
-                   setactionload(false);
+            setactionload(false);
           }
         })
         .catch((e) => {
           setInitialValue({
             ...initialValue,
-            errormsg: "Error adding subscription!",
+            errormsg: "Error downgrade license",
           });
           setactionload(false);
         });
     } else {
       setInitialValue({
         ...initialValue,
-        errormsg: "Please enter remote customer id!",
+        errormsg: "error removing subscription!",
       });
       setactionload(false);
     }
@@ -462,80 +337,50 @@ export const Customers = () => {
   // deactivate customer account
   const Deactivate = () => {
     if (initialValue.cid !== "") {
-
       setactionload(true);
 
-      var RemoteApi =
-        Connection.remote +
-        `DeactivateAccount.py?accountId=${initialValue.cid}&adminUser=${Constants.user}&adminPassword=${Constants.password}`;
+      var Api = Connection.api + Connection.deactivate + initialValue.lid;
+      var headers = {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      };
 
-      fetch(RemoteApi)
-        .then((res) => res.text())
-        .then((res) => {
-          var xml = new XMLParser().parseFromString(res); // Assume xmlText contains the example XML
-          var message = xml.children[0].attributes.id;
+      var Data = {
+        reomteid: initialValue.cid,
+        localid: initialValue.lid,
+        cstatus: 3,
+      };
 
-          if (message === "0") {
-            var Api = Connection.api + Connection.deactivate + initialValue.lid;
-            var headers = {
-              accept: "application/json",
-              "Content-Type": "application/json",
-            };
+      fetch(Api, {
+        method: "PUT",
+        headers: headers,
+        body: JSON.stringify(Data),
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          // the action will be taken depending on the server response
 
-            var Data = {
-              reomteid: initialValue.cid,
-              localid: initialValue.lid,
-              cstatus: 3,
-            };
-
-            fetch(Api, {
-              method: "PUT",
-              headers: headers,
-              body: JSON.stringify(Data),
-            })
-              .then((response) => response.json())
-              .then((response) => {
-                // the action will be taken depending on the server response
-
-                if (response === "deactivated") {
-                  setConfirm("3");
-                  setInitialValue({
-                    ...initialValue,
-                    cofirmationtxt: `Succeessfully Deactivated!`,
-                    errormsg: "",
-                  });
-                  setactionload(false);
-                } else {
-                  setInitialValue({
-                    ...initialValue,
-                    cofirmationtxt: "",
-                    lid: "",
-                    cid: "",
-                    errormsg: "Failed to deactivate customer credentials",
-                  });
-                  setactionload(false);
-                }
-              })
-              .catch((e) => {
-                setInitialValue({
-                  ...initialValue,
-                  errormsg: "Error deactivating customer credentials",
-                });
-                setactionload(false);
-              });
-          } else if (message === "1002") {
+          if (response == 0) {
+            setConfirm("3");
+            setInitialValue({
+              ...initialValue,
+              cofirmationtxt: `Succeessfully Deactivated!`,
+              errormsg: "",
+            });
+            setactionload(false);
+          } else if (response == 1002) {
             setInitialValue({
               ...initialValue,
               errormsg: "Invalid Username or Password!",
             });
             setactionload(false);
-          } else if (message === "1006") {
+          } else if (response == 1006) {
             setInitialValue({
               ...initialValue,
               errormsg: "Account id doesn't exist!",
             });
             setactionload(false);
-          } else if (message === "2001") {
+          } else if (response == 2001) {
             setInitialValue({
               ...initialValue,
               errormsg: "Account is not active!",
@@ -544,7 +389,7 @@ export const Customers = () => {
           } else {
             setInitialValue({
               ...initialValue,
-              errormsg: "Invalid response!",
+              errormsg: "Failed to deactivate customer credentials!",
             });
             setactionload(false);
           }
@@ -552,7 +397,7 @@ export const Customers = () => {
         .catch((e) => {
           setInitialValue({
             ...initialValue,
-            errormsg: "Error deactivating account!",
+            errormsg: "Error deactivating customer credentials",
           });
           setactionload(false);
         });
@@ -567,26 +412,16 @@ export const Customers = () => {
 
   //reactivate terminated customer account
   const Reactivate = (id, remoteid) => {
-
-  
-    var RemoteApi =
-      Connection.remote +
-      `ActivateAccount.py?accountId=${remoteid}&adminUser=${Constants.user}&adminPassword=${Constants.password}`;
-    fetch(RemoteApi)
-      .then((res) => res.text())
-      .then((res) => {
-        var xml = new XMLParser().parseFromString(res); // Assume xmlText contains the example XML
-        var message = xml.children[0].attributes.id;
-
-        if (message === "0") {
-          var Api = Connection.api + Connection.activate + id; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
+ 
+          var Api = Connection.api + Connection.reactivate + id; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
           var headers = {
             accept: "application/json",
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
+          
           };
 
           var Data = {
+            remote_id: remoteid,
             status: 1,
           };
 
@@ -597,59 +432,48 @@ export const Customers = () => {
           })
             .then((response) => response.json())
             .then((response) => {
-              if (response === "activated") {
+
+              if (response == 0) {
                 setPosition(true);
+                setInitialValue({
+                  ...initialValue,
+                  errormsg: "Successfully Activated!",
+                });
+              }
+              else if (response == 1001) {
+                setInitialValue({
+                  ...initialValue,
+                  errormsg: "Error Missing Parameter!",
+                });
+              } else if (response == 1002) {
+                setInitialValue({
+                  ...initialValue,
+                  errormsg: "Invalid Username or Password!",
+                });
+              } else if (response == 1006) {
+                setInitialValue({
+                  ...initialValue,
+                  errormsg: "Account id doesn't exist!",
+                });
+              } else if (response == 2002) {
+                setInitialValue({
+                  ...initialValue,
+                  errormsg: "Account is already active!",
+                });
+              } else {
+                setInitialValue({
+                  ...initialValue,
+                  errormsg: "Invalid response!",
+                });
               }
             });
-        } else if (message === "1001") {
-          setInitialValue({
-            ...initialValue,
-            errormsg: "Error Missing Parameter!",
-          });
-        } else if (message === "1002") {
-          setInitialValue({
-            ...initialValue,
-            errormsg: "Invalid Username or Password!",
-          });
-        } else if (message === "1006") {
-          setInitialValue({
-            ...initialValue,
-            errormsg: "Account id doesn't exist!",
-          });
-        } else if (message === "2002") {
-          setInitialValue({
-            ...initialValue,
-            errormsg: "Account is already active!",
-          });
-        } else {
-          setInitialValue({
-            ...initialValue,
-            errormsg: "Invalid response!",
-          });
-        }
-      })
-      .catch((e) => {
-        setInitialValue({
-          ...initialValue,
-          errormsg: "Error reactivating account!",
-        });
-      });
-  };
+        };
 
   // deactivate customer account
   const Detach = () => {
     if (initialValue.cid !== "") {
       setactionload(true);
-      var RemoteApi =
-        Connection.remote +
-        `DetachUserCredentials.py?adminUser=${Constants.user}&adminPassword=${Constants.password}&accountId=${initialValue.cid}`;
-      fetch(RemoteApi)
-        .then((res) => res.text())
-        .then((res) => {
-          var xml = new XMLParser().parseFromString(res); // Assume xmlText contains the example XML
-          var message = xml.children[0].attributes.id;
-
-          if (message === "0") {
+    
             var Api = Connection.api + Connection.detach + initialValue.lid;
             var headers = {
               accept: "application/json",
@@ -671,7 +495,7 @@ export const Customers = () => {
               .then((response) => {
                 // the action will be taken depending on the server response
 
-                if (response === "detached") {
+                if (response == 0) {
                   setConfirm("3");
                   setInitialValue({
                     ...initialValue,
@@ -679,13 +503,29 @@ export const Customers = () => {
                     errormsg: "",
                   });
                   setactionload(false);
+                } 
+                else if (response == 1002) {
+                  setInitialValue({
+                    ...initialValue,
+                    errormsg: "Invalid Username or Password!",
+                  });
+                  setactionload(false);
+                } else if (response == 1006) {
+                  setInitialValue({
+                    ...initialValue,
+                    errormsg: "Account id doesn't exist!",
+                  });
+                  setactionload(false);
+                } else if (response == 2002) {
+                  setInitialValue({
+                    ...initialValue,
+                    errormsg: "Account is active!",
+                  });
+                  setactionload(false);
                 } else {
                   setInitialValue({
                     ...initialValue,
-                    cofirmationtxt: "",
-                    lid: "",
-                    cid: "",
-                    errormsg: "Failed to detach User credentials",
+                    errormsg: "Invalid response!",
                   });
                   setactionload(false);
                 }
@@ -697,40 +537,8 @@ export const Customers = () => {
                 });
                 setactionload(false);
               });
-          } else if (message === "1002") {
-            setInitialValue({
-              ...initialValue,
-              errormsg: "Invalid Username or Password!",
-            });
-            setactionload(false);
-          } else if (message === "1006") {
-            setInitialValue({
-              ...initialValue,
-              errormsg: "Account id doesn't exist!",
-            });
-            setactionload(false);
-          } else if (message === "2002") {
-            setInitialValue({
-              ...initialValue,
-              errormsg: "Account is not deactive!",
-            });
-            setactionload(false);
-          } else {
-            setInitialValue({
-              ...initialValue,
-              errormsg: "Invalid response!",
-            });
-            setactionload(false);
-          }
-        })
-        .catch((e) => {
-          setInitialValue({
-            ...initialValue,
-            errormsg: "Error detaching account!",
-          });
-          setactionload(false);
-        });
-    } else {
+          } 
+        else {
       setInitialValue({
         ...initialValue,
         errormsg: "Please enter remote customer id!",
@@ -1132,18 +940,7 @@ export const Customers = () => {
               <div className="p-2 pt-0 pb-3">
                 <p className="fw-semibold">{initialValue.cofirmationtxt}</p>
 
-                <Row className="mb-2 mt-2">
-                  <Col sm={8}>
-                    <input
-                      type="text"
-                      required
-                      value={initialValue.cid}
-                      onChange={UpdateID}
-                      className="form-control border-secondary "
-                      placeholder="Enter customer ID"
-                    />
-                  </Col>
-                </Row>
+               
               </div>
             ) : (
               <Form>
@@ -1186,18 +983,7 @@ export const Customers = () => {
                     </Dropdown>
                   </Col>
                 </Row>
-                <Row className="mb-2 mt-2">
-                  <Col sm={8}>
-                    <input
-                      type="text"
-                      required
-                      value={initialValue.cid}
-                      onChange={UpdateID}
-                      className="form-control border-secondary "
-                      placeholder="Customer ID"
-                    />
-                  </Col>
-                </Row>
+                
               </Form>
             )}
           </Modal.Body>
@@ -1221,12 +1007,10 @@ export const Customers = () => {
                   <div
                     class="spinner-border spinner-border-sm text-secondary"
                     role="status"
-                  >
-                  </div>
+                  ></div>
                 ) : (
                   <span>Confirm</span>
                 )}
-                
               </Button>
             ) : initialValue.operation === "remove" ? (
               <Button
@@ -1234,36 +1018,33 @@ export const Customers = () => {
                 className="primary-bg border-0"
                 onClick={() => RemoveSubscription()}
               >
-                  {actionload ? (
+                {actionload ? (
                   <div
                     class="spinner-border spinner-border-sm text-secondary"
                     role="status"
-                  >
-                  </div>
+                  ></div>
                 ) : (
                   <span>Confirm</span>
                 )}
               </Button>
             ) : initialValue.operation === "deactivate" ? (
               <Button variant="danger" onClick={() => Deactivate()}>
-                  {actionload ? (
+                {actionload ? (
                   <div
                     class="spinner-border spinner-border-sm text-white"
                     role="status"
-                  >
-                  </div>
+                  ></div>
                 ) : (
                   <span>Deactivate</span>
                 )}
               </Button>
             ) : initialValue.operation === "detach" ? (
               <Button variant="danger" onClick={() => Detach()}>
-                  {actionload ? (
+                {actionload ? (
                   <div
                     class="spinner-border spinner-border-sm text-white"
                     role="status"
-                  >
-                  </div>
+                  ></div>
                 ) : (
                   <span>Detach</span>
                 )}
@@ -1283,7 +1064,7 @@ export const Customers = () => {
             autohide
           >
             <Toast.Body className="text-dark fw-semibold">
-              Successfully Activated!
+              {initialValue.errormsg}
             </Toast.Body>
           </Toast>
         </ToastContainer>

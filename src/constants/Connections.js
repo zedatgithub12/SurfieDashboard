@@ -14,6 +14,7 @@ const Connection = {
     detach: "/detach/",
     pending: "/pending",
     activate: "/activate/",
+    reactivate: "/reactivate/",
     xmlrequest: "/xmlrequest",
 
     // support api's

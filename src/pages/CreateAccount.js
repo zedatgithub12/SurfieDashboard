@@ -22,8 +22,6 @@ import { BsCheckCircle } from "react-icons/bs";
 import Connection from "../constants/Connections";
 import Sidebar from "../components/Sidebar";
 import Modal from "react-bootstrap/Modal";
-import Constants from "../constants/Constants";
-import XMLParser from "react-xml-parser";
 
 
 
@@ -238,25 +236,7 @@ function CreateAccount() {
 
       return false;
     } else {
-      var RemoteApi =
-        Connection.remote +
-        `CreateAccountWithPackageId.py?adminUser=${
-          Constants.user
-        }&adminPassword=${Constants.password}&email=${
-          input.emailaddress
-        }&phoneNumber=${MakeitPhone(
-          input.phone
-        )}&packageId=${packages}&subscriptionId=1&externalRef=AFROMINA`;
-
-        fetch(RemoteApi)
-        .then((res) => res.text())
-        .then((res) => {
-
-        var xml = new XMLParser().parseFromString(res); // Assume xmlText contains the example XML
-        var message = xml.children[0].attributes.id;
-          if (message === "0") {
-            var remoteid = xml.children[1].children[0].attributes.account_id; // an id given to user from external server
-           
+      
             setLoading(true);
             var Api = Connection.api + Connection.customers; // update this line of code to the something like 'http://localhost:3000/customers?_page=${currentPage}&_limit=${limit}
             var headers = {
@@ -264,7 +244,6 @@ function CreateAccount() {
               "Content-Type": "application/json",
             };
             const data = {
-              remote_id: remoteid,
               firstname: input.firstname,
               middlename: input.middlename,
               lastname: input.lastname,
@@ -277,6 +256,7 @@ function CreateAccount() {
               license: license,
               price: Pricing(license),
               payment: selected.active,
+              package: packages,
               status: 0,
             };
 
@@ -287,60 +267,69 @@ function CreateAccount() {
             })
               .then((response) => response.json())
               .then((response) => {
-                if (response === "succeed") {
+
+                // console.log(response);
+
+                if (response == 0) {
                   setInput({
                     ...input,
                     errormessage: "Successfully Created!",
                   });
                   handleShow();
                   setLoading(false);
-                } else {
+                } else if (response == 1001) {
                   setInput({
                     ...input,
-                    errormessage: "error creating account!",
+                    errormessage: "There is Missing Parameter!",
                   });
-
+                  setLoading(false);
+                } else if (response == 1002) {
+                  setInput({
+                    ...input,
+                    errormessage: "Invalid Username or Password!",
+                  });
+                  setLoading(false);
+                } else if (response == 1004) {
+                  setInput({
+                    ...input,
+                    errormessage: "Invalid Package Id!",
+                  });
+                  setLoading(false);
+                } else if (response == 1021) {
+                  setInput({
+                    ...input,
+                    errormessage: "Email already exist!",
+                  });
+                  setLoading(false);
+                } else if (response == 1022) {
+                  setInput({
+                    ...input,
+                    errormessage: "Phone number already exist!",
+                  });
+                  setLoading(false);
+                } 
+                else if (response == 500) {
+                  setInput({
+                    ...input,
+                    errormessage: "Error creating Account!",
+                  });
                   setLoading(false);
                 }
-              });
-          } else if (message === "1001") {
-            setInput({
-              ...input,
-              errormessage: "Error Missing Parameter!",
-            });
-          } else if (message === "1002") {
-            setInput({
-              ...input,
-              errormessage: "Invalid Username or Password!",
-            });
-          } else if (message === "1004") {
-            setInput({
-              ...input,
-              errormessage: "Invalid Package Id!",
-            });
-          } else if (message === "1021") {
-            setInput({
-              ...input,
-              errormessage: "Email already exist!",
-            });
-          } else if (message === "1022") {
-            setInput({
-              ...input,
-              errormessage: "Phone number already exist!",
-            });
-          } else {
-            setInput({
-              ...input,
-              errormessage: "Invalid response!",
-            });
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-          setLoading(false);
-        });
-    }
-
+                else {
+                  setInput({
+                    ...input,
+                    errormessage: "Unable to create account, retry later!",
+                  });
+                  setLoading(false);
+                }
+              }).catch((e)=>{
+                setInput({
+                  ...input,
+                  errormessage: "There is error creating account!",
+                });
+              })
+            
+          } 
     return true;
   };
 
