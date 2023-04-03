@@ -1,8 +1,8 @@
 const Connection = {
     url: "http://localhost:3000",
-    api: "http://localhost:8000/api",
+    // api: "http://localhost:8000/api",
     host: "https://surfie-t.puresight.com",
-    // api: "https://admin.surfieethiopia.com/backend/api",
+    api: "https://admin.surfieethiopia.com/backend/api",
     remote: "https://surfie-t.puresight.com/cgi-bin/ProvisionAPI/",
     login: "/login",
     customers: "/customers",

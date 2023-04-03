@@ -199,7 +199,7 @@ const CustomerDetail = () => {
       };
 
       var Data = {
-        reomteid: initialValue.cid,
+        remoteid: initialValue.cid,
         localid: initialValue.lid,
         license: license,
         package: packages,
@@ -303,7 +303,7 @@ const CustomerDetail = () => {
       };
 
       var Data = {
-        reomteid: initialValue.cid,
+        remoteid: initialValue.cid,
         localid: initialValue.lid,
         license: license,
         package: packages,
@@ -393,7 +393,7 @@ const CustomerDetail = () => {
       };
 
       var Data = {
-        reomteid: initialValue.cid,
+        remoteid: initialValue.cid,
         localid: initialValue.lid,
         cstatus: 3,
       };
@@ -469,7 +469,7 @@ const CustomerDetail = () => {
             };
 
             var Data = {
-              reomteid: initialValue.cid,
+              remoteid: initialValue.cid,
               localid: initialValue.lid,
               cstatus: 3,
             };
@@ -837,7 +837,7 @@ const CustomerDetail = () => {
               >
                 {actionload ? (
                   <div
-                    class="spinner-border spinner-border-sm text-secondary"
+                    class="spinner-border spinner-border-sm text-white"
                     role="status"
                   >
                   </div>
@@ -853,7 +853,7 @@ const CustomerDetail = () => {
               >
                  {actionload ? (
                   <div
-                    class="spinner-border spinner-border-sm text-secondary"
+                    class="spinner-border spinner-border-sm text-white"
                     role="status"
                   >
                   </div>
@@ -865,7 +865,7 @@ const CustomerDetail = () => {
               <Button variant="danger" onClick={() => Deactivate()}>
                  {actionload ? (
                   <div
-                    class="spinner-border spinner-border-sm text-secondary"
+                    class="spinner-border spinner-border-sm text-white"
                     role="status"
                   >
                   </div>

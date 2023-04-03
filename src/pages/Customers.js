@@ -17,10 +17,8 @@ import Empty from "../assets/Empty.png";
 import ReactPaginate from "react-paginate";
 import Sidebar from "../components/Sidebar";
 import { BsCheckCircle } from "react-icons/bs";
-import Toast from "react-bootstrap/Toast";
-import ToastContainer from "react-bootstrap/ToastContainer";
-import Constants from "../constants/Constants";
-import XMLParser from "react-xml-parser";
+
+
 
 export const Customers = () => {
   const navigate = useNavigate();
@@ -33,7 +31,7 @@ export const Customers = () => {
   const [search, setSearch] = useState();
   const [license, setLicense] = useState(); //modal dropdown license listing states
   const [notFound, setNotFound] = useState("No customer with this status!");
-  const [position, setPosition] = useState(false);
+  
   const [paging, setPaging] = useState([]);
   const [count, setCount] = useState([]);
   const [actionload, setactionload] = useState(false);
@@ -152,7 +150,7 @@ export const Customers = () => {
       };
 
       var Data = {
-        reomteid: initialValue.cid,
+        remoteid: initialValue.cid,
         localid: initialValue.lid,
         license: license,
         package: packages,
@@ -256,7 +254,7 @@ export const Customers = () => {
       };
 
       var Data = {
-        reomteid: initialValue.cid,
+        remoteid: initialValue.cid,
         localid: initialValue.lid,
         license: license,
         package: packages,
@@ -346,7 +344,7 @@ export const Customers = () => {
       };
 
       var Data = {
-        reomteid: initialValue.cid,
+        remoteid: initialValue.cid,
         localid: initialValue.lid,
         cstatus: 3,
       };
@@ -410,65 +408,6 @@ export const Customers = () => {
     }
   };
 
-  //reactivate terminated customer account
-  const Reactivate = (id, remoteid) => {
- 
-          var Api = Connection.api + Connection.reactivate + id; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
-          var headers = {
-            accept: "application/json",
-            "Content-Type": "application/json",
-          
-          };
-
-          var Data = {
-            remote_id: remoteid,
-            status: 1,
-          };
-
-          fetch(Api, {
-            method: "PUT",
-            headers: headers,
-            body: JSON.stringify(Data),
-          })
-            .then((response) => response.json())
-            .then((response) => {
-
-              if (response == 0) {
-                setPosition(true);
-                setInitialValue({
-                  ...initialValue,
-                  errormsg: "Successfully Activated!",
-                });
-              }
-              else if (response == 1001) {
-                setInitialValue({
-                  ...initialValue,
-                  errormsg: "Error Missing Parameter!",
-                });
-              } else if (response == 1002) {
-                setInitialValue({
-                  ...initialValue,
-                  errormsg: "Invalid Username or Password!",
-                });
-              } else if (response == 1006) {
-                setInitialValue({
-                  ...initialValue,
-                  errormsg: "Account id doesn't exist!",
-                });
-              } else if (response == 2002) {
-                setInitialValue({
-                  ...initialValue,
-                  errormsg: "Account is already active!",
-                });
-              } else {
-                setInitialValue({
-                  ...initialValue,
-                  errormsg: "Invalid response!",
-                });
-              }
-            });
-        };
-
   // deactivate customer account
   const Detach = () => {
     if (initialValue.cid !== "") {
@@ -481,7 +420,7 @@ export const Customers = () => {
             };
 
             var Data = {
-              reomteid: initialValue.cid,
+              remoteid: initialValue.cid,
               localid: initialValue.lid,
               cstatus: 3,
             };
@@ -606,32 +545,7 @@ export const Customers = () => {
     // setCustomers(customers);
   };
 
-  //activate pending users
-  const Approve = (id) => {
-    var Api = Connection.api + Connection.activate + id; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
-    var headers = {
-      accept: "application/json",
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-    };
-
-    var Data = {
-      status: 1,
-    };
-
-    fetch(Api, {
-      method: "PUT",
-      headers: headers,
-      body: JSON.stringify(Data),
-    })
-      .then((response) => response.json())
-      .then((response) => {
-        if (response === "activated") {
-          setPosition(true);
-        }
-      });
-  };
-
+ 
   //featch all numerical count of customer information
   const PendingCount = () => {
     var Api = Connection.api + Connection.pending; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
@@ -839,7 +753,8 @@ export const Customers = () => {
                             {customers.map((item, index) => (
                               <CustomerTable
                                 key={index}
-                                id={item.remote_id}
+                                id={item.id}
+                                remid={item.remote_id}
                                 name={item.first_name + " " + item.middle_name}
                                 license={item.license}
                                 subscription={item.subscription}
@@ -857,10 +772,7 @@ export const Customers = () => {
                                     state: { ...item },
                                   })
                                 }
-                                approve={() => Approve(item.id, item.remote_id)}
-                                reactivate={() =>
-                                  Reactivate(item.id, item.remote_id)
-                                }
+                                
                               />
                             ))}
                           </tbody>
@@ -1052,7 +964,7 @@ export const Customers = () => {
             ) : null}
           </Modal.Footer>
         </Modal>
-
+{/* 
         <ToastContainer
           position="top-center"
           className="p-3 bg-succees bg-opacity-10"
@@ -1067,7 +979,7 @@ export const Customers = () => {
               {initialValue.errormsg}
             </Toast.Body>
           </Toast>
-        </ToastContainer>
+        </ToastContainer> */}
       </Container>
     </>
   );

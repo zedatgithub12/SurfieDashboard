@@ -1,5 +1,5 @@
 
-import chapa from "../assets/chapa.png";
+// import chapa from "../assets/chapa.png";
 import cash from "../assets/cash.png";
 
 const Gateways = [
@@ -9,11 +9,11 @@ const Gateways = [
   name: "With Cash",
   icon: cash,
     },
-    {
-        id: "1001",
-        name: "Chapa",
-        icon: chapa,
-          },
+    // {
+    //     id: "1001",
+    //     name: "Chapa",
+    //     icon: chapa,
+    //       },
          
 ];
 export default Gateways;

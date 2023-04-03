@@ -268,8 +268,6 @@ function CreateAccount() {
               .then((response) => response.json())
               .then((response) => {
 
-                // console.log(response);
-
                 if (response == 0) {
                   setInput({
                     ...input,
@@ -358,7 +356,7 @@ function CreateAccount() {
                             </h4>
 
                             <MDBRow>
-                              <p className="fw-semibold text-primary">
+                              <p className="fw-semibold primary-text">
                                 Add User Information
                               </p>
                               <MDBCol sm="6">
@@ -435,10 +433,10 @@ function CreateAccount() {
                               onChange={UpdateAddress}
                             />
 
-                            <p className="fw-semibold text-primary mt-3">
+                            <p className="fw-semibold primary-text mt-3">
                               User Credentials
                             </p>
-                            <hr className="text-primary mt-0" />
+                            <hr className="primary-text mt-0" />
 
                             <MDBInput
                               wrapperClass="mt-2 mb-1"
@@ -481,8 +479,8 @@ function CreateAccount() {
                                 <Button
                                   title="show password"
                                   onClick={() => setShowPass(!showpass)}
-                                  variant="white"
-                                  className="position-absolute end-0 text-center  bg-success bg-gradient text-white rounded-0 rounded-end border-3  me-2 "
+                                  variant="light"
+                                  className="position-absolute end-0 text-center  primary-bg text-dark rounded-0 rounded-end border-3  me-2 "
                                 >
                                   {showpass ? (
                                     <AiOutlineEye
@@ -505,7 +503,7 @@ function CreateAccount() {
                                   <Dropdown.Toggle
                                     variant="light"
                                     title="Licenses"
-                                    className="text-dark border m-0 me-5 fw-semibold font-link"
+                                    className="text-dark border m-0 me-5 fw-normal font-link"
                                   >
                                     {license === "Select License"
                                       ? "Select License"
@@ -543,7 +541,7 @@ function CreateAccount() {
                                     variant="light"
                                     title="1 License"
                                     id="dropdown-basic"
-                                    className="bg-success bg-gradient border-0 text-white fw-medium font-link"
+                                    className="primary-bg border-0 text-dark fw-medium font-link"
                                   >
                                     {Period}
                                   </Dropdown.Toggle>
@@ -580,10 +578,10 @@ function CreateAccount() {
 
                           <MDBRow className="mt-5 pt-1">
                             <MDBCol>
-                              <p className="fw-semibold text-primary ps-3">
+                              <p className="fw-semibold primary-text ps-3">
                                 Choose payment method
                               </p>
-                              <hr className="text-primary mt-0 ms-3" />
+                              <hr className="primary-text mt-0 ms-3" />
                             </MDBCol>
                           </MDBRow>
 
@@ -683,8 +681,8 @@ function CreateAccount() {
               >
                 <BsCheckCircle size={66} className="text-success m-3" />
                 <p className="fs-5 ">Successfully Created</p>
-                <p className="fs-6 ">
-                  We have sent you an email check your inbox
+                <p className="fs-6 text-muted ">
+                  We will send you an email as soon as your account get activated!
                 </p>
 
                 <Row className="d-flex justify-content-evenly align-items-center m-auto mt-5 w-50">
