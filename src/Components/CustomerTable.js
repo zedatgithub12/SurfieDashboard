@@ -53,18 +53,22 @@ function CustomerTable({
   };
 
      //calculate and return the license expire date
-  const ExpireDate = (date, plan) => {
+  const ExpireDate = (date) => {
+    var duedate;
+
+    if(date == null){
+       duedate = "Not payed!";
+    }
+    else{
+
+    
     var year = date.slice(0, 4);
     var month = date.slice(5, 7);
     var day = date.slice(8, 10);
-
-    if (plan === "monthly") {
-      month = parseInt(month) + 1;
-    } else {
-      year = parseInt(year) + 1;
+    duedate = day + "/" + month + "/" + year;
     }
 
-    return day + "/" + month + "/" + year;
+    return duedate;
   };
 
    //activate pending users
@@ -194,7 +198,7 @@ function CustomerTable({
         </td>
       )}
 
-      <td onClick={rowPressed}>{ExpireDate(date, subscription)}</td>
+      <td onClick={rowPressed}>{ExpireDate(date)}</td>
       <td className="text-end">
         {status == 0 ?(
             <Button  onClick={() => Approve(id)} variant="white" className="btn btn-sm btn-outline-success border-0 my-1 text-end" > Activate {loading ? (

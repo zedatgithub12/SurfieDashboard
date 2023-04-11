@@ -67,20 +67,24 @@ const CustomerDetail = () => {
 
     return Status;
   };
-  //calculate and return the license expire date
-  const ExpireDate = (date, plan) => {
-    var year = date.slice(0, 4);
-    var month = date.slice(5, 7);
-    var day = date.slice(8, 10);
-
-    if (plan === "monthly") {
-      month = parseInt(month) + 1;
-    } else {
-      year = parseInt(year) + 1;
-    }
-
-    return day + "/" + month + "/" + year;
-  };
+    //calculate and return the license expire date
+    const ExpireDate = (date) => {
+      var duedate;
+  
+      if(date == null){
+         duedate = "Not payed!";
+      }
+      else{
+  
+      
+      var year = date.slice(0, 4);
+      var month = date.slice(5, 7);
+      var day = date.slice(8, 10);
+      duedate = day + "/" + month + "/" + year;
+      }
+  
+      return duedate;
+    };
 
   const Payment = (mode) => {
     var gateway;
@@ -688,7 +692,7 @@ const CustomerDetail = () => {
 
                   <Col className="alighn-items-start">
                     <span className="text-dark fw-normal">
-                      {ExpireDate(state.created_at, state.subscription)}
+                      {ExpireDate(state.duedate)}
                     </span>
                   </Col>
                 </Row>

@@ -758,7 +758,7 @@ export const Customers = () => {
                                 name={item.first_name + " " + item.middle_name}
                                 license={item.license}
                                 subscription={item.subscription}
-                                date={item.updated_at}
+                                date={item.duedate}
                                 status={item.status}
                                 add={() => OpenDialog(item, "add")}
                                 remove={() => OpenDialog(item, "remove")}
