@@ -12,6 +12,8 @@ import CreateAccount from "./pages/CreateAccount";
 import ChangePassword from "./pages/ChangePassword";
 import Signin from "./pages/Signin";
 import { AuthContext } from "./components/Context";
+import Home from "./pages/Home";
+import ChapaDetail from "./pages/ChapaDetail";
 
 function App() {
   const [loged, setLoged] = React.useState(false);
@@ -60,7 +62,7 @@ function App() {
       <Router>
         {loged ? (
           <Routes>
-            <Route path="/" element={<Customers />} />
+            <Route path="/" element={<Home />} />
             <Route path="/login" element={<Signin />} />
             <Route path="/customers" element={<Customers />} />
             <Route path="/users" element={<Users />} />
@@ -68,6 +70,7 @@ function App() {
             <Route path="/support" element={<Support />} />
             <Route path="/emails" element={<Emaills />} />
             <Route path="/customerdetail" element={<CustomerDetail />} />
+            <Route path="/chapadetail" element={<ChapaDetail />} />
             <Route path="/createaccount" element={<CreateAccount />} />
             <Route path="/changepassword" element={<ChangePassword />} />
           </Routes>

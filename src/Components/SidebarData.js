@@ -3,8 +3,25 @@ import * as RiIcons from "react-icons/ri";
 import * as BiIcons from "react-icons/bi";
 import * as FiIcons from "react-icons/fi";
 import { HiOutlineMail } from "react-icons/hi";
+import { RxDashboard } from "react-icons/rx";
+
 
 export const SidebarData = [
+  {
+    title: "Dashboard",
+    path: "/",
+    icon: <RxDashboard size={22}/>,
+    iconClosed: <RiIcons.RiArrowDownSFill />,
+    iconOpened: <RiIcons.RiArrowUpSFill />,
+    //  subNav: [
+    //   {
+    //     title: "Emails",
+    //     path: "/emails",
+    //     icon: <HiOutlineMail size={18}/>,
+    //     cName: "sub-nav",
+    //   },
+    // ],
+  },
   {
     title: "Customers",
     path: "/customers",

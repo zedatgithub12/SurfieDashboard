@@ -10,8 +10,7 @@ import { Button } from "react-bootstrap";
 import Sidebar from "../components/Sidebar";
 import Connection from "../constants/Connections";
 import { BsCheckCircle } from "react-icons/bs";
-import Constants from "../constants/Constants";
-import XMLParser from "react-xml-parser";
+
 
 const CustomerDetail = () => {
   const navigate = useNavigate();
