@@ -658,8 +658,8 @@ export const Customers = () => {
         </Row>
 
         {/* Customers listing table */}
-        <Row>
-          <Col sm={9} className="border">
+        <Row className="border h-100">
+          <Col sm={9} className="border h-100">
             <Row className="m-auto justify-content-md-center pt-4 pb-2 ">
               <Col>
                 <h5 className="font-link">Customers</h5>

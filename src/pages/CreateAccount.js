@@ -134,13 +134,13 @@ function CreateAccount() {
     });
   };
 
-  //update username
-  const UpdateUsername = (event) => {
-    setInput({
-      ...input,
-      username: event.target.value,
-    });
-  };
+  // //update username
+  // const UpdateUsername = (event) => {
+  //   setInput({
+  //     ...input,
+  //     username: event.target.value,
+  //   });
+  // };
 
   //update  password
   const UpdatePassword = (event) => {
@@ -273,7 +273,6 @@ function CreateAccount() {
       input.lastname === "" ||
       input.emailaddress === "" ||
       input.phone === "" ||
-      input.username === "" ||
       input.password === "" ||
       input.confirmpassword === ""
     ) {
@@ -321,7 +320,7 @@ function CreateAccount() {
         emailaddress: input.emailaddress,
         phone: MakeitPhone(input.phone),
         address: input.address,
-        username: input.username,
+        username: input.emailaddress,
         password: input.password,
         subscription: Period,
         license: license,
@@ -609,21 +608,8 @@ function CreateAccount() {
                             </p>
                             <hr className="primary-text mt-0" />
 
-                            <MDBInput
-                              wrapperClass="mt-2 mb-1"
-                              placeholder="Username"
-                              size="md"
-                              id="form6"
-                              type="text"
-                              required
-                              defaultValue={input.username}
-                              onChange={UpdateUsername}
-                              style={{
-                                backgroundColor: "var(--input-bg)",
-                                color: "var(--text-color)",
-                              }}
-                              className="inputBorder mb-3"
-                            />
+
+                            
                             <MDBRow
                               style={{
                                 backgroundColor: "var(--sec-bg)",

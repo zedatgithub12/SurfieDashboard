@@ -8,7 +8,7 @@ import PaymentList from "../components/PaymentList";
 import Table from "react-bootstrap/Table";
 import { AiOutlineSearch } from "react-icons/ai";
 import Connection from "../constants/Connections";
-import Empty from "../assets/Empty.png";
+import card from "../assets/card.png";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 
@@ -20,7 +20,7 @@ const Payments = () => {
 
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState();
-  const [notFound, setNotFound] = useState("No customer with this status!");
+  const [notFound, setNotFound] = useState("No payment made yet!");
 
   const [paging, setPaging] = useState([]);
 
@@ -192,7 +192,7 @@ const Payments = () => {
                 <div className="d-flex align-items-center justify-content-center m-auto m-4 p-4">
                   <div className="d-flex align-items-center justify-content-center m-auto m-4 p-4">
                     <img
-                      src={Empty}
+                      src={card}
                       alt="No Customers"
                       className="w-25 h-25 "
                     />

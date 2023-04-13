@@ -563,15 +563,15 @@ const CustomerDetail = () => {
                           state.middle_name +
                           " " +
                           state.last_name}{" "}
-                        {state.status === 1 ? (
+                        {state.status === "1" ? (
                           <span class="badge bg-success bg-opacity-10 text-success px-4 rounded-1">
                             {Status(state.status)}
                           </span>
-                        ) : state.status === 2 ? (
+                        ) : state.status === "2" ? (
                           <span class="badge bg-danger bg-opacity-10 text-danger px-4 rounded-1">
                             {Status(state.status)}
                           </span>
-                        ) : state.status === 3 ? (
+                        ) : state.status === "3" ? (
                           <span class="badge bg-dark bg-opacity-10 text-dark px-4 rounded-1">
                             {Status(state.status)}
                           </span>
