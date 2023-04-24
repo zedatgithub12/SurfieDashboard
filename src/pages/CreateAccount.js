@@ -23,7 +23,6 @@ import Modal from "react-bootstrap/Modal";
 import Sidebar from "../components/Sidebar";
 
 function CreateAccount() {
-
   const [loading, setLoading] = useState(false);
   const [license, setLicense] = useState("Select License");
   const [Period, setPeriod] = useState("monthly");
@@ -37,39 +36,56 @@ function CreateAccount() {
   const [input, setInput] = useState({
     firstname: "",
     firsths: false,
+    firstbc:false,
     firstht: "",
+    
 
     middlename: "",
     middlehs: false,
+    middlebc: false,
     middleht: "",
 
     lastname: "",
-    latshs: false,
+    lasths: false,
+    lastbc:false,
     lastht: "",
 
     emailaddress: "",
     emailhs: false,
+    emailbc: false,
     emailht: "",
 
     phone: "",
     phonehs: false,
+    phonebc:false,
     phoneht: "",
 
     address: "",
     addresshs: false,
+    addressbc:false,
     addressht: "",
 
     username: "",
     usernamehs: false,
+    usernamebc:false,
     usernameht: "",
 
     password: "",
     passwordhs: false,
+    passwordbc:false,
     passwordht: "",
 
     confirmpassword: "",
     confirmhs: false,
+    confirmbc: false,
     confirmht: "",
+
+    licensehs: false,
+    licensebc:false,
+    licenseht: "",
+
+    paymentmhs: false,
+    paymentmht: "",
 
     errormessage: "",
   });
@@ -91,6 +107,9 @@ function CreateAccount() {
     setInput({
       ...input,
       firstname: event.target.value,
+      firsths: false,
+      firstbc:false,
+      firstht: "",
     });
   };
 
@@ -99,6 +118,9 @@ function CreateAccount() {
     setInput({
       ...input,
       middlename: event.target.value,
+      middlehs: false,
+      middlebc: false,
+      middleht: "",
     });
   };
 
@@ -107,6 +129,9 @@ function CreateAccount() {
     setInput({
       ...input,
       lastname: event.target.value,
+      lasths: false,
+      lastbc:false,
+      lastht: "",
     });
   };
 
@@ -115,6 +140,9 @@ function CreateAccount() {
     setInput({
       ...input,
       emailaddress: event.target.value,
+      emailhs: false,
+      emailbc: false,
+      emailht: "",
     });
   };
 
@@ -123,6 +151,9 @@ function CreateAccount() {
     setInput({
       ...input,
       phone: event.target.value,
+      phonehs: false,
+      phonebc:false,
+      phoneht: "",
     });
   };
 
@@ -131,22 +162,20 @@ function CreateAccount() {
     setInput({
       ...input,
       address: event.target.value,
+      addresshs: false,
+      addressbc:false,
+      addressht: "",
     });
   };
-
-  // //update username
-  // const UpdateUsername = (event) => {
-  //   setInput({
-  //     ...input,
-  //     username: event.target.value,
-  //   });
-  // };
 
   //update  password
   const UpdatePassword = (event) => {
     setInput({
       ...input,
       password: event.target.value,
+      passwordhs: false,
+      passwordbc:false,
+      passwordht: "",
     });
   };
 
@@ -155,6 +184,9 @@ function CreateAccount() {
     setInput({
       ...input,
       confirmpassword: event.target.value,
+      confirmhs: false,
+      confirmbc: false,
+      passwordht: "",
     });
   };
 
@@ -166,6 +198,11 @@ function CreateAccount() {
     setSelected({
       ...selected,
       active: id,
+      
+    });
+    setInput({
+      ...input,
+    paymentmht:"",
     });
   };
 
@@ -186,7 +223,6 @@ function CreateAccount() {
     return Phoneno;
   };
 
-
   const ApplyCoupon = () => {
     setCouponProps({
       ...couponprops,
@@ -200,16 +236,13 @@ function CreateAccount() {
         showerr: true,
         loading: false,
       });
-    
-    }
-    else if (coupon.length <= 4) {
+    } else if (coupon.length <= 4) {
       setCouponProps({
         ...couponprops,
         errormsg: "Coupon code must be more than four character",
         showerr: true,
         loading: false,
       });
-    
     } else {
       setCouponProps({
         ...couponprops,
@@ -218,7 +251,7 @@ function CreateAccount() {
         loading: true,
       });
 
-      var Api = Connection.api + Connection.coupon+coupon;
+      var Api = Connection.api + Connection.coupon + coupon;
       var headers = {
         accept: "application/json",
         "Content-Type": "application/json",
@@ -266,43 +299,112 @@ function CreateAccount() {
   //validate user input when user pressed submit button
   const CreateCAccount = () => {
     var packages = `AFROMINA_${license}`; //packages id to be sent to puresight
+    const re = /\S+@\S+\.\S+/;
 
-    if (
-      input.firstname === "" ||
-      input.middlename === "" ||
-      input.lastname === "" ||
-      input.emailaddress === "" ||
-      input.phone === "" ||
-      input.password === "" ||
-      input.confirmpassword === ""
-    ) {
+    if (input.firstname === "") {
       setInput({
         ...input,
-        errormessage: "Please fill all fields",
+        firsths: true,
+        firstbc:true,
+        firstht: "Enter first name",
+        
       });
-      return false;
-    } else if (input.password !== input.confirmpassword) {
+       document.getElementById('form1').focus();
+       return false;
+    } 
+    else if(input.middlename === ""){
       setInput({
         ...input,
-        errormessage: "Password you entered doesn't match",
+        middlehs: true,
+        middlebc:true,
+        middleht: "Enter middle name",
+        
+      });
+      document.getElementById('form2').focus();
+      return false;
+    }
+    else if(input.lastname === ""){
+      setInput({
+        ...input,
+        lasths: true,
+        lastbc:true,
+        lastht: "Enter last name",
+        
+      });
+      document.getElementById('form9').focus();
+      return false;
+    }
+    else if(input.emailaddress === ""){
+      setInput({
+        ...input,
+        emailhs: true,
+        emailbc:true,
+        emailht: "Enter email address",
+        
+      });
+      document.getElementById('form3').focus();
+      return false;
+    }
+     else if(!(re.test(input.emailaddress))){
+      setInput({
+        ...input,
+        emailhs: true,
+        emailbc:true,
+        emailht: "email must contain @ and . symbols",
+        
+      });
+      document.getElementById('form3').focus();
+      return false;
+    }
+    else if(input.phone === ""){
+      setInput({
+        ...input,
+        phonehs: true,
+        phonebc:true,
+        phoneht: "Enter phone number",
+        
+      });
+      document.getElementById('form4').focus();
+      return false;
+    }
+    else if(input.password === ""){
+      setInput({
+        ...input,
+        passwordht: true,
+        passwordbc:true,
+        passwordht: "Enter password",
+        
+      });
+      document.getElementById('form7').focus();
+      return false;
+    }
+
+    else if (input.password !== input.confirmpassword) {
+      setInput({
+        ...input,
         confirmhs: true,
-        confirmht: "Password you entered doesn't match",
+        confirmbc:true,
+        passwordht: "Password doesn't match!",
+        
       });
-    
+      document.getElementById('form8').focus();
       return false;
-    } else if (license === "Select License") {
+    }
+    
+    else if (license === "Select License") {
       setInput({
         ...input,
-        errormessage: "Please Select License",
+        licensebc: true,
+        licensehs:true,
+        licenseht: "Select License",
+        
       });
-
-     
-
+      document.getElementById('license').focus();
       return false;
     } else if (selected.active === "") {
       setInput({
         ...input,
-        errormessage: "Please select payment option!",
+        paymentmht: "Please select payment option!",
       });
 
       return false;
@@ -337,11 +439,9 @@ function CreateAccount() {
       })
         .then((response) => response.json())
         .then((response) => {
-          
-          if(response.status ==="success"){
+          if (response.status === "success") {
             window.location.href = response.data.checkout_url;
-          }
-          else if (response === "0") {
+          } else if (response === "0") {
             setInput({
               ...input,
               errormessage: "Successfully Created!",
@@ -403,32 +503,12 @@ function CreateAccount() {
     return true;
   };
 
-  // useEffect(()=>{
-    
-
-  //   const chapaResponse = async () => {
-  //     try {
-  //       var Api =  Connection.api+Connection.chapaResponse;
-  //       await fetch(Api).then((response)=>response.json())
-  //       .then((response) => {
-  //         console.log(response);
-  //       }
-  //       ).catch((e)=>{
-  //         console.log(e);
-  //       });
-  //     } catch (error) {
-  //       console.error('Error fetching backend condition:', error);
-  //     }
-  //   };
-  //   chapaResponse();
-  // },[])
-
   return (
     <div
       style={{ backgroundColor: "var(--bg-color)", color: "var(--text-color)" }}
       className="m-auto "
     >
-     <Sidebar />
+      <Sidebar />
       <Container
         style={{
           backgroundColor: "var(--bg-color)",
@@ -440,7 +520,7 @@ function CreateAccount() {
             sm={10}
             className=" m-auto p-4 pb-0 mt-4 mb-3 rounded shadow-sm"
             style={{
-              backgroundColor: "var(--sec-bg)",
+              backgroundColor: "var(--bg-color)",
               color: "var(--text-color)",
             }}
           >
@@ -463,7 +543,7 @@ function CreateAccount() {
                       color: "var(--text-color)",
                     }}
                   >
-                    <form className="needs-validation">
+                    <form className="needs-validation" novalidate>
                       <MDBRow className="g-0">
                         <MDBCol sd="6">
                           <MDBCardBody
@@ -482,7 +562,7 @@ function CreateAccount() {
                             >
                               Create Account
                             </h4>
-
+                          
                             <MDBRow
                               style={{
                                 backgroundColor: "var(--sec-bg)",
@@ -495,7 +575,7 @@ function CreateAccount() {
                               </p>
                               <MDBCol sm="6">
                                 <MDBInput
-                                  wrapperClass="mb-2 "
+                                  wrapperClass="mb-1 "
                                   placeholder="First Name"
                                   size="md"
                                   id="form1"
@@ -507,13 +587,14 @@ function CreateAccount() {
                                     backgroundColor: "var(--input-bg)",
                                     color: "var(--text-color)",
                                   }}
-                                  className="inputBorder"
+                                  className={input.firstbc ? "border-danger": "" }
                                 />
+                               <p className="small text-danger fw-semibold"> {input.firstht}</p>
                               </MDBCol>
 
                               <MDBCol sm="6">
                                 <MDBInput
-                                  wrapperClass="mb-2"
+                                  wrapperClass="mb-1"
                                   placeholder="Middle Name"
                                   size="md"
                                   id="form2"
@@ -525,12 +606,13 @@ function CreateAccount() {
                                     backgroundColor: "var(--input-bg)",
                                     color: "var(--text-color)",
                                   }}
-                                  className="inputBorder"
+                                  className={input.middlebc ? "border-danger": "" }
                                 />
+                                  <p className="small text-danger fw-semibold"> {input.middleht}</p>
                               </MDBCol>
                             </MDBRow>
                             <MDBInput
-                              wrapperClass="mb-2"
+                              wrapperClass="mb-1"
                               placeholder="Last Name"
                               size="md"
                               id="form9"
@@ -542,8 +624,9 @@ function CreateAccount() {
                                 backgroundColor: "var(--input-bg)",
                                 color: "var(--text-color)",
                               }}
-                              className="inputBorder mb-3"
+                              className={input.lastht ? "border-danger": "" }
                             />
+                              <p className="small text-danger fw-semibold"> {input.lastht}</p>
                             <MDBRow
                               style={{
                                 backgroundColor: "var(--sec-bg)",
@@ -565,8 +648,9 @@ function CreateAccount() {
                                     backgroundColor: "var(--input-bg)",
                                     color: "var(--text-color)",
                                   }}
-                                  className="inputBorder"
+                                  className={input.emailbc ? "border-danger": "" }
                                 />
+                                 <p className="small text-danger fw-semibold"> {input.emailht}</p>
                               </MDBCol>
 
                               <MDBCol sm="6">
@@ -583,8 +667,9 @@ function CreateAccount() {
                                     backgroundColor: "var(--input-bg)",
                                     color: "var(--text-color)",
                                   }}
-                                  className="inputBorder"
+                                  className={input.phonebc ? "border-danger": "" }
                                 />
+                                 <p className="small text-danger fw-semibold"> {input.phoneht}</p>
                               </MDBCol>
                             </MDBRow>
 
@@ -608,8 +693,6 @@ function CreateAccount() {
                             </p>
                             <hr className="primary-text mt-0" />
 
-
-                            
                             <MDBRow
                               style={{
                                 backgroundColor: "var(--sec-bg)",
@@ -621,6 +704,7 @@ function CreateAccount() {
                                 <MDBInput
                                   wrapperClass="mb-2"
                                   placeholder="Password"
+                                  autoComplete="off"
                                   size="md"
                                   id="form7"
                                   type={showpass ? "text" : "password"}
@@ -631,8 +715,9 @@ function CreateAccount() {
                                     backgroundColor: "var(--input-bg)",
                                     color: "var(--text-color)",
                                   }}
-                                  className="inputBorder"
+                                  className={input.passwordbc ? "border-danger": "" }
                                 />
+                                  <p className="small text-danger fw-semibold"> {input.passwordht}</p>
                               </MDBCol>
 
                               <MDBCol
@@ -642,6 +727,8 @@ function CreateAccount() {
                                 <MDBInput
                                   wrapperClass={input.passmatch + "mb-4"}
                                   placeholder="Confirm Password"
+                                  autoComplete="off"
+                                
                                   size="md"
                                   id="form8"
                                   type={showpass ? "text" : "password"}
@@ -652,7 +739,7 @@ function CreateAccount() {
                                     backgroundColor: "var(--input-bg)",
                                     color: "var(--text-color)",
                                   }}
-                                  className="inputBorder"
+                                  className={input.confirmbc ? "border-danger": "" }
                                 />
                                 <Button
                                   title="show password"
@@ -672,7 +759,9 @@ function CreateAccount() {
                                     />
                                   )}
                                 </Button>
+                          
                               </MDBCol>
+                              
                             </MDBRow>
 
                             <MDBRow
@@ -687,7 +776,8 @@ function CreateAccount() {
                                   <Dropdown.Toggle
                                     variant="light"
                                     title="Licenses"
-                                    className=" border m-0 me-5  font-link"
+                                    id="license"
+                                    className={input.licensebc ? "border-danger border m-0 me-5  font-link": "border m-0 me-5  font-link" }
                                     style={{
                                       backgroundColor: "var(--input-bg)",
                                       color: "var(--text-color)",
@@ -707,7 +797,7 @@ function CreateAccount() {
                                     <Dropdown.Item
                                       onClick={() => setLicense(5)}
                                     >
-                                      5  License
+                                      5 License
                                     </Dropdown.Item>
                                     <Dropdown.Item
                                       onClick={() => setLicense(10)}
@@ -721,6 +811,7 @@ function CreateAccount() {
                                     </Dropdown.Item>
                                   </Dropdown.Menu>
                                 </Dropdown>
+                                <p className="small text-danger fw-semibold"> {input.licenseht}</p>
                               </MDBCol>
 
                               <MDBCol>
@@ -806,7 +897,7 @@ function CreateAccount() {
                                   <p className="text-danger bg-danger bg-opacity-10 px-3  w-75 p-1 rounded small">
                                     {couponprops.errormsg}
                                   </p>
-                                ): null}
+                                ) : null}
                               </MDBCol>
                             </MDBRow>
                           </MDBRow>
@@ -857,9 +948,12 @@ function CreateAccount() {
                                 </div>
                               ))}
                             </div>
+                            <p className="small text-danger fw-semibold text-center"> {input.paymentmht}</p>
                           </MDBRow>
+                         
                         </MDBCol>
                       </MDBRow>
+                  
                       <div className="d-flex justify-content-end align-items-center pt-3 p-3">
                         <p className="text-danger mx-4 text-center m-auto justify-content-center align-items-center">
                           {input.errormessage}
@@ -886,9 +980,7 @@ function CreateAccount() {
                               class="spinner-border spinner-border-sm text-secondary"
                               role="status"
                             >
-                              <span class="visually-hidden">
-                                Loading...
-                              </span>
+                              <span class="visually-hidden">Loading...</span>
                             </div>
                           ) : (
                             <span>Create Account</span>
@@ -911,22 +1003,23 @@ function CreateAccount() {
           }}
         >
           <Modal.Header closeButton />
-          <Modal.Body style={{
-            backgroundColor: "var(--sec-bg)",
-            color: "var(--text-color)",
-          }}>
+          <Modal.Body
+            style={{
+              backgroundColor: "var(--sec-bg)",
+              color: "var(--text-color)",
+            }}
+          >
             <Row>
               <Col
                 sm={10}
                 className=" text-center align-items-center justify-content-center  m-auto p-3  mt-2 mb-1 "
               >
                 <BsCheckCircle size={66} className="text-success m-3" />
-                <p className="fs-5 " >Successfully Created</p>
+                <p className="fs-5 ">Successfully Created</p>
                 <p className="fs-6 text-muted">
                   {" "}
-                  
-                    We will send you an email as soon as your account get activated!
-                  
+                  We will send you an email as soon as your account get
+                  activated!
                 </p>
 
                 <Row className="d-flex justify-content-evenly align-items-center m-auto mt-5 w-50">
