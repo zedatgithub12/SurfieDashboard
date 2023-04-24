@@ -2,7 +2,9 @@
   font-family: "Poppins" sans-serif;
 }
 
-
+.primary-fill{
+  background-color: #00c6d4;
+}
 .primary-bg{
   background-color: #00c6d4;
 }

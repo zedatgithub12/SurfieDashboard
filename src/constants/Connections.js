@@ -1,12 +1,14 @@
 const Connection = {
     url: "http://localhost:3000",
-    // api: "http://localhost:8000/api",
+    api: "http://localhost:8000/api",
     host: "https://surfie-t.puresight.com",
-    api: "https://admin.surfieethiopia.com/backend/api",
-    remote: "https://surfie-t.puresight.com/cgi-bin/ProvisionAPI/",
+    // api: "https://admin.surfieethiopia.com/backend/api",
+    // remote: "https://surfie-t.puresight.com/cgi-bin/ProvisionAPI/",
+
+    remote: "https://surfie.puresight.com/cgi-bin/ProvisionAPI/",
     login: "/login",
     customers: "/customers",
-   
+    singleCustomer: "/singlecustomer/",
     search: "/search/",
     addlicense: "/add/",
     removeLicense: "/remove/",
@@ -14,6 +16,7 @@ const Connection = {
     detach: "/detach/",
     pending: "/pending",
     activate: "/activate/",
+    reactivate: "/reactivate/",
     xmlrequest: "/xmlrequest",
 
     // support api's
@@ -21,7 +24,12 @@ const Connection = {
     closeTicket: "/closeticket/",
 
     //mailing api's
-    compose: "/compose"
+    compose: "/compose",
+
+    //payments
+    chapa: "/chapa"
+
+
 };
 
 export default Connection;

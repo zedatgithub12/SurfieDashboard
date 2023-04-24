@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Container, Row, Table } from "react-bootstrap";
+import { Badge, Button, Col, Container, Row, Table } from "react-bootstrap";
 import text from "../assets/text.png";
 import Sidebar from "../components/Sidebar";
 import Connection from "../constants/Connections";
@@ -131,6 +131,7 @@ const Support = () => {
               <Table hover responsive striped className="align-middle">
                 <thead className="bg-white">
                   <tr>
+                
                     <th className="ps-4">Name</th>
                     <th>Date</th>
                     <th>Status</th>
@@ -138,7 +139,9 @@ const Support = () => {
                 </thead>
                 {queries.map((item, index) => (
                   <tbody>
+                  
                     <tr key={item.id}>
+                   
                       <td onClick={() => OpenModal(item)}>
                         <div className="d-flex align-items-center">
                           <div className="ms-3">
@@ -176,9 +179,12 @@ const Support = () => {
 
           <Col
             sm={4}
-            className="mt-3 shadow-sm  ms-1 p-4 pt-2 bg-white rounded position-relative"
+            className="mt-3 shadow-sm  ms-1 p-4 pt-2 bg-white rounded position-fixed end-0 me-5 fixed"
           >
+               
+               <h6>Ticket Number <Badge className="badge badge-light px-2 rounded bg-light text-primary fs-5"> #{modalContent.content.id}</Badge></h6>
             <div>
+           
               <p className="fw-semibold mt-0 fs-6 text-secondary">
                 Message Preview
               </p>
@@ -188,11 +194,11 @@ const Support = () => {
                 <div className="position-absolute end-0 me-3">
                   <span className="fw-semibold text-muted">Status: </span>
                   <span>
-                    {modalContent.content.status === 1 ? (
+                    {modalContent.content.status == 1 ? (
                       <span className="bg-opacity-10 bg-success px-4 py-1 text-success rounded-pill d-inline">
                         Replied
                       </span>
-                    ) : modalContent.content.status === 2 ? (
+                    ) : modalContent.content.status == 2 ? (
                       <span className="bg-opacity-10 bg-secondary px-4 py-1 text-secondary rounded-pill d-inline">
                         Closed
                       </span>
