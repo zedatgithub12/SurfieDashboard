@@ -1,19 +1,9 @@
 
-import React, {useEffect, useState} from "react";
+import React from "react";
 import Row from "react-bootstrap/Row";
-import Dropdown from "react-bootstrap/Dropdown";
-import { Button } from "react-bootstrap";
-import { RxLoop,RxCheck } from "react-icons/rx";
-import Connection from "../constants/Connections";
-import Stack from '@mui/material/Stack';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
 
-const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
+
 const PaymentList=({
-    id,
     reference,
     name,
     email,
@@ -21,36 +11,11 @@ const PaymentList=({
     date,
     status,
     rowPressed,
-    add,
-    remove,
-    deactivate,
-    detach,
     currency,
   })=> {
   
-    const [loading, setLoading] = useState(false);
-
-    //modal dynamic attributes
-    const [initialValue, setInitialValue] = useState({
-      title: "",
-      currentPlan: "",
-      updatedInfo: "",
-      operation: "",
-      cofirmationtxt: "",
-      errormsg: "",
-      lid: "",
-      cid: "",
-    });
-  
-    const [open, setOpen] = React.useState(false);
-  
-    const handleClose = (event, reason) => {
-      if (reason === 'clickaway') {
-        return;
-      }
-  
-      setOpen(false);
-    };
+   
+     
   
        //calculate and return the license expire date
     const ExpireDate = (date) => {
@@ -75,12 +40,12 @@ const PaymentList=({
         return (
            <>
            
-    <tr className=" align-items-center pt-2">
-      <td onClick={rowPressed} className="small fw-semibold">{reference}</td>
+    <tr className=" align-items-center py-3">
+      <td onClick={rowPressed} className="small fw-semibold text-muted">{reference}</td>
       <td onClick={rowPressed}>
-        <Row className="fs-6 fw-normal text-start text-capitalize ">
+        <p className="fs-6 fw-normal text-start text-capitalize small">
           {name}
-        </Row>
+        </p>
       </td>
       <td onClick={rowPressed}>
         <Row className="fs-6 fw-normal text-start text-capitalize ">

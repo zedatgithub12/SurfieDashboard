@@ -11,7 +11,6 @@ import Sidebar from "../components/Sidebar";
 import Connection from "../constants/Connections";
 import { BsCheckCircle } from "react-icons/bs";
 
-
 const CustomerDetail = () => {
   const navigate = useNavigate();
   const goBack = () => {
@@ -50,14 +49,14 @@ const CustomerDetail = () => {
     var Status;
 
     switch (status) {
-      case 1:
+      case "1":
         Status = "Active";
         break;
-      case 2:
+      case "2":
         Status = "Expired";
         break;
 
-      case 3:
+      case "3":
         Status = "Terminated";
         break;
       default:
@@ -66,24 +65,21 @@ const CustomerDetail = () => {
 
     return Status;
   };
-    //calculate and return the license expire date
-    const ExpireDate = (date) => {
-      var duedate;
-  
-      if(date == null){
-         duedate = "Not payed!";
-      }
-      else{
-  
-      
+  //calculate and return the license expire date
+  const ExpireDate = (date) => {
+    var duedate;
+
+    if (date == null) {
+      duedate = "Not payed!";
+    } else {
       var year = date.slice(0, 4);
       var month = date.slice(5, 7);
       var day = date.slice(8, 10);
       duedate = day + "/" + month + "/" + year;
-      }
-  
-      return duedate;
-    };
+    }
+
+    return duedate;
+  };
 
   const Payment = (mode) => {
     var gateway;
@@ -106,13 +102,13 @@ const CustomerDetail = () => {
   };
 
   const OpenDialog = (item, operation) => {
-    var info = operation === "add" ? "Upgrade to" : "Downgrade to";
+    var info = operation === "add" ? "Change to" : "Downgrade to";
 
     if (operation === "add") {
       setConfirm("1");
       setInitialValue({
         ...initialValue,
-        title: "Add Subscription",
+        title: "Change License",
         currentPlan: item.license,
         updatedInfo: info,
         operation: operation,
@@ -168,7 +164,7 @@ const CustomerDetail = () => {
       handleShow();
     }
   };
-   // add License functionality
+  // add License functionality
   //adding license to databse go performed here
   const UpdateID = (event) => {
     setInitialValue({
@@ -178,21 +174,11 @@ const CustomerDetail = () => {
     });
   };
 
- 
   const AddSubscription = () => {
+    var currentPackages = `AFROMINA_${initialValue.currentPlan}`;
     var packages = `AFROMINA_${license}`;
 
-    if (initialValue.currentPlan === 15) {
-      setInitialValue({
-        ...initialValue,
-        errormsg: "You are using the maximum plan of Surfi Ethiopia!",
-      });
-    } else if (license <= initialValue.currentPlan) {
-      setInitialValue({
-        ...initialValue,
-        errormsg: "Selected a license supports same or less devices!",
-      });
-    } else if (initialValue.cid !== "" && initialValue.currentPlan < 15) {
+    if (initialValue.cid !== "") {
       setactionload(true);
 
       var Api = Connection.api + Connection.addlicense + initialValue.lid;
@@ -206,6 +192,7 @@ const CustomerDetail = () => {
         localid: initialValue.lid,
         license: license,
         package: packages,
+        currentPackage: currentPackages,
       };
 
       fetch(Api, {
@@ -464,72 +451,70 @@ const CustomerDetail = () => {
   const Detach = () => {
     if (initialValue.cid !== "") {
       setactionload(true);
-    
-            var Api = Connection.api + Connection.detach + initialValue.lid;
-            var headers = {
-              accept: "application/json",
-              "Content-Type": "application/json",
-            };
 
-            var Data = {
-              remoteid: initialValue.cid,
-              localid: initialValue.lid,
-              cstatus: 3,
-            };
+      var Api = Connection.api + Connection.detach + initialValue.lid;
+      var headers = {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      };
 
-            fetch(Api, {
-              method: "PUT",
-              headers: headers,
-              body: JSON.stringify(Data),
-            })
-              .then((response) => response.json())
-              .then((response) => {
-                // the action will be taken depending on the server response
+      var Data = {
+        remoteid: initialValue.cid,
+        localid: initialValue.lid,
+        cstatus: 3,
+      };
 
-                if (response == 0) {
-                  setConfirm("3");
-                  setInitialValue({
-                    ...initialValue,
-                    cofirmationtxt: `Succeessfully Detached!`,
-                    errormsg: "",
-                  });
-                  setactionload(false);
-                } 
-                else if (response == 1002) {
-                  setInitialValue({
-                    ...initialValue,
-                    errormsg: "Invalid Username or Password!",
-                  });
-                  setactionload(false);
-                } else if (response == 1006) {
-                  setInitialValue({
-                    ...initialValue,
-                    errormsg: "Account id doesn't exist!",
-                  });
-                  setactionload(false);
-                } else if (response == 2002) {
-                  setInitialValue({
-                    ...initialValue,
-                    errormsg: "Account is active!",
-                  });
-                  setactionload(false);
-                } else {
-                  setInitialValue({
-                    ...initialValue,
-                    errormsg: "Invalid response!",
-                  });
-                  setactionload(false);
-                }
-              })
-              .catch((e) => {
-                setInitialValue({
-                  ...initialValue,
-                  errormsg: "Error detaching user credentials",
-                });
-                setactionload(false);
-              });
-          } 
-        else {
+      fetch(Api, {
+        method: "PUT",
+        headers: headers,
+        body: JSON.stringify(Data),
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          // the action will be taken depending on the server response
+
+          if (response == 0) {
+            setConfirm("3");
+            setInitialValue({
+              ...initialValue,
+              cofirmationtxt: `Succeessfully Detached!`,
+              errormsg: "",
+            });
+            setactionload(false);
+          } else if (response == 1002) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Invalid Username or Password!",
+            });
+            setactionload(false);
+          } else if (response == 1006) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Account id doesn't exist!",
+            });
+            setactionload(false);
+          } else if (response == 2002) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Account is active!",
+            });
+            setactionload(false);
+          } else {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Invalid response!",
+            });
+            setactionload(false);
+          }
+        })
+        .catch((e) => {
+          setInitialValue({
+            ...initialValue,
+            errormsg: "Error detaching user credentials",
+          });
+          setactionload(false);
+        });
+    } else {
       setInitialValue({
         ...initialValue,
         errormsg: "Please enter remote customer id!",
@@ -537,7 +522,6 @@ const CustomerDetail = () => {
       setactionload(false);
     }
   };
-
 
   useEffect(() => {
     return () => {};
@@ -591,24 +575,20 @@ const CustomerDetail = () => {
                 </Row>
 
                 <Row className="p-2 ps-1 m-1 mt-4">
-                  <Col sm={4} className="alighn-items-start" >
-                    
-                    <span className="text-dark fw-semibold ">
-                      Remote ID:
-                    </span>
+                  <Col sm={4} className="alighn-items-start">
+                    <span className="text-dark fw-semibold ">Remote ID:</span>
                   </Col>
 
                   <Col className="alighn-items-start">
-                    <span className="text-dark fw-normal">{state.remote_id}</span>
+                    <span className="text-dark fw-normal">
+                      {state.remote_id}
+                    </span>
                   </Col>
                 </Row>
 
                 <Row className="p-2 ps-1 m-1 mt-1">
                   <Col sm={4} className="alighn-items-start">
-                  
-                    <span className="text-dark  fw-semibold">
-                      Local ID:
-                    </span>
+                    <span className="text-dark  fw-semibold">Local ID:</span>
                   </Col>
 
                   <Col className="alighn-items-start">
@@ -684,9 +664,7 @@ const CustomerDetail = () => {
                 </Row>
                 <Row className="p-2 ps-1  m-1">
                   <Col sm={4} className="alighn-items-start">
-                    <span className="text-dark  fw-semibold">
-                      Expire Date:
-                    </span>
+                    <span className="text-dark  fw-semibold">Expire Date:</span>
                   </Col>
 
                   <Col className="alighn-items-start">
@@ -717,15 +695,9 @@ const CustomerDetail = () => {
                   onClick={() => OpenDialog(state, "add")}
                   className="btn btn-light text-dark  m-1"
                 >
-                  Add Subscription
+                  Change License
                 </Button>
-                <Button
-                  to="/"
-                  onClick={() => OpenDialog(state, "remove")}
-                  className="btn btn-light text-dark  m-1"
-                >
-                  Remove Subscription
-                </Button>
+
                 <Button
                   to="/"
                   onClick={() => OpenDialog(state, "deactivate")}
@@ -819,12 +791,11 @@ const CustomerDetail = () => {
                     </Dropdown>
                   </Col>
                 </Row>
-               
               </Form>
             )}
           </Modal.Body>
           <Modal.Footer>
-          <div className="position-relative  ms-0 rounded  px-2 ps-0 text-start">
+            <div className="position-relative  ms-0 rounded  px-2 ps-0 text-start">
               <p className="text-danger text-center pt-2">
                 {initialValue.errormsg}
               </p>
@@ -842,48 +813,29 @@ const CustomerDetail = () => {
                   <div
                     class="spinner-border spinner-border-sm text-white"
                     role="status"
-                  >
-                  </div>
-                ) : (
-                  <span>Confirm</span>
-                )}
-              </Button>
-            ) : initialValue.operation === "remove" ? (
-              <Button
-                variant="light"
-                className="primary-bg border-0"
-                onClick={() => RemoveSubscription()}
-              >
-                 {actionload ? (
-                  <div
-                    class="spinner-border spinner-border-sm text-white"
-                    role="status"
-                  >
-                  </div>
+                  ></div>
                 ) : (
                   <span>Confirm</span>
                 )}
               </Button>
             ) : initialValue.operation === "deactivate" ? (
               <Button variant="danger" onClick={() => Deactivate()}>
-                 {actionload ? (
+                {actionload ? (
                   <div
                     class="spinner-border spinner-border-sm text-white"
                     role="status"
-                  >
-                  </div>
+                  ></div>
                 ) : (
                   <span>Deactivate</span>
                 )}
               </Button>
             ) : initialValue.operation === "detach" ? (
               <Button variant="danger" onClick={() => Detach()}>
-                 {actionload ? (
+                {actionload ? (
                   <div
                     class="spinner-border spinner-border-sm text-secondary"
                     role="status"
-                  >
-                  </div>
+                  ></div>
                 ) : (
                   <span>Detach</span>
                 )}

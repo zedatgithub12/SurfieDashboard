@@ -143,9 +143,9 @@ const ChapaDetail = () => {
                           <p className="mb-0">Customer Name</p>
                         </div>
                         <div className="col-auto">
-                          <h5>
+                          <p className="mb-0 fw-semibold text-capitalize">
                             {state.first_name} {state.last_name}
-                          </h5>
+                          </p>
                         </div>
                       </div>
                     </li>
@@ -155,7 +155,7 @@ const ChapaDetail = () => {
                           <p className="mb-0">Customer Email</p>
                         </div>
                         <div className="col-auto">
-                          <h5>{state.email}</h5>
+                          <p className="mb-0 fw-semibold text-capitalize">{state.email}</p>
                         </div>
                       </div>
                     </li>
@@ -166,13 +166,13 @@ const ChapaDetail = () => {
                           <p className="mb-0">Transaction id</p>
                         </div>
                         <div className="col-auto">
-                          <h5
-                            className="castro-copy"
+                          <p
+                            className="castro-copy mb-0 fw-semibold text-capitalize"
                             data-clipboard-text={state.txn_reference}
                           >
                             {state.txn_reference}
                             <i className="fal fa-copy"></i>
-                          </h5>
+                          </p>
                         </div>
                       </div>
                     </li>
@@ -183,12 +183,12 @@ const ChapaDetail = () => {
                           <p className="mb-0">Transaction Reference</p>
                         </div>
                         <div className="col-auto">
-                          <h5
-                            className="castro-copy"
+                          <p
+                           className="mb-0 fw-semibold text-capitalize"
                             data-clipboard-text={state.txn_id}
                           >
                             {state.txn_id} <i className="fal fa-copy"></i>
-                          </h5>
+                          </p>
                         </div>
                       </div>
                     </li>
@@ -199,7 +199,7 @@ const ChapaDetail = () => {
                           <p className="mb-0">Paid at</p>
                         </div>
                         <div className="col-auto">
-                          <h5>{paymentDate(state.created_at)}</h5>
+                          <p className="mb-0 fw-semibold text-capitalize">{paymentDate(state.created_at)}</p>
                         </div>
                       </div>
                     </li>

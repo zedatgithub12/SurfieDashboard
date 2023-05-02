@@ -18,8 +18,6 @@ import ReactPaginate from "react-paginate";
 import Sidebar from "../components/Sidebar";
 import { BsCheckCircle } from "react-icons/bs";
 
-
-
 export const Customers = () => {
   const navigate = useNavigate();
 
@@ -31,7 +29,7 @@ export const Customers = () => {
   const [search, setSearch] = useState();
   const [license, setLicense] = useState(); //modal dropdown license listing states
   const [notFound, setNotFound] = useState("No customer with this status!");
-  
+
   const [paging, setPaging] = useState([]);
   const [count, setCount] = useState([]);
   const [actionload, setactionload] = useState(false);
@@ -48,13 +46,13 @@ export const Customers = () => {
   });
 
   const OpenDialog = (item, operation) => {
-    var info = operation === "add" ? "Upgrade to" : "Downgrade to";
+    var info = operation === "add" ? "Change to" : "Downgrade to";
 
     if (operation === "add") {
       setConfirm("1");
       setInitialValue({
         ...initialValue,
-        title: "Add Subscription",
+        title: "Change License",
         currentPlan: item.license,
         updatedInfo: info,
         operation: operation,
@@ -126,21 +124,10 @@ export const Customers = () => {
   // add License functionality
   //adding license to database performed here
 
-
   const AddSubscription = () => {
+    var currentPackages = `AFROMINA_${initialValue.currentPlan}`;
     var packages = `AFROMINA_${license}`;
-
-    if (initialValue.currentPlan === 15) {
-      setInitialValue({
-        ...initialValue,
-        errormsg: "You are using the maximum plan of Surfi Ethiopia!",
-      });
-    } else if (license <= initialValue.currentPlan) {
-      setInitialValue({
-        ...initialValue,
-        errormsg: "Selected a license supports same or less devices!",
-      });
-    } else if (initialValue.cid !== "" && initialValue.currentPlan < 15) {
+    if (initialValue.cid !== "") {
       setactionload(true);
 
       var Api = Connection.api + Connection.addlicense + initialValue.lid;
@@ -154,6 +141,7 @@ export const Customers = () => {
         localid: initialValue.lid,
         license: license,
         package: packages,
+        currentPackage: currentPackages,
       };
 
       fetch(Api, {
@@ -164,7 +152,7 @@ export const Customers = () => {
         .then((response) => response.json())
         .then((response) => {
           // the action will be taken depending on the server response
-          
+
           if (response == 0) {
             setConfirm("3");
             setInitialValue({
@@ -412,72 +400,70 @@ export const Customers = () => {
   const Detach = () => {
     if (initialValue.cid !== "") {
       setactionload(true);
-    
-            var Api = Connection.api + Connection.detach + initialValue.lid;
-            var headers = {
-              accept: "application/json",
-              "Content-Type": "application/json",
-            };
 
-            var Data = {
-              remoteid: initialValue.cid,
-              localid: initialValue.lid,
-              cstatus: 3,
-            };
+      var Api = Connection.api + Connection.detach + initialValue.lid;
+      var headers = {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      };
 
-            fetch(Api, {
-              method: "PUT",
-              headers: headers,
-              body: JSON.stringify(Data),
-            })
-              .then((response) => response.json())
-              .then((response) => {
-                // the action will be taken depending on the server response
+      var Data = {
+        remoteid: initialValue.cid,
+        localid: initialValue.lid,
+        cstatus: 3,
+      };
 
-                if (response == 0) {
-                  setConfirm("3");
-                  setInitialValue({
-                    ...initialValue,
-                    cofirmationtxt: `Succeessfully Detached!`,
-                    errormsg: "",
-                  });
-                  setactionload(false);
-                } 
-                else if (response == 1002) {
-                  setInitialValue({
-                    ...initialValue,
-                    errormsg: "Invalid Username or Password!",
-                  });
-                  setactionload(false);
-                } else if (response == 1006) {
-                  setInitialValue({
-                    ...initialValue,
-                    errormsg: "Account id doesn't exist!",
-                  });
-                  setactionload(false);
-                } else if (response == 2002) {
-                  setInitialValue({
-                    ...initialValue,
-                    errormsg: "Account is active!",
-                  });
-                  setactionload(false);
-                } else {
-                  setInitialValue({
-                    ...initialValue,
-                    errormsg: "Invalid response!",
-                  });
-                  setactionload(false);
-                }
-              })
-              .catch((e) => {
-                setInitialValue({
-                  ...initialValue,
-                  errormsg: "Error detaching user credentials",
-                });
-                setactionload(false);
-              });
-          } 
-        else {
+      fetch(Api, {
+        method: "PUT",
+        headers: headers,
+        body: JSON.stringify(Data),
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          // the action will be taken depending on the server response
+
+          if (response == 0) {
+            setConfirm("3");
+            setInitialValue({
+              ...initialValue,
+              cofirmationtxt: `Succeessfully Detached!`,
+              errormsg: "",
+            });
+            setactionload(false);
+          } else if (response == 1002) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Invalid Username or Password!",
+            });
+            setactionload(false);
+          } else if (response == 1006) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Account id doesn't exist!",
+            });
+            setactionload(false);
+          } else if (response == 2002) {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Account is active!",
+            });
+            setactionload(false);
+          } else {
+            setInitialValue({
+              ...initialValue,
+              errormsg: "Invalid response!",
+            });
+            setactionload(false);
+          }
+        })
+        .catch((e) => {
+          setInitialValue({
+            ...initialValue,
+            errormsg: "Error detaching user credentials",
+          });
+          setactionload(false);
+        });
+    } else {
       setInitialValue({
         ...initialValue,
         errormsg: "Please enter remote customer id!",
@@ -545,7 +531,6 @@ export const Customers = () => {
     // setCustomers(customers);
   };
 
- 
   //featch all numerical count of customer information
   const PendingCount = () => {
     var Api = Connection.api + Connection.pending; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
@@ -761,7 +746,6 @@ export const Customers = () => {
                                 date={item.duedate}
                                 status={item.status}
                                 add={() => OpenDialog(item, "add")}
-                                remove={() => OpenDialog(item, "remove")}
                                 deactivate={() =>
                                   OpenDialog(item, "deactivate")
                                 }
@@ -772,7 +756,6 @@ export const Customers = () => {
                                     state: { ...item },
                                   })
                                 }
-                                
                               />
                             ))}
                           </tbody>
@@ -851,8 +834,6 @@ export const Customers = () => {
             ) : confirm === "2" ? (
               <div className="p-2 pt-0 pb-3">
                 <p className="fw-semibold">{initialValue.cofirmationtxt}</p>
-
-               
               </div>
             ) : (
               <Form>
@@ -895,7 +876,6 @@ export const Customers = () => {
                     </Dropdown>
                   </Col>
                 </Row>
-                
               </Form>
             )}
           </Modal.Body>
@@ -914,21 +894,6 @@ export const Customers = () => {
                 variant="light"
                 className="primary-bg border-0"
                 onClick={() => AddSubscription()}
-              >
-                {actionload ? (
-                  <div
-                    class="spinner-border spinner-border-sm text-secondary"
-                    role="status"
-                  ></div>
-                ) : (
-                  <span>Confirm</span>
-                )}
-              </Button>
-            ) : initialValue.operation === "remove" ? (
-              <Button
-                variant="light"
-                className="primary-bg border-0"
-                onClick={() => RemoveSubscription()}
               >
                 {actionload ? (
                   <div
@@ -964,7 +929,7 @@ export const Customers = () => {
             ) : null}
           </Modal.Footer>
         </Modal>
-{/* 
+        {/* 
         <ToastContainer
           position="top-center"
           className="p-3 bg-succees bg-opacity-10"
