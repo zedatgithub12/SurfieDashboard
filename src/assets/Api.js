@@ -8,8 +8,6 @@ var headers ={
 const data = {
     // the data to be sent to server will be encoded here 
 }
-
-
 // The featching resource from api process start from the API below
 // 
 fetch(Api,{

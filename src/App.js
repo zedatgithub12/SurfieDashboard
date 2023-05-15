@@ -14,43 +14,46 @@ import Signin from "./pages/Signin";
 import { AuthContext } from "./components/Context";
 import Home from "./pages/Home";
 import ChapaDetail from "./pages/ChapaDetail";
+import Partners from "./pages/partners";
 
 function App() {
   const [loged, setLoged] = React.useState(false);
 
-  const authContext = React.useMemo(() => ({
-    SignIn: async (user, token) => {
-      try {
-        localStorage.setItem("token", JSON.stringify(token));
-        localStorage.setItem("user", JSON.stringify(user));
-        setLoged(true);
-      } catch (e) {
-        console.log(e);
-      }
-    },
-  
-    SignOut: async () => {
-      localStorage.clear();
-      setLoged(false);
-    },
+  const authContext = React.useMemo(
+    () => ({
+      SignIn: async (user, token) => {
+        try {
+          localStorage.setItem("token", JSON.stringify(token));
+          localStorage.setItem("user", JSON.stringify(user));
+          setLoged(true);
+        } catch (e) {
+          console.log(e);
+        }
+      },
 
-    getToken: async () => {
-      const tokenString = localStorage.getItem("token");
-      const userToken = JSON.parse(tokenString);
-      return userToken;
-    },
+      SignOut: async () => {
+        localStorage.clear();
+        setLoged(false);
+      },
 
-    getUser: async () => {
-      const userString = localStorage.getItem("user");
-      const userDetails = JSON.parse(userString);
-      return userDetails;
-    },
-   
-  }), []);
+      getToken: async () => {
+        const tokenString = localStorage.getItem("token");
+        const userToken = JSON.parse(tokenString);
+        return userToken;
+      },
+
+      getUser: async () => {
+        const userString = localStorage.getItem("user");
+        const userDetails = JSON.parse(userString);
+        return userDetails;
+      },
+    }),
+    []
+  );
 
   useEffect(() => {
     var tokens = localStorage.getItem("token");
-  
+
     if (tokens !== null) {
       setLoged(true);
     }
@@ -66,6 +69,7 @@ function App() {
             <Route path="/login" element={<Signin />} />
             <Route path="/customers" element={<Customers />} />
             <Route path="/users" element={<Users />} />
+            <Route path="/partners" element={<Partners />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/support" element={<Support />} />
             <Route path="/emails" element={<Emaills />} />

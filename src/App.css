@@ -1,17 +1,19 @@
-*{
-  font-family: "Poppins" sans-serif;
+* {
+  font-family: 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
-.primary-fill{
-  background-color: #00c6d4;
-}
-.primary-bg{
+.primary-fill {
   background-color: #00c6d4;
 }
 
-.primary-text{
+.primary-bg {
+  background-color: #00c6d4;
+}
+
+.primary-text {
   color: #00c6d4;
 }
+
 .App {
   text-align: center;
 }
@@ -50,25 +52,23 @@
     transform: rotate(360deg);
   }
 }
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
-.home,
-.services,
-.reports,
-.contact,
-.events,
-.support {
+
+.home, .services, .reports, .contact, .events, .support {
   display: flex;
   margin-left: 260px;
   font-size: 2rem;
 }
+
 .font-link {
   font-family: "Graphik", sans-serif;
 }
-.primary {
-  color:"#10a698"
-}
 
+.primary {
+  color: "#10a698"
+}

@@ -5,12 +5,11 @@ import * as FiIcons from "react-icons/fi";
 import { HiOutlineMail } from "react-icons/hi";
 import { RxDashboard } from "react-icons/rx";
 
-
 export const SidebarData = [
   {
     title: "Dashboard",
     path: "/",
-    icon: <RxDashboard size={22}/>,
+    icon: <RxDashboard size={22} />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
     //  subNav: [
@@ -25,7 +24,7 @@ export const SidebarData = [
   {
     title: "Customers",
     path: "/customers",
-    icon: <FiIcons.FiUsers size={20}/>,
+    icon: <FiIcons.FiUsers size={20} />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
     //  subNav: [
@@ -38,14 +37,22 @@ export const SidebarData = [
     // ],
   },
   {
-    title: "Manage Users",
-    path: "/users",
-    icon: <FiIcons.FiUser size={20}/>,
- 
+    title: "Partners",
+    path: "/partners",
+    icon: <FiIcons.FiUser size={20} />,
+
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
   },
-  
+  {
+    title: "Manage Users",
+    path: "/users",
+    icon: <FiIcons.FiUser size={20} />,
+
+    iconClosed: <RiIcons.RiArrowDownSFill />,
+    iconOpened: <RiIcons.RiArrowUpSFill />,
+  },
+
   // {
   //   title: "Notifications",
   //   path: "/notifications",
@@ -57,7 +64,7 @@ export const SidebarData = [
   {
     title: "Emails",
     path: "/emails",
-    icon: <HiOutlineMail size={18}/>,
+    icon: <HiOutlineMail size={18} />,
   },
   {
     title: "Supports",
