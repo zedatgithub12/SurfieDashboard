@@ -15,6 +15,7 @@ import { AuthContext } from "./components/Context";
 import Home from "./pages/Home";
 import ChapaDetail from "./pages/ChapaDetail";
 import Partners from "./pages/partners";
+import ViewPartner from "./pages/partners/viewpartners";
 
 function App() {
   const [loged, setLoged] = React.useState(false);
@@ -70,6 +71,7 @@ function App() {
             <Route path="/customers" element={<Customers />} />
             <Route path="/users" element={<Users />} />
             <Route path="/partners" element={<Partners />} />
+            <Route path="/viewpartners" element={<ViewPartner />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/support" element={<Support />} />
             <Route path="/emails" element={<Emaills />} />
