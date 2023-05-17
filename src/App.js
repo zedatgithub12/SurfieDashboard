@@ -16,6 +16,7 @@ import Home from "./pages/Home";
 import ChapaDetail from "./pages/ChapaDetail";
 import Partners from "./pages/partners";
 import ViewPartner from "./pages/partners/viewpartners";
+import ExpiredLicense from "./pages/Expired";
 
 function App() {
   const [loged, setLoged] = React.useState(false);
@@ -69,6 +70,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Signin />} />
             <Route path="/customers" element={<Customers />} />
+            <Route path="/expired" element={<ExpiredLicense />} />
             <Route path="/users" element={<Users />} />
             <Route path="/partners" element={<Partners />} />
             <Route path="/viewpartners" element={<ViewPartner />} />

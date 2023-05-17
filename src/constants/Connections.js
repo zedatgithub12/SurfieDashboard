@@ -11,6 +11,7 @@ const Connection = {
   singleCustomer: "/singlecustomer/",
   search: "/search/",
   addlicense: "/add/",
+  changeLicense: "/add/",
   removeLicense: "/remove/",
   deactivate: "/deactivate/",
   detach: "/detach/",

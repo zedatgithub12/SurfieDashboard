@@ -10,6 +10,7 @@ import { Button } from "react-bootstrap";
 import Sidebar from "../components/Sidebar";
 import Connection from "../constants/Connections";
 import { BsCheckCircle } from "react-icons/bs";
+import Licenses from "../data/packages";
 
 const CustomerDetail = () => {
   const navigate = useNavigate();
@@ -547,21 +548,21 @@ const CustomerDetail = () => {
                           state.middle_name +
                           " " +
                           state.last_name}{" "}
-                        {state.status === "1" ? (
+                        {state.status === 1 ? (
                           <span class="badge bg-success bg-opacity-10 text-success px-4 rounded-1">
-                            {Status(state.status)}
+                            Active
                           </span>
-                        ) : state.status === "2" ? (
+                        ) : state.status === 2 ? (
                           <span class="badge bg-danger bg-opacity-10 text-danger px-4 rounded-1">
-                            {Status(state.status)}
+                            Expired
                           </span>
-                        ) : state.status === "3" ? (
+                        ) : state.status === 3 ? (
                           <span class="badge bg-dark bg-opacity-10 text-dark px-4 rounded-1">
-                            {Status(state.status)}
+                            Terminated
                           </span>
                         ) : (
                           <span class="badge bg-secondary bg-opacity-10 text-secondary px-4 rounded-1">
-                            {Status(state.status)}
+                            Pending
                           </span>
                         )}
                       </span>
@@ -778,15 +779,14 @@ const CustomerDetail = () => {
                       </Dropdown.Toggle>
 
                       <Dropdown.Menu variant="light">
-                        <Dropdown.Item onClick={() => setLicense(5)}>
-                          5 License
-                        </Dropdown.Item>
-                        <Dropdown.Item onClick={() => setLicense(10)}>
-                          10 License
-                        </Dropdown.Item>
-                        <Dropdown.Item onClick={() => setLicense(15)}>
-                          15 License
-                        </Dropdown.Item>
+                        {Licenses.map((license, index) => (
+                          <Dropdown.Item
+                            key={index}
+                            onClick={() => setLicense(license.device)}
+                          >
+                            {license.device} License
+                          </Dropdown.Item>
+                        ))}
                       </Dropdown.Menu>
                     </Dropdown>
                   </Col>

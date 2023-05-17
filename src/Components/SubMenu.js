@@ -30,7 +30,7 @@ const DropdownLink = styled(Link)`
   display: flex;
   align-items: center;
   text-decoration: none;
-  color: #f5f5f5;
+  color: #fff;
   font-size: 16px;
  
   &:hover {
@@ -48,7 +48,7 @@ const SubMenu = ({ item }) => {
   return (
     <>
       <SidebarLink to={item.path}
-      onClick={item.subNav && showSubnav}>
+      onClick={item.subNav && showSubnav} className="mt-3">
         <div>
           {item.icon}
           <SidebarLabel >{item.title}</SidebarLabel>
@@ -64,7 +64,7 @@ const SubMenu = ({ item }) => {
       {subnav &&
         item.subNav.map((item, index) => {
           return (
-            <DropdownLink to={item.path} key={index}>
+            <DropdownLink to={item.path} key={index} >
               {item.icon}
               <SidebarLabel>{item.title}</SidebarLabel>
             </DropdownLink>

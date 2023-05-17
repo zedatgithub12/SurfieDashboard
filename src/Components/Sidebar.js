@@ -1,6 +1,6 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import {useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import * as BsIcons from "react-icons/bs";
 import { SidebarData } from "./SidebarData";
 import SubMenu from "./SubMenu";
@@ -8,7 +8,7 @@ import { IconContext } from "react-icons/lib";
 import logo from "../assets/LogoMedium.png";
 import Dropdown from "react-bootstrap/Dropdown";
 import { FaUserCircle } from "react-icons/fa";
-import {  Row } from "react-bootstrap";
+import { Row } from "react-bootstrap";
 import { AuthContext } from "./Context";
 
 const Nav = styled.div`
@@ -19,8 +19,6 @@ const Nav = styled.div`
   align-items: center;
 `;
 
-
-
 const SidebarNav = styled.nav`
   background: #15171c;
   width: 200px;
@@ -30,7 +28,7 @@ const SidebarNav = styled.nav`
   position: fixed;
   top: 70;
   padding-top: 20px;
-  left: ${({ sidebar }) => (sidebar ? "0" : "-100%")};
+  left: ${({ sidebar }) => (sidebar ? "-100%" : "0")};
   transition: 350ms;
   z-index: 10;
 `;
@@ -41,7 +39,6 @@ const SidebarWrap = styled.div`
 
 const Sidebar = () => {
   const { SignOut } = React.useContext(AuthContext);
-
   const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => setSidebar(!sidebar);
   const navigate = useNavigate();

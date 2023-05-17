@@ -21,6 +21,7 @@ import { BsCheckCircle, BsCheckLg } from "react-icons/bs";
 import Connection from "../constants/Connections";
 import Modal from "react-bootstrap/Modal";
 import Sidebar from "../components/Sidebar";
+import packages from "../data/packages";
 
 function CreateAccount() {
   const [loading, setLoading] = useState(false);
@@ -433,25 +434,25 @@ function CreateAccount() {
               errormessage: "There is Missing Parameter!",
             });
             setLoading(false);
-          } else if (response === "1002") {
+          } else if (response === 1002) {
             setInput({
               ...input,
               errormessage: "Invalid Username or Password!",
             });
             setLoading(false);
-          } else if (response === "1004") {
+          } else if (response === 1004) {
             setInput({
               ...input,
               errormessage: "Invalid Package Id!",
             });
             setLoading(false);
-          } else if (response === "1021") {
+          } else if (response === 1021) {
             setInput({
               ...input,
               errormessage: "Email already exist!",
             });
             setLoading(false);
-          } else if (response === "1022") {
+          } else if (response === 1022) {
             setInput({
               ...input,
               errormessage: "Phone number already exist!",
@@ -804,21 +805,16 @@ function CreateAccount() {
                                     >
                                       Select License
                                     </Dropdown.Item>
-                                    <Dropdown.Item
-                                      onClick={() => setLicense(5)}
-                                    >
-                                      5 License
-                                    </Dropdown.Item>
-                                    <Dropdown.Item
-                                      onClick={() => setLicense(10)}
-                                    >
-                                      10 License
-                                    </Dropdown.Item>
-                                    <Dropdown.Item
-                                      onClick={() => setLicense(15)}
-                                    >
-                                      15 License
-                                    </Dropdown.Item>
+
+                                    {packages.map((license) => (
+                                      <Dropdown.Item
+                                        onClick={() =>
+                                          setLicense(license.device)
+                                        }
+                                      >
+                                        {license.device} License
+                                      </Dropdown.Item>
+                                    ))}
                                   </Dropdown.Menu>
                                 </Dropdown>
                                 <p className="small text-danger fw-semibold">

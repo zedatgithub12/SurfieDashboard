@@ -17,6 +17,7 @@ import Empty from "../assets/Empty.png";
 import ReactPaginate from "react-paginate";
 import Sidebar from "../components/Sidebar";
 import { BsCheckCircle } from "react-icons/bs";
+import Licenses from "../data/packages";
 
 export const Customers = () => {
   const navigate = useNavigate();
@@ -43,6 +44,8 @@ export const Customers = () => {
     errormsg: "",
     lid: "",
     cid: "",
+    license: "",
+    subscription: "",
   });
 
   const OpenDialog = (item, operation) => {
@@ -59,20 +62,8 @@ export const Customers = () => {
         lid: item.id,
         cid: item.remote_id,
         errormsg: "",
-      });
-      setLicense(item.license);
-      handleShow();
-    } else if (operation === "remove") {
-      setConfirm("1");
-      setInitialValue({
-        ...initialValue,
-        title: "Remove Subscription",
-        currentPlan: item.license,
-        updatedInfo: info,
-        operation: operation,
-        lid: item.id,
-        cid: item.remote_id,
-        errormsg: "",
+        license: item.license,
+        subscription: item.subscription,
       });
       setLicense(item.license);
       handleShow();
@@ -89,6 +80,8 @@ export const Customers = () => {
         lid: item.id,
         cid: item.remote_id,
         errormsg: "",
+        license: item.license,
+        subscription: item.subscription,
       });
       setLicense(item.license);
       handleShow();
@@ -103,6 +96,8 @@ export const Customers = () => {
         lid: item.id,
         cid: item.remote_id,
         errormsg: "",
+        license: item.license,
+        subscription: item.subscription,
       });
       setLicense(item.license);
       handleShow();
@@ -112,6 +107,13 @@ export const Customers = () => {
   const Tabs = (id) => {
     setActiveTab(id);
   };
+
+  // select a customer subscription and license
+  const userPackage = Licenses.find((p) => p.device === initialValue.license);
+  const price = userPackage
+    ? userPackage[initialValue.subscription + "_price"]
+    : 0;
+  const annualPrice = userPackage ? userPackage["annual_price"] : 0;
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -127,197 +129,87 @@ export const Customers = () => {
   const AddSubscription = () => {
     var currentPackages = `AFROMINA_${initialValue.currentPlan}`;
     var packages = `AFROMINA_${license}`;
-    if (initialValue.cid !== "") {
-      setactionload(true);
 
-      var Api = Connection.api + Connection.addlicense + initialValue.lid;
-      var headers = {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      };
+    setactionload(true);
 
-      var Data = {
-        remoteid: initialValue.cid,
-        localid: initialValue.lid,
-        license: license,
-        package: packages,
-        currentPackage: currentPackages,
-      };
+    var Api = Connection.api + Connection.changeLicense + initialValue.lid;
+    var headers = {
+      accept: "application/json",
+      "Content-Type": "application/json",
+    };
 
-      fetch(Api, {
-        method: "PUT",
-        headers: headers,
-        body: JSON.stringify(Data),
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          // the action will be taken depending on the server response
+    var Data = {
+      remoteid: initialValue.cid,
+      localid: initialValue.lid,
+      license: license,
+      package: packages,
+      currentPackage: currentPackages,
+    };
+  
+    fetch(Api, {
+      method: "PUT",
+      headers: headers,
+      body: JSON.stringify(Data),
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        // the action will be taken depending on the server response
 
-          if (response == 0) {
-            setConfirm("3");
-            setInitialValue({
-              ...initialValue,
-              cofirmationtxt: `Succeessfully Upgraded to ${license} device license`,
-              errormsg: "",
-            });
-            setactionload(false);
-          } else if (response == 1001) {
-            setInitialValue({
-              ...initialValue,
-              cofirmationtxt: "",
-              lid: "",
-              cid: "",
-              errormsg: "Mandatory parameter missing!",
-            });
-            setactionload(false);
-          } else if (response == 1002) {
-            setInitialValue({
-              ...initialValue,
-              errormsg: "Invalid Username or Password!",
-            });
-            setactionload(false);
-          } else if (response == 1003) {
-            setInitialValue({
-              ...initialValue,
-              errormsg: "Already Subscribed!",
-            });
-            setactionload(false);
-          } else if (response == 1004) {
-            setInitialValue({
-              ...initialValue,
-              errormsg: "Invalid Package Id!",
-            });
-            setactionload(false);
-          } else if (response == 1021) {
-            setInitialValue({
-              ...initialValue,
-              errormsg: "Email already exist!",
-            });
-            setactionload(false);
-          } else if (response == 1022) {
-            setInitialValue({
-              ...initialValue,
-              errormsg: "Phone number already exist!",
-            });
-            setactionload(false);
-          } else {
-            setInitialValue({
-              ...initialValue,
-              errormsg: "Failed to to upgrade license",
-            });
-            setactionload(false);
-          }
-        });
-    } else {
-      setInitialValue({
-        ...initialValue,
-        errormsg: "Please enter remote customer id!",
-      });
-      setactionload(false);
-    }
-  };
-
-  // remove the subscription
-  const RemoveSubscription = () => {
-    var currentPackages = `AFROMINA_${initialValue.currentPlan}`;
-    var packages = `AFROMINA_${license}`;
-
-    if (initialValue.currentPlan === 5) {
-      setInitialValue({
-        ...initialValue,
-        errormsg: "You are using the minimum plan of Surfi Ethiopia!",
-      });
-    } else if (license >= initialValue.currentPlan) {
-      setInitialValue({
-        ...initialValue,
-        errormsg: "Selected a license supports same or more devices!",
-      });
-    } else if (initialValue.cid !== "" && initialValue.currentPlan > 5) {
-      setactionload(true);
-
-      var Api = Connection.api + Connection.removeLicense + initialValue.lid;
-      var headers = {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      };
-
-      var Data = {
-        remoteid: initialValue.cid,
-        localid: initialValue.lid,
-        license: license,
-        package: packages,
-        currentPackage: currentPackages,
-      };
-
-      fetch(Api, {
-        method: "PUT",
-        headers: headers,
-        body: JSON.stringify(Data),
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          // the action will be taken depending on the server response
-
-          if (response == 0) {
-            setConfirm("3");
-            setInitialValue({
-              ...initialValue,
-              cofirmationtxt: `Succeessfully Downgraded license to ${license} device license`,
-              errormsg: "",
-            });
-            setactionload(false);
-          } else if (response == 1002) {
-            setInitialValue({
-              ...initialValue,
-              errormsg: "Invalid Username or Password!",
-            });
-            setactionload(false);
-          } else if (response == 1003) {
-            setInitialValue({
-              ...initialValue,
-              errormsg: "Subscription id already exist!",
-            });
-            setactionload(false);
-          } else if (response == 1006) {
-            setInitialValue({
-              ...initialValue,
-              errormsg: "Account id doesn't exist!",
-            });
-            setactionload(false);
-          } else if (response == 1004) {
-            setInitialValue({
-              ...initialValue,
-              errormsg: "Invalid Package Id!",
-            });
-            setactionload(false);
-          } else if (response == 1014) {
-            setInitialValue({
-              ...initialValue,
-              errormsg: "Invalid subscription Id!",
-            });
-            setactionload(false);
-          } else {
-            setInitialValue({
-              ...initialValue,
-              errormsg: "Invalid response!",
-            });
-            setactionload(false);
-          }
-        })
-        .catch((e) => {
+        if (response === "0") {
+          setConfirm("3");
           setInitialValue({
             ...initialValue,
-            errormsg: "Error downgrade license",
+            cofirmationtxt: `Succeessfully Changed to ${license} device license`,
+            errormsg: "",
           });
           setactionload(false);
-        });
-    } else {
-      setInitialValue({
-        ...initialValue,
-        errormsg: "error removing subscription!",
+        } else if (response === 1001) {
+          setInitialValue({
+            ...initialValue,
+            cofirmationtxt: "",
+            lid: "",
+            cid: "",
+            errormsg: "Mandatory parameter missing!",
+          });
+          setactionload(false);
+        } else if (response === 1002) {
+          setInitialValue({
+            ...initialValue,
+            errormsg: "Invalid Username or Password!",
+          });
+          setactionload(false);
+        } else if (response === 1003) {
+          setInitialValue({
+            ...initialValue,
+            errormsg: "Already Subscribed!",
+          });
+          setactionload(false);
+        } else if (response === 1004) {
+          setInitialValue({
+            ...initialValue,
+            errormsg: "Invalid Package Id!",
+          });
+          setactionload(false);
+        } else if (response === 1021) {
+          setInitialValue({
+            ...initialValue,
+            errormsg: "Email already exist!",
+          });
+          setactionload(false);
+        } else if (response === 1022) {
+          setInitialValue({
+            ...initialValue,
+            errormsg: "Phone number already exist!",
+          });
+          setactionload(false);
+        } else {
+          setInitialValue({
+            ...initialValue,
+            errormsg: "Failed to to upgrade license",
+          });
+          setactionload(false);
+        }
       });
-      setactionload(false);
-    }
   };
 
   // deactivate customer account
@@ -863,15 +755,14 @@ export const Customers = () => {
                       </Dropdown.Toggle>
 
                       <Dropdown.Menu variant="light">
-                        <Dropdown.Item onClick={() => setLicense(5)}>
-                          5 License
-                        </Dropdown.Item>
-                        <Dropdown.Item onClick={() => setLicense(10)}>
-                          10 License
-                        </Dropdown.Item>
-                        <Dropdown.Item onClick={() => setLicense(15)}>
-                          15 License
-                        </Dropdown.Item>
+                        {Licenses.map((license, index) => (
+                          <Dropdown.Item
+                            key={index}
+                            onClick={() => setLicense(license.device)}
+                          >
+                            {license.device} License
+                          </Dropdown.Item>
+                        ))}
                       </Dropdown.Menu>
                     </Dropdown>
                   </Col>

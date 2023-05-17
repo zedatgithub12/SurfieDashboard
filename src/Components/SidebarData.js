@@ -1,45 +1,50 @@
 import React from "react";
 import * as RiIcons from "react-icons/ri";
-import * as BiIcons from "react-icons/bi";
-import * as FiIcons from "react-icons/fi";
-import { HiOutlineMail } from "react-icons/hi";
-import { RxDashboard } from "react-icons/rx";
+
+import {
+  IconDashboard,
+  IconUsersGroup,
+  IconUsers,
+  IconUserBolt,
+  IconMailOpened,
+  IconLifebuoy,
+  IconTimelineEventExclamation,
+  IconJumpRope,
+} from "@tabler/icons-react";
 
 export const SidebarData = [
   {
     title: "Dashboard",
     path: "/",
-    icon: <RxDashboard size={22} />,
+    icon: <IconDashboard size={22} />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
-    //  subNav: [
-    //   {
-    //     title: "Emails",
-    //     path: "/emails",
-    //     icon: <HiOutlineMail size={18}/>,
-    //     cName: "sub-nav",
-    //   },
-    // ],
   },
   {
     title: "Customers",
     path: "/customers",
-    icon: <FiIcons.FiUsers size={20} />,
+    icon: <IconUsersGroup size={20} />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
-    //  subNav: [
-    //   {
-    //     title: "Emails",
-    //     path: "/emails",
-    //     icon: <HiOutlineMail size={18}/>,
-    //     cName: "sub-nav",
-    //   },
-    // ],
+    subNav: [
+      {
+        title: "Expired",
+        path: "/expired",
+        icon: <IconTimelineEventExclamation size={18} />,
+        cName: "sub-nav",
+      },
+      {
+        title: "Trials",
+        path: "/emails",
+        icon: <IconJumpRope size={18} />,
+        cName: "sub-nav",
+      },
+    ],
   },
   {
     title: "Partners",
     path: "/partners",
-    icon: <FiIcons.FiUser size={20} />,
+    icon: <IconUserBolt size={22} />,
 
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
@@ -47,7 +52,7 @@ export const SidebarData = [
   {
     title: "Manage Users",
     path: "/users",
-    icon: <FiIcons.FiUser size={20} />,
+    icon: <IconUsers size={22} />,
 
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
@@ -64,11 +69,11 @@ export const SidebarData = [
   {
     title: "Emails",
     path: "/emails",
-    icon: <HiOutlineMail size={18} />,
+    icon: <IconMailOpened size={20} />,
   },
   {
     title: "Supports",
     path: "/support",
-    icon: <BiIcons.BiSupport size={20} />,
+    icon: <IconLifebuoy size={20} />,
   },
 ];
