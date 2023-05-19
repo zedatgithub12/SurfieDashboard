@@ -1,7 +1,3 @@
-* {
-  font-family: 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-}
-
 .primary-fill {
   background-color: #00c6d4;
 }
@@ -66,7 +62,7 @@
 }
 
 .font-link {
-  font-family: "Graphik", sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 .primary {

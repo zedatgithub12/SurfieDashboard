@@ -291,7 +291,7 @@ const Partners = () => {
               <Grid item xs={11}>
                 <Grid container direction="column">
                   <Grid item>
-                    <Typography variant="h4" className="ps-4">
+                    <Typography variant="h5" className="ps-5">
                       Partners
                     </Typography>
                   </Grid>
@@ -300,8 +300,8 @@ const Partners = () => {
             </Grid>
           </Grid>
 
-          <Grid item xs={1}></Grid>
-          <Grid item xs={10} paddingX="2">
+          <Grid item xs={1} md={1}></Grid>
+          <Grid item xs={12} md={6} paddingX={2} marginLeft={3}>
             <Box paddingX="2" className="shadow-1 p-4 rounded ">
               <Box
                 display="flex"

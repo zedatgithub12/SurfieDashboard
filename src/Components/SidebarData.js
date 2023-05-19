@@ -10,6 +10,7 @@ import {
   IconLifebuoy,
   IconTimelineEventExclamation,
   IconJumpRope,
+  IconSpeakerphone,
 } from "@tabler/icons-react";
 
 export const SidebarData = [
@@ -35,7 +36,7 @@ export const SidebarData = [
       },
       {
         title: "Trials",
-        path: "/emails",
+        path: "/trials",
         icon: <IconJumpRope size={18} />,
         cName: "sub-nav",
       },
@@ -49,8 +50,16 @@ export const SidebarData = [
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
   },
+  // {
+  //   title: "Marketing",
+  //   path: "/marketing",
+  //   icon: <IconSpeakerphone size={22} />,
+
+  //   iconClosed: <RiIcons.RiArrowDownSFill />,
+  //   iconOpened: <RiIcons.RiArrowUpSFill />,
+  // },
   {
-    title: "Manage Users",
+    title: "Users",
     path: "/users",
     icon: <IconUsers size={22} />,
 

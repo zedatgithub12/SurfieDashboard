@@ -1,22 +1,10 @@
 import React, { useEffect } from "react";
 
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Customers } from "./pages/Customers";
-import { Notifications } from "./pages/Notifications";
-import { Users } from "./pages/Users";
-import Support from "./pages/Support";
-import Emaills from "./pages/Emaills";
-import CustomerDetail from "./pages/CustomerDetail";
-import CreateAccount from "./pages/CreateAccount";
-import ChangePassword from "./pages/ChangePassword";
-import Signin from "./pages/Signin";
+import { BrowserRouter as Router } from "react-router-dom";
 import { AuthContext } from "./components/Context";
-import Home from "./pages/Home";
-import ChapaDetail from "./pages/ChapaDetail";
-import Partners from "./pages/partners";
-import ViewPartner from "./pages/partners/viewpartners";
-import ExpiredLicense from "./pages/Expired";
+import MainRoute from "./Routes";
+import Auths from "./Routes/Auths";
 
 function App() {
   const [loged, setLoged] = React.useState(false);
@@ -55,7 +43,6 @@ function App() {
 
   useEffect(() => {
     var tokens = localStorage.getItem("token");
-
     if (tokens !== null) {
       setLoged(true);
     }
@@ -64,31 +51,7 @@ function App() {
 
   return (
     <AuthContext.Provider value={authContext}>
-      <Router>
-        {loged ? (
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Signin />} />
-            <Route path="/customers" element={<Customers />} />
-            <Route path="/expired" element={<ExpiredLicense />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/partners" element={<Partners />} />
-            <Route path="/viewpartners" element={<ViewPartner />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/support" element={<Support />} />
-            <Route path="/emails" element={<Emaills />} />
-            <Route path="/customerdetail" element={<CustomerDetail />} />
-            <Route path="/chapadetail" element={<ChapaDetail />} />
-            <Route path="/createaccount" element={<CreateAccount />} />
-            <Route path="/changepassword" element={<ChangePassword />} />
-          </Routes>
-        ) : (
-          <Routes>
-            <Route path="/" element={<Signin />} />
-            <Route path="/login" element={<Signin />} />
-          </Routes>
-        )}
-      </Router>
+      <Router>{loged ? <MainRoute /> : <Auths />}</Router>
     </AuthContext.Provider>
   );
 }

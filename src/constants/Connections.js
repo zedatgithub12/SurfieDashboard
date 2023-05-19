@@ -9,12 +9,14 @@ const Connection = {
   login: "/login",
   customers: "/customers",
   singleCustomer: "/singlecustomer/",
+  expired: "/expired",
   search: "/search/",
   addlicense: "/add/",
   changeLicense: "/add/",
   removeLicense: "/remove/",
   deactivate: "/deactivate/",
   detach: "/detach/",
+  deletecustomer: "/deletecustomer/",
   pending: "/pending",
   activate: "/activate/",
   reactivate: "/reactivate/",
@@ -33,6 +35,9 @@ const Connection = {
   //partners api
   partners: "/partners",
   deletepartner: "/deletepartner/",
+
+  //trials
+  trials: "/trials",
 };
 
 export default Connection;

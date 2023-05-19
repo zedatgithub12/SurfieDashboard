@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Grid,
   Table,
@@ -15,58 +15,24 @@ import {
   DialogActions,
   Box,
   InputAdornment,
-  Paper,
   IconButton,
   Typography,
-  Checkbox,
   Button,
 } from "@mui/material";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 import Sidebar from "../../components/Sidebar";
 import { BsSearch, BsTrash } from "react-icons/bs";
 import { FaEye } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Connection from "../../constants/Connections";
 
-const data = [
-  {
-    id: 3,
-    fname: "Meseret",
-    mname: "Tadesse",
-    lname: "Girma",
-    remote_id: 204,
-    email: "meseretgirma@gmail.com",
-    phone: "0912345678",
-    living_address: "Hawassa",
-    license: 5,
-    subscription: "monthly",
-    duedate: "20-5-2023",
-    payment_method: 1002,
-    coupon: "ASDFGhjkl",
-    status: 1,
-    created_at: "20-4-2023",
-  },
-  {
-    id: 4,
-    fname: "Tewodros",
-    mname: "Tekle",
-    lname: "Mengistu",
-    remote_id: 205,
-    email: "tewodrosmengistu@gmail.com",
-    phone: "0911112222",
-    living_address: "Bahir Dar",
-    license: 5,
-    subscription: "monthly",
-    duedate: "10-6-2023",
-    payment_method: 1001,
-    coupon: "QWERTYuiop",
-    status: 1,
-    created_at: "10-5-2023",
-  },
-  // Add more data here
-];
-
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 export default function ExpiredLicense() {
   const navigate = useNavigate();
+  const [data, setData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [filter, setFilter] = useState("");
@@ -131,7 +97,7 @@ export default function ExpiredLicense() {
   const Delete = () => {
     // Do something with the deleted category
     setSpinner(true);
-    var Api = Connection.api + Connection.deletepartner + selectedItem.id;
+    var Api = Connection.api + Connection.deletecustomer + selectedItem.id;
     var headers = {
       accept: "application/json",
       "Content-Type": "application/json",
@@ -174,6 +140,39 @@ export default function ExpiredLicense() {
         setSpinner(false);
       });
   };
+
+  useEffect(() => {
+    const getExpiredCustomers = () => {
+      var Api = Connection.api + Connection.expired;
+      var headers = {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      };
+      // Make the API call using fetch()
+      fetch(Api, {
+        method: "GET",
+        headers: headers,
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          if (response.success) {
+            setData(response.data);
+          } else {
+            setData(data);
+          }
+        })
+        .catch(() => {
+          setPopup({
+            ...popup,
+            status: true,
+            severity: "error",
+            message: "There is error featching  users!",
+          });
+        });
+    };
+    getExpiredCustomers();
+    return () => {};
+  }, [spinner]);
   return (
     <>
       <Sidebar />
@@ -186,18 +185,18 @@ export default function ExpiredLicense() {
               <Grid item xs={11}>
                 <Grid container direction="column">
                   <Grid item>
-                    <Typography variant="h4" className="ps-4">
-                      Expired Licenses
+                    <Typography variant="h5" className="ps-5">
+                      Expired Customers
                     </Typography>
                   </Grid>
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={1}></Grid>
-          <Grid item xs={10} paddingX="2">
+          <Grid item xs={1} md={1}></Grid>
+          <Grid item xs={10} paddingX={2} marginLeft={2}>
             <Box paddingX="2" className="shadow-1 p-4 rounded ">
-              <Box
+              {/* <Box
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
@@ -220,7 +219,7 @@ export default function ExpiredLicense() {
                     ),
                   }}
                 />
-              </Box>
+              </Box> */}
 
               <TableContainer className="">
                 <Table stickyHeader aria-label="sticky table">
@@ -251,20 +250,96 @@ export default function ExpiredLicense() {
                           tabIndex={-1}
                           key={customer.id}
                         >
-                          <TableCell>{customer.id}</TableCell>
-                          <TableCell>{customer.remote_id}</TableCell>
-                          <TableCell>{customer.fname}</TableCell>
-                          <TableCell>{customer.mname}</TableCell>
-                          <TableCell>{customer.email}</TableCell>
-                          <TableCell>{customer.phone}</TableCell>
-                          <TableCell>{customer.license}</TableCell>
-                          <TableCell>{customer.subscription}</TableCell>
-                          <TableCell>{customer.duedate}</TableCell>
-                          <TableCell>{customer.status}</TableCell>
+                          <TableCell
+                            onClick={() =>
+                              navigate("/customerdetail", {
+                                state: { ...customer },
+                              })
+                            }
+                          >
+                            {customer.id}
+                          </TableCell>
+                          <TableCell
+                            onClick={() =>
+                              navigate("/customerdetail", {
+                                state: { ...customer },
+                              })
+                            }
+                          >
+                            {customer.remote_id}
+                          </TableCell>
+                          <TableCell
+                            onClick={() =>
+                              navigate("/customerdetail", {
+                                state: { ...customer },
+                              })
+                            }
+                          >
+                            {customer.first_name}
+                          </TableCell>
+                          <TableCell
+                            onClick={() =>
+                              navigate("/customerdetail", {
+                                state: { ...customer },
+                              })
+                            }
+                          >
+                            {customer.middle_name}
+                          </TableCell>
+                          <TableCell
+                            onClick={() =>
+                              navigate("/customerdetail", {
+                                state: { ...customer },
+                              })
+                            }
+                          >
+                            {customer.email}
+                          </TableCell>
+                          <TableCell
+                            onClick={() =>
+                              navigate("/customerdetail", {
+                                state: { ...customer },
+                              })
+                            }
+                          >
+                            {customer.phone}
+                          </TableCell>
+                          <TableCell
+                            onClick={() =>
+                              navigate("/customerdetail", {
+                                state: { ...customer },
+                              })
+                            }
+                          >
+                            {customer.license} Device
+                          </TableCell>
+                          <TableCell
+                            onClick={() =>
+                              navigate("/customerdetail", {
+                                state: { ...customer },
+                              })
+                            }
+                          >
+                            {customer.subscription}
+                          </TableCell>
+                          <TableCell
+                            onClick={() =>
+                              navigate("/customerdetail", {
+                                state: { ...customer },
+                              })
+                            }
+                          >
+                            {customer.duedate}
+                          </TableCell>
+                          <TableCell>
+                            {customer.status === 1 ? "Active" : "Suspended"}
+                          </TableCell>
                           <TableCell>
                             <IconButton
                               onClick={() =>
-                                navigate("/viewpartners", { state: customer })
+                                navigate("/customerdetail", {
+                                  state: { ...customer },
+                                })
                               }
                             >
                               <FaEye size={18} />
@@ -327,6 +402,20 @@ export default function ExpiredLicense() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar
+        open={popup.status}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
+        <Alert
+          onClose={handleClose}
+          severity={popup.severity}
+          sx={{ width: "100%" }}
+        >
+          {popup.message}
+        </Alert>
+      </Snackbar>
     </>
   );
 }
