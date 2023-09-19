@@ -94,18 +94,35 @@ export default function ExpiredLicense() {
     page * rowsPerPage + rowsPerPage
   );
 
-  const Delete = () => {
+  const getCsrfToken = async () => {
+    var Api = Connection.api;
+    const response = await fetch(Api + "/sanctum/csrf-cookie", {
+      method: "GET",
+      credentials: "include", // Include cookies in the request
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data.csrf_token;
+    }
+    throw new Error("Failed to retrieve CSRF token");
+  };
+
+  const Delete = async () => {
     // Do something with the deleted category
     setSpinner(true);
+
+    const token = await getCsrfToken();
     var Api = Connection.api + Connection.deletecustomer + selectedItem.id;
     var headers = {
       accept: "application/json",
       "Content-Type": "application/json",
+      "X-CSRF-TOKEN": token,
     };
 
     // Make the API call using fetch()
     fetch(Api, {
       method: "DELETE",
+      credentials: "include",
       headers: headers,
     })
       .then((response) => response.json())
@@ -142,15 +159,19 @@ export default function ExpiredLicense() {
   };
 
   useEffect(() => {
-    const getExpiredCustomers = () => {
+    const getExpiredCustomers = async () => {
       var Api = Connection.api + Connection.expired;
+
+      const token = await getCsrfToken();
       var headers = {
         accept: "application/json",
         "Content-Type": "application/json",
+        "X-CSRF-TOKEN": token,
       };
       // Make the API call using fetch()
       fetch(Api, {
         method: "GET",
+        credentials: "include",
         headers: headers,
       })
         .then((response) => response.json())

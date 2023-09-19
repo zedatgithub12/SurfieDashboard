@@ -125,17 +125,31 @@ export const Customers = () => {
 
   // add License functionality
   //adding license to database performed here
+  const getCsrfToken = async () => {
+    var Api = Connection.api;
+    const response = await fetch(Api + "/sanctum/csrf-cookie", {
+      method: "GET",
+      credentials: "include", // Include cookies in the request
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data.csrf_token;
+    }
+    throw new Error("Failed to retrieve CSRF token");
+  };
 
-  const AddSubscription = () => {
+  const AddSubscription = async () => {
     var currentPackages = `AFROMINA_${initialValue.currentPlan}`;
     var packages = `AFROMINA_${license}`;
 
     setactionload(true);
 
     var Api = Connection.api + Connection.changeLicense + initialValue.lid;
+    const token = await getCsrfToken();
     var headers = {
       accept: "application/json",
       "Content-Type": "application/json",
+      "X-CSRF-TOKEN": token,
     };
 
     var Data = {
@@ -145,9 +159,10 @@ export const Customers = () => {
       package: packages,
       currentPackage: currentPackages,
     };
-  
+
     fetch(Api, {
       method: "PUT",
+      credentials: "include",
       headers: headers,
       body: JSON.stringify(Data),
     })
@@ -213,14 +228,17 @@ export const Customers = () => {
   };
 
   // deactivate customer account
-  const Deactivate = () => {
+  const Deactivate = async () => {
     if (initialValue.cid !== "") {
       setactionload(true);
 
       var Api = Connection.api + Connection.deactivate + initialValue.lid;
+
+      const token = await getCsrfToken();
       var headers = {
         accept: "application/json",
         "Content-Type": "application/json",
+        "X-CSRF-TOKEN": token,
       };
 
       var Data = {
@@ -231,6 +249,7 @@ export const Customers = () => {
 
       fetch(Api, {
         method: "PUT",
+        credentials: "include",
         headers: headers,
         body: JSON.stringify(Data),
       })
@@ -289,14 +308,17 @@ export const Customers = () => {
   };
 
   // deactivate customer account
-  const Detach = () => {
+  const Detach = async () => {
     if (initialValue.cid !== "") {
       setactionload(true);
 
       var Api = Connection.api + Connection.detach + initialValue.lid;
+
+      const token = await getCsrfToken();
       var headers = {
         accept: "application/json",
         "Content-Type": "application/json",
+        "X-CSRF-TOKEN": token,
       };
 
       var Data = {
@@ -307,6 +329,7 @@ export const Customers = () => {
 
       fetch(Api, {
         method: "PUT",
+        credentials: "include",
         headers: headers,
         body: JSON.stringify(Data),
       })
@@ -364,18 +387,22 @@ export const Customers = () => {
     }
   };
 
-  const FindCustomer = (currentPage) => {
+  const FindCustomer = async (currentPage) => {
     if (search !== "") {
       var Api =
         Connection.api +
         Connection.search +
         `?name=${search}&page=${currentPage}&status=${activeTab}`;
+
+      const token = await getCsrfToken();
       var headers = {
         accept: "application/json",
         "Content-Type": "application/json",
+        "X-CSRF-TOKEN": token,
       };
       fetch(Api, {
         method: "GET",
+        credentials: "include",
         headers: headers,
       })
         .then((response) => response.json())
@@ -400,14 +427,17 @@ export const Customers = () => {
       Connection.api +
       Connection.customers +
       `?page=${currentPage}&status=${activeTab}`; // update this line of code to the something like 'http://localhost:3000/customers?_page=${currentPage}&_limit=${limit}
+
+    const token = await getCsrfToken();
     var headers = {
       accept: "application/json",
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
+      "X-CSRF-TOKEN": token,
     };
 
     const data = await fetch(Api, {
       method: "GET",
+      credentials: "include",
       headers: headers,
     });
     const response = await data.json();
@@ -424,15 +454,17 @@ export const Customers = () => {
   };
 
   //featch all numerical count of customer information
-  const PendingCount = () => {
+  const PendingCount = async () => {
     var Api = Connection.api + Connection.pending; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
+    const token = await getCsrfToken();
     var headers = {
       accept: "application/json",
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
+      "X-CSRF-TOKEN": token,
     };
     fetch(Api, {
       method: "GET",
+      credentials: "include",
       headers: headers,
     })
       .then((response) => response.json())
@@ -454,14 +486,16 @@ export const Customers = () => {
         Connection.customers +
         `?page=${currentPage}&status=${activeTab}`;
 
+      const token = await getCsrfToken();
       var headers = {
         accept: "application/json",
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
+        "X-CSRF-TOKEN": token,
       };
 
       fetch(Api, {
         method: "GET",
+        credentials: "include",
         headers: headers,
       })
         .then((response) => response.json())

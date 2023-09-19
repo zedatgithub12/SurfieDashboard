@@ -175,7 +175,20 @@ const CustomerDetail = () => {
     });
   };
 
-  const AddSubscription = () => {
+  const getCsrfToken = async () => {
+    var Api = Connection.api;
+    const response = await fetch(Api + "/sanctum/csrf-cookie", {
+      method: "GET",
+      credentials: "include", // Include cookies in the request
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data.csrf_token;
+    }
+    throw new Error("Failed to retrieve CSRF token");
+  };
+
+  const AddSubscription = async () => {
     var currentPackages = `AFROMINA_${initialValue.currentPlan}`;
     var packages = `AFROMINA_${license}`;
 
@@ -183,9 +196,11 @@ const CustomerDetail = () => {
       setactionload(true);
 
       var Api = Connection.api + Connection.addlicense + initialValue.lid;
+      const token = await getCsrfToken();
       var headers = {
         accept: "application/json",
         "Content-Type": "application/json",
+        "X-CSRF-TOKEN": token,
       };
 
       var Data = {
@@ -198,6 +213,7 @@ const CustomerDetail = () => {
 
       fetch(Api, {
         method: "PUT",
+        credentials: "include",
         headers: headers,
         body: JSON.stringify(Data),
       })
@@ -373,14 +389,17 @@ const CustomerDetail = () => {
   };
 
   // deactivate customer account
-  const Deactivate = () => {
+  const Deactivate = async () => {
     if (initialValue.cid !== "") {
       setactionload(true);
 
       var Api = Connection.api + Connection.deactivate + initialValue.lid;
+
+      const token = await getCsrfToken();
       var headers = {
         accept: "application/json",
         "Content-Type": "application/json",
+        "X-CSRF-TOKEN": token,
       };
 
       var Data = {
@@ -391,6 +410,7 @@ const CustomerDetail = () => {
 
       fetch(Api, {
         method: "PUT",
+        credentials: "include",
         headers: headers,
         body: JSON.stringify(Data),
       })
@@ -449,14 +469,16 @@ const CustomerDetail = () => {
   };
 
   // deactivate customer account
-  const Detach = () => {
+  const Detach = async () => {
     if (initialValue.cid !== "") {
       setactionload(true);
 
       var Api = Connection.api + Connection.detach + initialValue.lid;
+      const token = await getCsrfToken();
       var headers = {
         accept: "application/json",
         "Content-Type": "application/json",
+        "X-CSRF-TOKEN": token,
       };
 
       var Data = {
@@ -467,13 +489,12 @@ const CustomerDetail = () => {
 
       fetch(Api, {
         method: "PUT",
+        credentials: "include",
         headers: headers,
         body: JSON.stringify(Data),
       })
         .then((response) => response.json())
         .then((response) => {
-          // the action will be taken depending on the server response
-
           if (response == 0) {
             setConfirm("3");
             setInitialValue({

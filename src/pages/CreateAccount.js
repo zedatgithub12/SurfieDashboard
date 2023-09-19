@@ -295,8 +295,22 @@ function CreateAccount() {
         });
     }
   };
+
+  const getCsrfToken = async () => {
+    var Api = Connection.api;
+    const response = await fetch(Api + "/sanctum/csrf-cookie", {
+      method: "GET",
+      credentials: "include", // Include cookies in the request
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data.csrf_token;
+    }
+    throw new Error("Failed to retrieve CSRF token");
+  };
+
   //validate user input when user pressed submit button
-  const CreateCAccount = () => {
+  const CreateCAccount = async () => {
     var packages = `AFROMINA_${license}`; //packages id to be sent to puresight
     const re = /\S+@\S+\.\S+/;
 
@@ -391,9 +405,12 @@ function CreateAccount() {
     } else {
       setLoading(true);
       var Api = Connection.api + Connection.customers; // update this line of code to the something like 'http://localhost:3000/customers?_page=${currentPage}&_limit=${limit}
+
+      const token = await getCsrfToken();
       var headers = {
         accept: "application/json",
         "Content-Type": "application/json",
+        "X-CSRF-TOKEN": token,
       };
       const data = {
         firstname: input.firstname,
@@ -414,6 +431,7 @@ function CreateAccount() {
 
       fetch(Api, {
         method: "POST",
+        credentials: "include",
         headers: headers,
         body: JSON.stringify(data),
       })

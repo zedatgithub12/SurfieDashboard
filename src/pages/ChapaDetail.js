@@ -88,16 +88,33 @@ const ChapaDetail = () => {
     return Status;
   };
 
+  const getCsrfToken = async () => {
+    var Api = Connection.api;
+    const response = await fetch(Api + "/sanctum/csrf-cookie", {
+      method: "GET",
+      credentials: "include", // Include cookies in the request
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data.csrf_token;
+    }
+    throw new Error("Failed to retrieve CSRF token");
+  };
+
   useEffect(() => {
     const getCustomer = async () => {
       var Api = Connection.api + Connection.singleCustomer + state.customer_id;
+
+      const token = await getCsrfToken();
       var headers = {
         accept: "application/json",
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
+        "X-CSRF-TOKEN": token,
       };
       fetch(Api, {
         method: "GET",
+        credentials: "include",
+        headers: headers,
       })
         .then((response) => response.json())
         .then((response) => {
@@ -155,7 +172,9 @@ const ChapaDetail = () => {
                           <p className="mb-0">Customer Email</p>
                         </div>
                         <div className="col-auto">
-                          <p className="mb-0 fw-semibold text-capitalize">{state.email}</p>
+                          <p className="mb-0 fw-semibold text-capitalize">
+                            {state.email}
+                          </p>
                         </div>
                       </div>
                     </li>
@@ -184,7 +203,7 @@ const ChapaDetail = () => {
                         </div>
                         <div className="col-auto">
                           <p
-                           className="mb-0 fw-semibold text-capitalize"
+                            className="mb-0 fw-semibold text-capitalize"
                             data-clipboard-text={state.txn_id}
                           >
                             {state.txn_id} <i className="fal fa-copy"></i>
@@ -199,7 +218,9 @@ const ChapaDetail = () => {
                           <p className="mb-0">Paid at</p>
                         </div>
                         <div className="col-auto">
-                          <p className="mb-0 fw-semibold text-capitalize">{paymentDate(state.created_at)}</p>
+                          <p className="mb-0 fw-semibold text-capitalize">
+                            {paymentDate(state.created_at)}
+                          </p>
                         </div>
                       </div>
                     </li>

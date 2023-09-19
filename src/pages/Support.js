@@ -34,12 +34,28 @@ const Support = () => {
     return day + "/" + month + "/" + year;
   };
 
+  const getCsrfToken = async () => {
+    var Api = Connection.api;
+    const response = await fetch(Api + "/sanctum/csrf-cookie", {
+      method: "GET",
+      credentials: "include", // Include cookies in the request
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data.csrf_token;
+    }
+    throw new Error("Failed to retrieve CSRF token");
+  };
+
   // Close answered ticket
-  const CloseTicket = (id) => {
+  const CloseTicket = async (id) => {
     var Api = Connection.api + Connection.closeTicket + id;
+
+    const token = await getCsrfToken();
     var headers = {
       accept: "application/json",
       "Content-Type": "application/json",
+      "X-CSRF-TOKEN": token,
     };
 
     var Data = {
@@ -48,6 +64,7 @@ const Support = () => {
 
     fetch(Api, {
       method: "PUT",
+      credentials: "include",
       headers: headers,
       body: JSON.stringify(Data),
     })
@@ -79,16 +96,19 @@ const Support = () => {
   };
 
   //fetch all queries from database on the startup of the system
-  const FetchQueries = () => {
+  const FetchQueries = async () => {
     var Api = Connection.api + Connection.support;
+
+    const token = await getCsrfToken();
     var headers = {
       accept: "application/json",
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
+      "X-CSRF-TOKEN": token,
     };
 
     fetch(Api, {
       method: "GET",
+      credentials: "include",
       headers: headers,
       // Body: JSON.stringify(data),
     })
@@ -131,7 +151,6 @@ const Support = () => {
               <Table hover responsive striped className="align-middle">
                 <thead className="bg-white">
                   <tr>
-                
                     <th className="ps-4">Name</th>
                     <th>Date</th>
                     <th>Status</th>
@@ -139,9 +158,7 @@ const Support = () => {
                 </thead>
                 {queries.map((item, index) => (
                   <tbody>
-                  
                     <tr key={item.id}>
-                   
                       <td onClick={() => OpenModal(item)}>
                         <div className="d-flex align-items-center">
                           <div className="ms-3">
@@ -181,10 +198,14 @@ const Support = () => {
             sm={4}
             className="mt-3 shadow-sm  ms-1 p-4 pt-2 bg-white rounded position-fixed end-0 me-5 fixed"
           >
-               
-               <h6>Ticket Number <Badge className="badge badge-light px-2 rounded bg-light text-primary fs-5"> #{modalContent.content.id}</Badge></h6>
+            <h6>
+              Ticket Number{" "}
+              <Badge className="badge badge-light px-2 rounded bg-light text-primary fs-5">
+                {" "}
+                #{modalContent.content.id}
+              </Badge>
+            </h6>
             <div>
-           
               <p className="fw-semibold mt-0 fs-6 text-secondary">
                 Message Preview
               </p>
@@ -246,7 +267,13 @@ const Support = () => {
                     Reply
                   </Button>
                 </div>
-                {prompt.show ? <div className="d-flex justify-content-between align-items-center mb-0 mt-5 bg-success bg-opacity-10 rounded  px-3 ">   <span>{prompt.content}</span>  <BsCheckCircle size={18} className="text-success my-3" /></div> : null}
+                {prompt.show ? (
+                  <div className="d-flex justify-content-between align-items-center mb-0 mt-5 bg-success bg-opacity-10 rounded  px-3 ">
+                    {" "}
+                    <span>{prompt.content}</span>{" "}
+                    <BsCheckCircle size={18} className="text-success my-3" />
+                  </div>
+                ) : null}
               </>
             ) : (
               <div className="align-items-center justify-content-center  ">

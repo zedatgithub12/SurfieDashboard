@@ -1,4 +1,4 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Container from "react-bootstrap/Container";
 import { Link, useNavigate } from "react-router-dom";
@@ -13,7 +13,6 @@ import Empty from "../assets/Empty.png";
 import ReactPaginate from "react-paginate";
 
 export const Users = () => {
-
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
@@ -25,19 +24,35 @@ export const Users = () => {
   //   totalCount: "",
   // });
 
-  
-  const FindCustomer = (currentPage) => {
+  const getCsrfToken = async () => {
+    var Api = Connection.api;
+    const response = await fetch(Api + "/sanctum/csrf-cookie", {
+      method: "GET",
+      credentials: "include", // Include cookies in the request
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data.csrf_token;
+    }
+    throw new Error("Failed to retrieve CSRF token");
+  };
+
+  const FindCustomer = async (currentPage) => {
     if (search !== "") {
       var Api =
         Connection.api +
         Connection.search +
         `?name=${search}&page=${currentPage}`;
+
+      const token = await getCsrfToken();
       var headers = {
         accept: "application/json",
         "Content-Type": "application/json",
+        "X-CSRF-TOKEN": token,
       };
       fetch(Api, {
         method: "GET",
+        credentials: "include",
         headers: headers,
       })
         .then((response) => response.json())
@@ -56,20 +71,19 @@ export const Users = () => {
     }
   };
   const fetchCustomer = async (currentPage) => {
-
     setLoading(false);
-    var Api =
-      Connection.api +
-      Connection.customers +
-      `?page=${currentPage}`; // update this line of code to the something like 'http://localhost:3000/customers?_page=${currentPage}&_limit=${limit}
+    var Api = Connection.api + Connection.customers + `?page=${currentPage}`; // update this line of code to the something like 'http://localhost:3000/customers?_page=${currentPage}&_limit=${limit}
+
+    const token = await getCsrfToken();
     var headers = {
       accept: "application/json",
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
+      "X-CSRF-TOKEN": token,
     };
-  
+
     const data = await fetch(Api, {
       method: "GET",
+      credentials: "include",
       headers: headers,
     });
     const response = await data.json();
@@ -77,13 +91,15 @@ export const Users = () => {
     return response.data;
   };
 
-   //activate pending users
-   const Approve = (id) => {
+  //activate pending users
+  const Approve = async (id) => {
     var Api = Connection.api + Connection.activate + id; // update this line of code to the something like 'http://localhost:3000/customers?_page=1&_limit=${limit}
+
+    const token = await getCsrfToken();
     var headers = {
       accept: "application/json",
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
+      "X-CSRF-TOKEN": token,
     };
 
     var Data = {
@@ -92,22 +108,22 @@ export const Users = () => {
 
     fetch(Api, {
       method: "PUT",
+      credentials: "include",
       headers: headers,
       body: JSON.stringify(Data),
     })
       .then((response) => response.json())
       .then((response) => {
         if (response === "activated") {
-   
         }
       });
   };
-    // onchange in the search input field
-    const SearchText = (event) => {
-      setSearch(event.target.value);
-    };
+  // onchange in the search input field
+  const SearchText = (event) => {
+    setSearch(event.target.value);
+  };
 
-      //pagination buttons onclick handler
+  //pagination buttons onclick handler
 
   const handlePageClick = async (data) => {
     let currentPage = data.selected + 1;
@@ -116,14 +132,12 @@ export const Users = () => {
     setCustomers(customerFromServer);
     // setCustomers(customers);
   };
-  
+
   return (
     <>
-    <Sidebar/>
-   
-    <Container className="d-flex justify-content-center align-items-center">
-        
+      <Sidebar />
 
+      <Container className="d-flex justify-content-center align-items-center">
         {/* Customers listing table */}
         <Row className="d-flex justify-content-center align-items-center mt-4">
           <Col sm={10} className="border">
@@ -143,32 +157,31 @@ export const Users = () => {
               </Col>
             </Row>
             <Row className="bg-white p-2 pt-0 rounded">
-          
-                  <Row className="d-flex justify-content-start align-items-center">
-                    <Col sm={8} className="pt-1 pb-2">
-                      <div className="input-group mb-4 mt-4">
-                        <input
-                          type="text"
-                          className="form-control small ps-3 "
-                          placeholder="Search..."
-                          aria-label="Search"
-                          aria-describedby="basic-addon2"
-                          defaultValue={search}
-                          onChange={SearchText}
-                        />
-                        <div className="input-group-append">
-                          <Button
-                            onClick={() => FindCustomer()}
-                            variant="light"
-                            className=" border rounded-0 rounded-end bg-light text-center pb-2 "
-                          >
-                            <AiOutlineSearch size={20} color="#10a698" />
-                          </Button>
-                        </div>
-                      </div>
-                    </Col>
-                  </Row>
-                  {loading ? (
+              <Row className="d-flex justify-content-start align-items-center">
+                <Col sm={8} className="pt-1 pb-2">
+                  <div className="input-group mb-4 mt-4">
+                    <input
+                      type="text"
+                      className="form-control small ps-3 "
+                      placeholder="Search..."
+                      aria-label="Search"
+                      aria-describedby="basic-addon2"
+                      defaultValue={search}
+                      onChange={SearchText}
+                    />
+                    <div className="input-group-append">
+                      <Button
+                        onClick={() => FindCustomer()}
+                        variant="light"
+                        className=" border rounded-0 rounded-end bg-light text-center pb-2 "
+                      >
+                        <AiOutlineSearch size={20} color="#10a698" />
+                      </Button>
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+              {loading ? (
                 <>
                   <Row>
                     <Col className="bg-white">
@@ -258,7 +271,6 @@ export const Users = () => {
               )}
             </Row>
           </Col>
-
         </Row>
 
         {/* <Modal show={show} onHide={handleClose}>
@@ -381,10 +393,7 @@ export const Users = () => {
             ) : null}
           </Modal.Footer>
         </Modal> */}
-
       </Container>
     </>
   );
 };
- 
- 

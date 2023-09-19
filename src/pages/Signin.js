@@ -8,7 +8,7 @@ const Signin = () => {
   const { SignIn } = React.useContext(AuthContext);
   const loginState = (user, token) => {
     SignIn(user, token);
-  };// the axios methos imported from AuthUser Function inside the component folder
+  }; // the axios methos imported from AuthUser Function inside the component folder
   const [credentials, setCredentials] = useState({
     email: "",
     emailvalid: "",
@@ -28,7 +28,6 @@ const Signin = () => {
 
   const [loading, setLoading] = useState(false);
 
-  
   //server reponse states
   const [serverresponse, setServerResponse] = useState({
     visible: false,
@@ -52,13 +51,30 @@ const Signin = () => {
     });
   };
 
-  const Validate = (e) => {
+  const getCsrfToken = async () => {
+    var Api = Connection.api;
+    const response = await fetch(Api + "/sanctum/csrf-cookie", {
+      method: "GET",
+      credentials: "include", // Include cookies in the request
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data.csrf_token;
+    }
+    throw new Error("Failed to retrieve CSRF token");
+  };
+
+  const Validate = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     var Api = Connection.api + Connection.login;
+
+    const token = await getCsrfToken();
     var headers = {
       accept: "application/json",
       "Content-Type": "application/json",
+      "X-CSRF-TOKEN": token,
     };
 
     var data = {
@@ -67,6 +83,7 @@ const Signin = () => {
     };
     fetch(Api, {
       method: "POST",
+      credentials: "include",
       headers: headers,
       body: JSON.stringify(data),
     })
@@ -106,11 +123,9 @@ const Signin = () => {
       });
   };
 
-  useEffect(()=>{
-
-    return ()=>{}
-
-  },[]);
+  useEffect(() => {
+    return () => {};
+  }, []);
 
   return (
     <Container className="m-auto p-5 mt-4 ">
@@ -160,16 +175,24 @@ const Signin = () => {
           </div>
           {loading ? (
             <div className="d-flex justify-content-center align-items-center">
-           
-            <div className="spinner-grow spinner-grow-sm primary-bg " role="status">
-              <span className="visually-hidden">Loading...</span>
-            </div>
-            <div className="spinner-grow spinner-grow-sm primary-bg " role="status">
-              <span className="visually-hidden">Loading...</span>
-            </div>
-            <div className="spinner-grow spinner-grow-sm primary-bg " role="status">
-              <span className="visually-hidden">Loading...</span>
-            </div>
+              <div
+                className="spinner-grow spinner-grow-sm primary-bg "
+                role="status"
+              >
+                <span className="visually-hidden">Loading...</span>
+              </div>
+              <div
+                className="spinner-grow spinner-grow-sm primary-bg "
+                role="status"
+              >
+                <span className="visually-hidden">Loading...</span>
+              </div>
+              <div
+                className="spinner-grow spinner-grow-sm primary-bg "
+                role="status"
+              >
+                <span className="visually-hidden">Loading...</span>
+              </div>
             </div>
           ) : (
             <button
@@ -178,7 +201,6 @@ const Signin = () => {
               onClick={Validate}
               className="btn btn-md btn-light primary-bg w-100 fw-semibold"
             >
-           
               Sign in
             </button>
           )}

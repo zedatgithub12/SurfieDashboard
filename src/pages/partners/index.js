@@ -201,18 +201,36 @@ const Partners = () => {
     setDialogOpen(false);
   };
 
-  const Delete = () => {
+  const getCsrfToken = async () => {
+    var Api = Connection.api;
+    const response = await fetch(Api + "/sanctum/csrf-cookie", {
+      method: "GET",
+      credentials: "include", // Include cookies in the request
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data.csrf_token;
+    }
+    throw new Error("Failed to retrieve CSRF token");
+  };
+
+  const Delete = async () => {
     // Do something with the deleted category
     setSpinner(true);
     var Api = Connection.api + Connection.deletepartner + selectedProduct.id;
+
+    const token = await getCsrfToken();
+
     var headers = {
       accept: "application/json",
       "Content-Type": "application/json",
+      "X-CSRF-TOKEN": token,
     };
 
     // Make the API call using fetch()
     fetch(Api, {
       method: "DELETE",
+      credentials: "include",
       headers: headers,
     })
       .then((response) => response.json())
@@ -248,15 +266,19 @@ const Partners = () => {
       });
   };
   useEffect(() => {
-    const getPartners = () => {
+    const getPartners = async () => {
       var Api = Connection.api + Connection.partners;
+
+      const token = await getCsrfToken();
       var headers = {
         accept: "application/json",
         "Content-Type": "application/json",
+        "X-CSRF-TOKEN": token,
       };
       // Make the API call using fetch()
       fetch(Api, {
         method: "GET",
+        credentials: "include",
         headers: headers,
       })
         .then((response) => response.json())

@@ -12,10 +12,8 @@ import card from "../assets/card.png";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 
-
-
 const Payments = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [chapa, setChapa] = useState([]);
 
   const [loading, setLoading] = useState(true);
@@ -29,89 +27,102 @@ const Payments = () => {
     setSearch(event.target.value);
   };
 
-//   const FindCustomer = (currentPage) => {
-//     if (search !== "") {
-//       var Api =
-//         Connection.api +
-//         Connection.search +
-//         `?reference=${search}&page=${currentPage}`;
-//       var headers = {
-//         accept: "application/json",
-//         "Content-Type": "application/json",
-//       };
-//       fetch(Api, {
-//         method: "GET",
-//         headers: headers,
-//       })
-//         .then((response) => response.json())
-//         .then((response) => {
-//           if ([response].length > 0) {
-//             setCustomers(response);
-//           } else {
-//             setNotFound("No result found");
-//           }
-//         })
-//         .catch((e) => {
-//           setNotFound("No result found");
-//         });
-//     } else {
-//       fetchCustomer();
-//     }
-//   };
+  //   const FindCustomer = (currentPage) => {
+  //     if (search !== "") {
+  //       var Api =
+  //         Connection.api +
+  //         Connection.search +
+  //         `?reference=${search}&page=${currentPage}`;
+  //       var headers = {
+  //         accept: "application/json",
+  //         "Content-Type": "application/json",
+  //       };
+  //       fetch(Api, {
+  //         method: "GET",
+  //         headers: headers,
+  //       })
+  //         .then((response) => response.json())
+  //         .then((response) => {
+  //           if ([response].length > 0) {
+  //             setCustomers(response);
+  //           } else {
+  //             setNotFound("No result found");
+  //           }
+  //         })
+  //         .catch((e) => {
+  //           setNotFound("No result found");
+  //         });
+  //     } else {
+  //       fetchCustomer();
+  //     }
+  //   };
 
-//   //fetch customer while use clicked the next button every time
-//   const fetchCustomer = async (currentPage) => {
-//     var Api = Connection.api + Connection.customers + `?page=${currentPage}`; // update this line of code to the something like 'http://localhost:3000/customers?_page=${currentPage}&_limit=${limit}
-//     var headers = {
-//       accept: "application/json",
-//       "Content-Type": "application/json",
-//       "Access-Control-Allow-Origin": "*",
-//     };
+  //   //fetch customer while use clicked the next button every time
+  //   const fetchCustomer = async (currentPage) => {
+  //     var Api = Connection.api + Connection.customers + `?page=${currentPage}`; // update this line of code to the something like 'http://localhost:3000/customers?_page=${currentPage}&_limit=${limit}
+  //     var headers = {
+  //       accept: "application/json",
+  //       "Content-Type": "application/json",
+  //       "Access-Control-Allow-Origin": "*",
+  //     };
 
-//     const data = await fetch(Api, {
-//       method: "GET",
-//       headers: headers,
-//     });
-//     const response = await data.json();
-//     return response.data;
-//   };
+  //     const data = await fetch(Api, {
+  //       method: "GET",
+  //       headers: headers,
+  //     });
+  //     const response = await data.json();
+  //     return response.data;
+  //   };
 
-//   //pagination buttons onclick handler
-//   const handlePageClick = async (data) => {
-//     let currentPage = data.selected + 1;
-//     const customerFromServer = await fetchCustomer(currentPage);
-//     // the line of code below will be uncommmented and the next will be cleaned
-//     setCustomers(customerFromServer);
-//     // setCustomers(customers);
-//   };
+  //   //pagination buttons onclick handler
+  //   const handlePageClick = async (data) => {
+  //     let currentPage = data.selected + 1;
+  //     const customerFromServer = await fetchCustomer(currentPage);
+  //     // the line of code below will be uncommmented and the next will be cleaned
+  //     setCustomers(customerFromServer);
+  //     // setCustomers(customers);
+  //   };
+
+  const getCsrfToken = async () => {
+    var Api = Connection.api;
+    const response = await fetch(Api + "/sanctum/csrf-cookie", {
+      method: "GET",
+      credentials: "include", // Include cookies in the request
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data.csrf_token;
+    }
+    throw new Error("Failed to retrieve CSRF token");
+  };
 
   //use effect function
   //when the functional component cames to life we will getcustomers by deafult
   useEffect(() => {
-
-    
     const getChapaPayment = async () => {
-        setLoading(false);
+      setLoading(false);
       var Api = Connection.api + Connection.chapa;
 
+      const token = await getCsrfToken();
       var headers = {
         accept: "application/json",
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
+        "X-CSRF-TOKEN": token,
       };
 
       fetch(Api, {
         method: "GET",
+        credentials: "include",
         headers: headers,
       })
         .then((response) => response.json())
         .then((response) => {
-            setChapa(response.data);
-            setPaging(response);
-            setLoading(true);
+          setChapa(response.data);
+          setPaging(response);
+          setLoading(true);
         })
         .catch((e) => {
-            setLoading(true);
+          setLoading(true);
         });
     };
     getChapaPayment();
@@ -137,7 +148,6 @@ const Payments = () => {
             />
             <div className="input-group-append">
               <Button
-             
                 variant="light"
                 className=" border rounded-0 rounded-end bg-light text-center pb-2 "
               >
@@ -155,7 +165,7 @@ const Payments = () => {
           <Row>
             <Col className="bg-white">
               {chapa.length >= 1 ? (
-                <Table hover responsive  className="align-middle">
+                <Table hover responsive className="align-middle">
                   <thead>
                     <tr>
                       <th>Reference</th>
@@ -164,7 +174,6 @@ const Payments = () => {
                       <th>Amount</th>
                       <th>Status</th>
                       <th>Payment date</th>
-                      
                     </tr>
                   </thead>
                   <tbody>
@@ -180,10 +189,10 @@ const Payments = () => {
                         date={item.created_at}
                         status={item.status}
                         rowPressed={() =>
-                            navigate("/chapadetail", {
-                              state: { ...item },
-                            })
-                          }
+                          navigate("/chapadetail", {
+                            state: { ...item },
+                          })
+                        }
                       />
                     ))}
                   </tbody>
@@ -191,11 +200,7 @@ const Payments = () => {
               ) : (
                 <div className="d-flex align-items-center justify-content-center m-auto m-4 p-4">
                   <div className="d-flex align-items-center justify-content-center m-auto m-4 p-4">
-                    <img
-                      src={card}
-                      alt="No Customers"
-                      className="w-25 h-25 "
-                    />
+                    <img src={card} alt="No Customers" className="w-25 h-25 " />
                     <h5>{notFound}</h5>
                   </div>
                 </div>
